@@ -1,12 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
+// import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 const URL = process.env.REACT_APP_BACKEND_URL + "/api/login";
 
 const Login = (props) => {
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const togglePasswordVisiblity = () => {
+    setIsPasswordVisible((prev) => !prev);
+  };
+
   let navigate = useNavigate();
+
   const { isLoggedIn, setIsLoggedIn, setName, setEmail } = props;
 
   useEffect(() => {
@@ -81,11 +92,21 @@ const Login = (props) => {
             </div>
             <input
               id="password"
-              type="password"
+              type={ isPasswordVisible ? 'text' : 'password'}
               placeholder="Your Password"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
               required
             />
+            <div
+                  className="-mt-8 md:ml-96 ml-72 cursor-pointer"
+                  onClick={togglePasswordVisiblity}
+                >
+                  {isPasswordVisible ? (
+                    <FaEyeSlash className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <FaEye className="w-5 h-5 text-gray-400" />
+                  )}
+                </div>
           </div>
           <div className="flex items-center gap-2 mb-2">
             <input

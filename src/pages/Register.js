@@ -4,15 +4,31 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import CountryInput from "../components/CountryInput";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 const URL = process.env.REACT_APP_BACKEND_URL + "/api/register";
+
 const Register = (props) => {
   const { isLoggedIn, setIsLoggedIn, setName, setEmail } = props;
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const togglePasswordVisiblity = () => {
+    setIsPasswordVisible((prev) => !prev);
+  };
+
+  const [isConfPasswordVisible, setIsConfPasswordVisible] = useState(false);
+
+  const toggleConfPasswordVisiblity = () => {
+    setIsConfPasswordVisible((prev) => !prev);
+  };
+
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn) navigate("profile");
+    if (isLoggedIn) navigate("dashboard");
   });
 
   const handleRegister = async (ev) => {
@@ -44,7 +60,7 @@ const Register = (props) => {
           setIsLoggedIn(true);
           setName(name);
           setEmail(email);
-          navigate("/profile");
+          navigate("/dashboard");
         } else {
           toast.error(data.message);
         }
@@ -109,13 +125,24 @@ const Register = (props) => {
                   </label>
                 </div>
                 <input
-                  type="password"
+                  type={isPasswordVisible ? "text" : "password"}
                   name="password"
                   id="password"
                   placeholder="Your Password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-purple-600 focus:border-purple-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
                   required
+                  minLength="6"
                 />
+                <div
+                  className="-mt-8 md:ml-52 ml-60 cursor-pointer"
+                  onClick={togglePasswordVisiblity}
+                >
+                  {isPasswordVisible ? (
+                    <FaEyeSlash className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <FaEye className="w-5 h-5 text-gray-400" />
+                  )}
+                </div>
               </div>
               <div>
                 <div className="mb-2 block">
@@ -127,13 +154,23 @@ const Register = (props) => {
                   </label>
                 </div>
                 <input
-                  type="password"
+                  type={isConfPasswordVisible ? "text" : "password"}
                   name="confirmpassword"
                   id="confirmpassword"
                   placeholder="Re-enter Password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-purple-600 focus:border-purple-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
                   required
                 />
+                <div
+                  className="-mt-8 md:ml-52 ml-60 cursor-pointer"
+                  onClick={toggleConfPasswordVisiblity}
+                >
+                  {isConfPasswordVisible ? (
+                    <FaEyeSlash className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <FaEye className="w-5 h-5 text-gray-400" />
+                  )}
+                </div>
               </div>
             </div>
 
@@ -156,8 +193,8 @@ const Register = (props) => {
               />
             </div>
 
-            <div className="flex items-start">
-              <div className="flex items-center h-5">
+            {/* <div className="flex items-start"> */}
+              {/* <div className="flex items-center h-5">
                 <input
                   id="terms"
                   type="checkbox"
@@ -165,9 +202,9 @@ const Register = (props) => {
                   required
                   aria-describedby="terms"
                 />
-              </div>
-              <div className="ml-3 text-sm">
-                <label
+              </div> */}
+              {/* <div className="ml-3 text-sm"> */}
+                {/* <label
                   htmlFor="terms"
                   className="font-light text-gray-500 dark:text-gray-300"
                 >
@@ -178,9 +215,9 @@ const Register = (props) => {
                   >
                     Terms and Conditions
                   </a>
-                </label>
-              </div>
-            </div>
+                </label> */}
+              {/* </div> */}
+            {/* </div> */}
 
             <button
               type="submit"
