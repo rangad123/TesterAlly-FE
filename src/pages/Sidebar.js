@@ -21,7 +21,7 @@ const Sidebar = ({ isOpen, toggleSidebar, isLoggedIn, setIsLoggedIn, setName, se
 
   return (
     <div
-      className={`fixed left-0   bg-gray-400 transform ${
+      className={`fixed left-0   bg-white transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out z-40 w-40 md:w-64 md:h-full h-64`}
       style={{ top: "52px" }}
