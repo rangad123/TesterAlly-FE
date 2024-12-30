@@ -9,6 +9,14 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
+      <div className="auth-buttons">
+        <button className="btn auth-btn" onClick={() => navigate('/dashboard/login')}>
+          Login
+        </button>
+        <button className="btn auth-btn" onClick={() => navigate('/dashboard/register')}>
+          Signup
+        </button>
+      </div>
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
