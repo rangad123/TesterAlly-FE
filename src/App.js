@@ -283,7 +283,6 @@
 //   );
 // };
 
-// export default App;
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -296,11 +295,17 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
-import PostLogin from "./pages/DashBoard";
 import Sidebar from "./pages/Sidebar";
+import UserDashboard from "./pages/UserDashboard";
 import { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
-import { TiThMenu } from "react-icons/ti";
+import CreateProject from "./pages/CreateProject";
+import CreateTestCases from "./pages/CreateTestCases";
+import WriteTestManually from "./pages/WriteTestManually";
+import SaveTestCases from "./pages/SaveTestCases";
+import TestSuite from "./pages/TestSuite";
+import CreateTestSuite from "./pages/CreateTestSuite";
+import DashBoard from "./pages/DashBoard";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -369,14 +374,8 @@ const App = () => {
           {isLoggedIn && (
             <>
               {/* Sidebar Toggle Button */}
-              <button
-                onClick={toggleSidebar}
-                className="md:fixed md:top-[78px] md:left-0 md:z-50 md:px-4 md:py-2 bg-gray-300 md:rounded md:shadow-md"
-              >
-                <TiThMenu />
-              </button>
               {/* Sidebar Component */}
-              <div className={`md:block ${isSidebarOpen ? 'block' : 'hidden'} md:relative`}>
+              <div>
                 <Sidebar
                   isOpen={isSidebarOpen}
                   toggleSidebar={toggleSidebar}
@@ -389,30 +388,6 @@ const App = () => {
                 />
               </div>
 
-              
-
-              
-              {/* Dropdown for small screens */}
-              {/* <div className="block md:hidden"> */}
-                {/* <button
-                  onClick={toggleDropdown}
-                  className="fixed top-[78px] left-0 z-50 px-4 py-2 bg-gray-300 rounded shadow-md"
-                >
-                  <TiThMenu />
-                </button>
-                {isDropdownOpen && (
-                    <div className="block md:hidden">
-                    <Dropdown
-                      isDropdownOpen={isDropdownOpen}
-                      toggleDropdown={toggleDropdown}
-                      // isLoggedIn={isLoggedIn}
-                      setIsLoggedIn={setIsLoggedIn}
-                      setName={setName}
-                      setEmail={setEmail}
-                    />
-                  </div>
-                )} */}
-              {/* </div> */}
             </>
           )}
           {/* Content Area */}
@@ -423,14 +398,14 @@ const App = () => {
           >
             <Routes>
               <Route
-                path="/"
+                path="dashboard"
                 exact
                 element={
                   <Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
                 }
               />
               <Route
-                path="register"
+                path="dashboard/register"
                 exact
                 element={
                   <Register
@@ -442,7 +417,7 @@ const App = () => {
                 }
               />
               <Route
-                path="login"
+                path="dashboard/login"
                 exact
                 element={
                   <Login
@@ -470,14 +445,63 @@ const App = () => {
                 }
               />
               <Route
-                path="dashboard"
+                path="/"
                 exact
                 element={
-                  <PostLogin
+                  <DashBoard
                     isLoggedIn={isLoggedIn}
                     name={name}
                     email={email}
                   />
+                }
+              />
+              <Route
+                path="dashboard-user"
+                exact
+                element={ 
+                  <UserDashboard isLoggedIn={isLoggedIn} name={name} email={email} />
+                }
+              />
+              <Route
+                path="create-project"
+                exact
+                element={
+                  <CreateProject isLoggedIn={isLoggedIn} name={name} email={email} />
+                }
+              />
+              <Route
+                path="create-testcases"
+                exact
+                element={
+                  <CreateTestCases isLoggedIn={isLoggedIn} name={name} email={email} />
+                }
+              />
+              <Route
+                path="write-manually"
+                exact
+                element={
+                  <WriteTestManually isLoggedIn={isLoggedIn} name={name} email={email} />
+                }
+              />
+              <Route
+                path="saved-testcases"
+                exact
+                element={
+                  <SaveTestCases isLoggedIn={isLoggedIn} name={name} email={email} />
+                }
+              />
+              <Route
+                path="testsuite"
+                exact
+                element={
+                  <TestSuite isLoggedIn={isLoggedIn} name={name} email={email} />
+                }
+              />
+              <Route
+                path="testsuite/createtestsuite"
+                exact
+                element={
+                  <CreateTestSuite isLoggedIn={isLoggedIn} name={name} email={email} />
                 }
               />
             </Routes>

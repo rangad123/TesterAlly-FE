@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
-const URL = process.env.REACT_APP_BACKEND_URL + "/api/register";
+const URL = "http://127.0.0.1:8000/api/register/";
 
 const Register = (props) => {
   const { isLoggedIn, setIsLoggedIn, setName, setEmail } = props;
@@ -50,7 +50,11 @@ const Register = (props) => {
         phone: phone,
       };
       try {
-        const res = await axios.post(URL, formData);
+        const res = await axios.post(URL, formData, {
+          headers: {
+            "Content-Type": "application/json", 
+          }
+        });
         const data = res.data;
         if (data.success === true) {
           localStorage.setItem("isLoggedIn", "true");
@@ -60,7 +64,7 @@ const Register = (props) => {
           setIsLoggedIn(true);
           setName(name);
           setEmail(email);
-          navigate("/dashboard");
+          navigate("/dashboard-user");
         } else {
           toast.error(data.message);
         }

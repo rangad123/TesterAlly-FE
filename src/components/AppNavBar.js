@@ -85,8 +85,7 @@ import UserIcon from "../images/user.png";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { MdDashboard } from "react-icons/md";
-import { FaUserCircle } from "react-icons/fa";
+
 
 const AppNavBar = (props) => {
   let navigate = useNavigate();
@@ -109,7 +108,7 @@ const AppNavBar = (props) => {
   useEffect(() => {
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn");
     const storedName = localStorage.getItem("name");
-    const storedEmail = localStorage.getItem("email");
+    const storedEmail = localStorage.getItem("userEmail");
 
     if (storedIsLoggedIn === "true") {
       setIsLoggedIn(true);
@@ -120,12 +119,19 @@ const AppNavBar = (props) => {
 
   console.log("isLoggedIn in AppNavBar:", isLoggedIn);
 
+  const currentEmail = email || localStorage.getItem("userEmail") || "No email"
+
+  const handleNavigateToDashboard = () => {
+    navigate("/dashboard-user");
+  };
+
+
   return (
     <div className="py-2">
       <Navbar fluid>
         <Navbar.Brand>
           <img
-            src="logo.png"
+            src="logo3.jpg"
             className="mr-3 h-6 sm:h-9"
             alt="Flowbite React Logo"
           />
@@ -135,7 +141,15 @@ const AppNavBar = (props) => {
         </Navbar.Brand>
 
         {isLoggedIn && (
-          <div className="flex md:order-2">
+          <div className="flex md:order-2 space-x-4">
+
+            <button
+              onClick={handleNavigateToDashboard}
+              className="text-white font-medium text-lg px-4 py-2 rounded-md bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
+            >
+              Dashboard
+            </button>
+
             <Dropdown
               arrowIcon={false}
               inline
@@ -148,32 +162,13 @@ const AppNavBar = (props) => {
                 />
               }
             >
-              {/* Profile Info */}
               <Dropdown.Header>
                 <span className="block text-sm">{name}</span>
                 <span className="block truncate text-sm font-medium">
-                  {email}
+                {currentEmail}
                 </span>
               </Dropdown.Header>
-              <Dropdown.Divider />
-              
-              {/* Sidebar Items for Small Screens */}
-              <div className="sm:block md:hidden">
-                <Dropdown.Item icon={MdDashboard}>
-                  <a href="/dashboard" className="block">
-                    Dashboard
-                  </a>
-                </Dropdown.Item>
-                <Dropdown.Item icon={FaUserCircle}>
-                  <a href="/profile" className="block">
-                    Profile
-                  </a>
-                </Dropdown.Item>
-              </div>
 
-              <Dropdown.Divider />
-
-              {/* Logout Option */}
               <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
             </Dropdown>
           </div>

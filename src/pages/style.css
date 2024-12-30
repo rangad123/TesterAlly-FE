@@ -1,0 +1,144 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.space-y-5 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.text-5xl {
+  font-size: 2.5rem;
+  color: #2d3748;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  color: #4a5568;
+}
+
+.text-3xl {
+  font-size: 2rem;
+  color: #2d3748;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.md\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.feature-cards,
+.step-card {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-cards:hover,
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon,
+.step-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #38a169;
+}
+
+.text-gray-600 {
+  color: #718096;
+}
+
+.text-blue-500 {
+  color: #3182ce;
+}
+
+@media (max-width: 768px) {
+  .md\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .text-5xl {
+    font-size: 2rem;
+  }
+
+  .text-xl {
+    font-size: 1rem;
+  }
+}
+
+
+.step-card {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.step-icon {
+  width: 3rem;
+  height: 3rem;
+  background-color: #3b82f6;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.step-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+}
+
+.step-description {
+  font-size: 1rem;
+  color: #718096;
+}

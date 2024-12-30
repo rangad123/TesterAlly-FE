@@ -1,0 +1,98 @@
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .profile-card {
+    width: 100%;
+    max-width: 24rem;
+    padding: 1.5rem;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.8s ease-in-out;
+  }
+  
+
+  .profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1rem;
+  }
+
+  .profile-avatar {
+    height: 3rem;
+    width: 3rem;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .profile-name {
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+  }
+  
+  .profile-email {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .profile-actions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  .profile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .profile-btn.add-friend {
+    background-color: #6b46c1;
+    color: white;
+  }
+  
+  .profile-btn.add-friend:hover {
+    background-color: #553c9a;
+  }
+  
+  .profile-btn.message {
+    background-color: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  
+  .profile-btn.message:hover {
+    background-color: #f9fafb;
+    border-color: #cbd5e1;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

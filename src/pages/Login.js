@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
-const URL = process.env.REACT_APP_BACKEND_URL + "/api/login";
+const URL = "http://127.0.0.1:8000/api/login/";
 
 const Login = (props) => {
 
@@ -21,8 +21,8 @@ const Login = (props) => {
   const { isLoggedIn, setIsLoggedIn, setName, setEmail } = props;
 
   useEffect(() => {
-    // Redirect to dashboard if already logged in
-    if (isLoggedIn) navigate("/dashboard");
+
+    if (isLoggedIn) navigate("/dashboard-user");
   }, [isLoggedIn, navigate]);
 
   const handleLogin = async (ev) => {
@@ -33,14 +33,20 @@ const Login = (props) => {
     try {
       const res = await axios.post(URL, formData);
       const data = res.data;
+      console.log("Backend Response:", data);
+
       if (data.success === true) {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", email);
+        localStorage.setItem("userName", data.name);
         toast.success(data.message);
+
+        console.log("Saving to localStorage: ", data.name, email);
+
         setIsLoggedIn(true);
         setEmail(email);
-        setName(data.name); // Assuming the API returns the user's name
-        navigate("/dashboard"); // Redirect to dashboard
+        setName(data.name); 
+        navigate("/dashboard-user"); 
       } else {
         toast.error(data.message);
       }
