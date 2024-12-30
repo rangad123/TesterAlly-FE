@@ -306,6 +306,7 @@ import SaveTestCases from "./pages/SaveTestCases";
 import TestSuite from "./pages/TestSuite";
 import CreateTestSuite from "./pages/CreateTestSuite";
 import DashBoard from "./pages/DashBoard";
+import PrivateRoute from "./pages/PrivateRoute";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -441,7 +442,9 @@ const App = () => {
                 path="profile"
                 exact
                 element={
-                  <Profile isLoggedIn={isLoggedIn} name={name} email={email} />
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <Profile name={name} email={email} />
+                  </PrivateRoute>
                 }
               />
               <Route
@@ -459,49 +462,63 @@ const App = () => {
                 path="dashboard-user"
                 exact
                 element={ 
-                  <UserDashboard isLoggedIn={isLoggedIn} name={name} email={email} />
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <UserDashboard />
+                  </PrivateRoute>
                 }
               />
               <Route
                 path="create-project"
                 exact
                 element={
-                  <CreateProject isLoggedIn={isLoggedIn} name={name} email={email} />
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <CreateProject />
+                  </PrivateRoute>
                 }
               />
               <Route
                 path="create-testcases"
                 exact
                 element={
-                  <CreateTestCases isLoggedIn={isLoggedIn} name={name} email={email} />
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <CreateTestCases />
+                  </PrivateRoute>
                 }
               />
               <Route
                 path="write-manually"
                 exact
                 element={
-                  <WriteTestManually isLoggedIn={isLoggedIn} name={name} email={email} />
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <WriteTestManually />
+                  </PrivateRoute>
                 }
               />
               <Route
                 path="saved-testcases"
                 exact
                 element={
-                  <SaveTestCases isLoggedIn={isLoggedIn} name={name} email={email} />
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <SaveTestCases />
+                  </PrivateRoute>
                 }
               />
               <Route
                 path="testsuite"
                 exact
                 element={
-                  <TestSuite isLoggedIn={isLoggedIn} name={name} email={email} />
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <TestSuite />
+                  </PrivateRoute>
                 }
               />
               <Route
                 path="testsuite/createtestsuite"
                 exact
                 element={
-                  <CreateTestSuite isLoggedIn={isLoggedIn} name={name} email={email} />
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <CreateTestSuite />
+                  </PrivateRoute>
                 }
               />
             </Routes>

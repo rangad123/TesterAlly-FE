@@ -130,7 +130,7 @@ const AppNavBar = (props) => {
       <Navbar fluid>
         <Navbar.Brand>
           <img
-            src="logo3.jpg"
+            src="/logo3.jpg"
             className="mr-3 h-6 sm:h-9"
             alt="Flowbite React Logo"
           />
@@ -139,39 +139,56 @@ const AppNavBar = (props) => {
           </span>
         </Navbar.Brand>
 
-        {isLoggedIn && (
-          <div className="flex md:order-2 space-x-4">
+        {isLoggedIn ? (
+            <>
+              <button
+                onClick={handleNavigateToDashboard}
+                className="text-white font-medium text-lg px-4 py-2 rounded-md bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
+              >
+                Dashboard
+              </button>
 
-            <button
-              onClick={handleNavigateToDashboard}
-              className="text-white font-medium text-lg px-4 py-2 rounded-md bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
-            >
-              Dashboard
-            </button>
+              <Dropdown
+                arrowIcon={false}
+                inline
+                label={
+                  <Avatar
+                    alt="User settings"
+                    img={UserIcon}
+                    className="h-10 w-10"
+                    rounded
+                  />
+                }
+              >
+                <Dropdown.Header>
+                  <span className="block text-sm">{name}</span>
+                  <span className="block truncate text-sm font-medium">
+                    {currentEmail}
+                  </span>
+                </Dropdown.Header>
 
-            <Dropdown
-              arrowIcon={false}
-              inline
-              label={
-                <Avatar
-                  alt="User settings"
-                  img={UserIcon}
-                  className="h-10 w-10"
-                  rounded
-                />
-              }
-            >
-              <Dropdown.Header>
-                <span className="block text-sm">{name}</span>
-                <span className="block truncate text-sm font-medium">
-                {currentEmail}
-                </span>
-              </Dropdown.Header>
+                <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
+              </Dropdown>
+            </>
+          ) : (
 
-              <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
-            </Dropdown>
-          </div>
-        )}
+            <>
+            <div className="auth-buttons">
+              <button
+                onClick={() => navigate("/dashboard/login")}
+                className="text-white font-medium text-lg px-4 py-2 rounded-md bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate("/dashboard/register")}
+                className="text-white font-medium text-lg px-4 py-2 rounded-md bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800"
+              >
+                Sign Up
+              </button>
+            </div>
+            </>
+          )}
       </Navbar>
     </div>
   );
