@@ -1,31 +1,43 @@
-// pages/ResetPassword.js
-
 import { React } from "react";
 import axios from "axios";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const URL = process.env.REACT_APP_BACKEND_URL + "/api/resetPassword";
+const URL = "https://deploy-testerally.onrender.com/api/resetPassword/";
 
 const ResetPassword = () => {
-  const [searchParams] = useSearchParams();
+  const { token } = useParams();
   let navigate = useNavigate();
-  const id = searchParams.get("id");
-  const token = searchParams.get("token");
 
   const handleResetPassword = async (ev) => {
     ev.preventDefault();
-    const newpassword = ev.target.newpassword.value;
-    const confirmpassword = ev.target.confirmpassword.value;
-    if (newpassword !== confirmpassword)
-      toast.error("Passwords do not match !");
-    const formData = { id: id, token: token, password: newpassword };
-    const res = await axios.post(URL, formData);
-    const data = res.data;
-    if (data.success === true) {
-      toast.success(data.message);
-      navigate("/login");
-    } else toast.error(data.message);
+    const newPassword = ev.target.newpassword.value;
+    const confirmPassword = ev.target.confirmpassword.value;
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+
+    const formData = { uuid: token, password: newPassword };
+    console.log(formData);
+
+    try {
+
+      const res = await axios.post(URL, formData);
+      const data = res.data;
+
+      if (data.success === true) {
+        toast.success(data.message);
+        navigate("/dashboard/login");  
+      } else {
+        toast.error(data.message);  
+      }
+    } catch (error) {
+      console.error("Password reset error:", error);
+      toast.error("Error occurred while resetting password.");
+    }
   };
 
   return (

@@ -3,7 +3,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const URL = process.env.REACT_APP_BACKEND_URL + "/api/forgotPassword";
+const URL = "https://deploy-testerally.onrender.com/api/forgotPassword/";
 
 const ForgotPassword = () => {
   const handleSubmit = async (ev) => {
@@ -49,7 +49,7 @@ const ForgotPassword = () => {
           <p className="text-center text-sm text-gray-500">
             Remember your password?{" "}
             <a
-              href="login"
+              href="/dashboard/login"
               className="font-semibold leading-6 text-purple-600 hover:text-purple-500"
             >
               Login Here

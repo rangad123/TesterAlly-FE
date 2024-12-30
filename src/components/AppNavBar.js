@@ -104,7 +104,6 @@ const AppNavBar = (props) => {
     toast.success("You are successfully logged out!");
   };
 
-  // On component mount, check if user is logged in using localStorage
   useEffect(() => {
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn");
     const storedName = localStorage.getItem("name");

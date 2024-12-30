@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
-const URL = "http://127.0.0.1:8000/api/register/";
+const URL = "https://deploy-testerally.onrender.com/api/register/";
 
 const Register = (props) => {
   const { isLoggedIn, setIsLoggedIn, setName, setEmail } = props;

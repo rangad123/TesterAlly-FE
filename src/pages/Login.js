@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
-const URL = "http://127.0.0.1:8000/api/login/";
+const URL = "https://deploy-testerally.onrender.com/api/login/";
 
 const Login = (props) => {
 
@@ -40,6 +40,7 @@ const Login = (props) => {
         localStorage.setItem("userEmail", email);
         localStorage.setItem("userName", data.name);
         toast.success(data.message);
+        console.log("Saved User Name in LocalStorage: ", localStorage.getItem("userName"));
 
         console.log("Saving to localStorage: ", data.name, email);
 
@@ -88,12 +89,12 @@ const Login = (props) => {
                 Password
               </label>
               <div className="text-sm">
-                <a
-                  href="forgotPassword"
-                  className="font-semibold text-purple-600 hover:text-purple-500"
-                >
-                  Forgot password?
-                </a>
+              <span
+                className="font-semibold text-purple-600 hover:text-purple-500 cursor-pointer"
+                onClick={() => navigate("/forgotPassword")}
+              >
+                Forgot password?
+              </span>
               </div>
             </div>
             <input

@@ -434,7 +434,7 @@ const App = () => {
                 element={<ForgotPassword isLoggedIn={isLoggedIn} />}
               />
               <Route
-                path="resetPassword"
+                path="resetPassword/:token"
                 element={<ResetPassword isLoggedIn={isLoggedIn} />}
               />
               <Route
