@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
-const URL = "https://deploy-testerally.onrender.com/api/register/";
+const URL = "https://testerally-be-ylpr.onrender.com/api/register/";
 
 const Register = (props) => {
   const { isLoggedIn, setIsLoggedIn, setName, setEmail } = props;
@@ -33,7 +33,7 @@ const Register = (props) => {
 
   const handleRegister = async (ev) => {
     ev.preventDefault();
-    const name = ev.target.name.value;
+    const name = ev.target.name.value.trim();
     const email = ev.target.email.value;
     const password = ev.target.password.value;
     const confirmpassword = ev.target.confirmpassword.value;

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
-const URL = "https://deploy-testerally.onrender.com/api/login/";
+const URL = "https://testerally-be-ylpr.onrender.com/api/login/";
 
 const Login = (props) => {
 
@@ -40,6 +40,7 @@ const Login = (props) => {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", email);
         localStorage.setItem("userName", data.name);
+
         toast.success(data.message);
         console.log("Saved User Name in LocalStorage: ", localStorage.getItem("userName"));
   

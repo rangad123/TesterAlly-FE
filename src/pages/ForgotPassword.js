@@ -1,19 +1,27 @@
-// pages/ForgotPassword.js
-
+import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const URL = "https://deploy-testerally.onrender.com/api/forgotPassword/";
+const URL = "https://testerally-be-ylpr.onrender.com/api/forgotPassword/";
 
 const ForgotPassword = () => {
+  const [email, setEmail] = useState("");
+
   const handleSubmit = async (ev) => {
     ev.preventDefault();
-    const email = ev.target.email.value;
-    const formData = { email: email };
-    const res = await axios.post(URL, formData);
-    const data = res.data;
-    if (data.success === true) toast.success(data.message);
-    else toast.error(data.message);
+    const formData = { email };
+    try {
+      const res = await axios.post(URL, formData);
+      const data = res.data;
+      if (data.success === true) {
+        toast.success(data.message);
+        setEmail(""); 
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Something went wrong! Please try again.");
+    }
   };
 
   return (
@@ -33,6 +41,8 @@ const ForgotPassword = () => {
               id="email"
               type="email"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // Update state on input change
               placeholder="Enter your email"
               required
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
