@@ -141,6 +141,7 @@ const AppNavBar = (props) => {
 
         {isLoggedIn ? (
             <>
+            <div className="flex items-center space-x-4">
               <button
                 onClick={handleNavigateToDashboard}
                 className="text-white font-medium text-lg px-4 py-2 rounded-md bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
@@ -169,6 +170,7 @@ const AppNavBar = (props) => {
 
                 <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
               </Dropdown>
+              </div>
             </>
           ) : (
 

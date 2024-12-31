@@ -30,31 +30,36 @@ const Login = (props) => {
     const email = ev.target.email.value;
     const password = ev.target.password.value;
     const formData = { email: email, password: password };
+  
     try {
       const res = await axios.post(URL, formData);
       const data = res.data;
       console.log("Backend Response:", data);
-
+  
       if (data.success === true) {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", email);
         localStorage.setItem("userName", data.name);
         toast.success(data.message);
         console.log("Saved User Name in LocalStorage: ", localStorage.getItem("userName"));
-
-        console.log("Saving to localStorage: ", data.name, email);
-
+  
         setIsLoggedIn(true);
         setEmail(email);
         setName(data.name); 
         navigate("/dashboard-user"); 
       } else {
-        toast.error(data.message);
+        if (data.message.includes("Invalid email or password")) {
+          toast.error("Invalid email or password.");
+        } else if (data.message.includes("No account found")) {
+          toast.error("No account found with this email.");
+        } else {
+          toast.error(data.message); 
+        }
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");
     }
-  };
+  };  
 
   return (
     <div className="w-full flex justify-center my-4 items-center min-h-screen -mt-10">
