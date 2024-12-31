@@ -1,5 +1,8 @@
 .sidebar-container {
-  display: flex;
+  flex-shrink: 0;
+  width: 250px; 
+  z-index: 10; 
+  position: relative; 
 }
 
 .sidebar {
@@ -140,24 +143,41 @@
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 70px;
+    left: 0;
+    width: 70px; 
+    z-index: 1000;
   }
 
   .sidebar.expanded {
     width: 230px;
   }
 
+  .sidebar-container {
+    width: 100%; 
+    position: static; 
+  }
+
   .main-content {
     margin-left: 70px;
+    padding: 10px;
+    width: calc(100% - 70px); 
   }
 
   .sidebar.expanded + .main-content {
     margin-left: 230px;
+    width: calc(100% - 230px);
   }
 
   .sub-sidebar {
+    position: absolute;
     top: 70px;
-    left: 70px;
+    left: 70px; 
     width: calc(100vw - 100px);
+    z-index: 900;
+  }
+
+  .sub-sidebar.aligned-expanded {
+    left: 230px; 
   }
 }
+

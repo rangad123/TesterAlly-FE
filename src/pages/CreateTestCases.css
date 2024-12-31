@@ -8,6 +8,7 @@
   height: 80vh;
   position: relative;
   margin-top: 0;
+  overflow-y: auto;
 }
 
 .button-top-right {
@@ -92,6 +93,12 @@
   cursor: pointer;
 }
 
+.btn-manual:hover {
+  background-color: #e0a800;
+  transform: scale(1.05);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
 .btn-create {
   background-color: #4caf50;
   color: white;
@@ -112,7 +119,49 @@
     gap: 15px;
   }
 
-  .test-suite-btn, .btn-cancel {
+  .test-suite-btn,
+  .btn-cancel {
     width: 100%;
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+
+  .input {
+    padding: 10px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .button-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-create,
+  .btn-manual,
+  .btn-cancel {
+    width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .create-test-cases-container {
+    background: linear-gradient(135deg, #333333, #444444);
+    color: #ffffff;
+  }
+
+  .input {
+    border-color: #555555;
+    background-color: #222222;
+    color: #ffffff;
+  }
+
+  .btn-create {
+    background-color: #388e3c;
+  }
+
+  .btn-cancel {
+    background-color: #d32f2f;
   }
 }
