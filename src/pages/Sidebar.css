@@ -1,25 +1,26 @@
-
 .sidebar-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 250px;
-  position: fixed;
-  background-color: #1e293b;
-  color: white;
-  z-index: 1000;
+  flex-shrink: 0;
+  width: 250px; 
+  z-index: 10; 
+  position: relative; 
 }
 
 .sidebar {
+  background-color: #1e293b;
+  color: white;
+  height: 100vh;
+  position: fixed;
+  margin-top: 10px;
+  left: 0;
+  transition: width 0.3s ease;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  height: 100%;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000; 
+}
+
+.sidebar.collapsed {
   width: 70px;
-  transition: width 0.3s ease-in-out;
-  overflow-x: hidden;
-  background-color: #1e293b;
 }
 
 .sidebar.expanded {
@@ -28,8 +29,7 @@
 
 .plus-button {
   color: white;
-  background-color: #475569;
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
   border-radius: 50%;
   width: 50px;
@@ -43,57 +43,62 @@
 }
 
 .plus-button:hover {
-  background-color: #2563eb;
+  background-color: #4338ca;
   transform: scale(1.1);
 }
 
 .sidebar-option {
   display: flex;
   align-items: center;
-  gap: 15px;
-  width: 90%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 8px;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .sidebar-option:hover {
-  background-color: #2563eb;
+  background-color: #475569;
   transform: translateX(5px);
+}
+
+.project-icon {
+  font-size: 1.8rem;
+  color: #facc15;
 }
 
 .option-name {
   font-size: 1rem;
   font-weight: bold;
-  display: none;
+  color: white;
 }
-
-.sidebar.expanded .option-name {
-  display: block;
-}
-
 
 .sub-sidebar {
-  position: fixed;
-  left: 70px;
-  top: 70px;
+  position: fixed; 
   background-color: #34495e;
-  width: 200px;
-  border-radius: 8px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-  z-index: 999;
-  animation: slideIn 0.3s ease-in-out;
+  border-left: 2px solid #2c3e50;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  margin-top: 50px;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.sub-sidebar.aligned-expanded {
+  left: 230px; 
+}
+
+.sub-sidebar.aligned-collapsed {
+  left: 70px; 
 }
 
 .sub-sidebar-header {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold;
-  padding: 15px;
+  margin-bottom: 15px;
   color: white;
-  background-color: #1e293b;
-  border-bottom: 1px solid #2c3e50;
 }
 
 .sub-sidebar-item {
@@ -111,10 +116,14 @@
   background-color: #1abc9c;
 }
 
-@keyframes slideIn {
+.sub-sidebar-item .icon {
+  font-size: 1.2rem;
+}
+
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-10px);
   }
   to {
     opacity: 1;
@@ -124,76 +133,51 @@
 
 
 .main-content {
-  margin-left: 70px;
+  transition: margin-left 0.3s ease;
   padding: 20px;
-  transition: margin-left 0.3s ease-in-out;
 }
 
-.sidebar.expanded + .main-content {
-  margin-left: 230px;
-}
-
-.table-container {
-  margin: 20px;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #ffffff;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.table-container h2 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #1e293b;
-}
-
-.table-container p {
-  margin-bottom: 15px;
-  color: #4b5563;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  background-color: #2563eb;
-  color: white;
-}
-
-th, td {
-  padding: 10px 15px;
-  text-align: left;
-  border: 1px solid #e5e7eb;
-}
-
-tbody tr:nth-child(odd) {
-  background-color: #f9fafb;
-}
-
-tbody tr:hover {
-  background-color: #e2e8f0;
+.sidebar.collapsed + .main-content {
+  margin-left: 70px; 
 }
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 60px;
+    left: 0;
+    width: 70px; 
+    z-index: 1000;
   }
 
   .sidebar.expanded {
-    width: 200px;
+    width: 230px;
+  }
+
+  .sidebar-container {
+    width: 100%; 
+    position: static; 
   }
 
   .main-content {
-    margin-left: 60px;
+    margin-left: 70px;
+    padding: 10px;
+    width: calc(100% - 70px); 
   }
 
   .sidebar.expanded + .main-content {
-    margin-left: 200px;
+    margin-left: 230px;
+    width: calc(100% - 230px);
   }
 
-  table {
-    font-size: 0.9rem;
+  .sub-sidebar {
+    position: absolute;
+    top: 70px;
+    left: 70px; 
+    width: calc(100vw - 100px);
+    z-index: 900;
+  }
+
+  .sub-sidebar.aligned-expanded {
+    left: 230px; 
   }
 }
+
