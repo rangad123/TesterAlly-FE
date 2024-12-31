@@ -42,6 +42,7 @@ export default function SaveTestCases() {
         <p className="description">Manage your test cases with AI-generated insights.</p>
 
         <div className="test-case-table">
+        <div style={{ overflowX: "auto" }}>
           <table>
             <thead>
               <tr>
@@ -88,6 +89,7 @@ export default function SaveTestCases() {
               )}
             </tbody>
           </table>
+        </div>
         </div>
       </div>
     </div>

@@ -48,18 +48,18 @@ const Login = (props) => {
         setName(data.name); 
         navigate("/dashboard-user"); 
       } else {
-        if (data.message.includes("Invalid email or password")) {
-          toast.error("Invalid email or password.");
-        } else if (data.message.includes("No account found")) {
-          toast.error("No account found with this email.");
-        } else {
-          toast.error(data.message); 
-        }
+        toast.error(data.message || "An error occurred during login.");
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      if (error.response && error.response.status === 400) {
+        const errorMessage = error.response.data.message || "Invalid email or password.";
+        toast.error(errorMessage);
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
     }
-  };  
+  };
+  
 
   return (
     <div className="w-full flex justify-center my-4 items-center min-h-screen -mt-10">

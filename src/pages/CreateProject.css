@@ -221,19 +221,60 @@ textarea {
 }
 
 @media (max-width: 480px) {
-  .animated-title {
-    font-size: 1.5rem;
+  .create-project-container {
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 10px;
   }
 
-  .btn {
+  .animated-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .input-container label {
+    font-size: 0.85rem;
+  }
+
+  .input-container input,
+  .input-container textarea,
+  .input-container select {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+
+  .toggle-btn {
     font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
   }
 
   .btn-create,
   .btn-cancel {
-    width: 100%; 
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .sidebar {
+    padding: 5px 0;
+  }
+
+  .profile-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .error-message {
+    font-size: 0.75rem;
   }
 }
+
 
 @media (prefers-color-scheme: dark) {
   .create-project-container {

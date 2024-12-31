@@ -5,6 +5,21 @@ import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 
 export default function Dashboard() {
 
+  const FeatureCard = ({ title, description, icon }) => (
+    <div className="feature-cards">
+      <div className="feature-icon">{icon}</div>
+      <h3 className="text-xl font-bold">{title}</h3>
+      <p className="text-gray-600">{description}</p>
+    </div>
+  );
+  const StepCard = ({ step, title, description }) => (
+    <div className="step-card">
+      <div className="step-icon">{step}</div>
+      <h4 className="step-title">{title}</h4>
+      <p className="step-description">{description}</p>
+    </div>
+  );
+
   const navigate = useNavigate();
 
   return (
@@ -54,27 +69,50 @@ export default function Dashboard() {
             </p>
           </div>
         </div>
+
+          <div className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-3">
+            <FeatureCard
+              title="AI-Based Automation"
+              description="Automate repetitive testing tasks using AI-driven workflows."
+              icon="🤖"
+            />
+            <FeatureCard
+              title="Vision Agent"
+              description="Capture coordinates of elements from images for precise operations."
+              icon="👁"
+            />
+            <FeatureCard
+              title="Streamlined Testing"
+              description="Perform complex testing actions like button clicks and form filling."
+              icon="⚡"
+            />
+          </div>
+        </div>
+
       </section>
 
       {/* How It Works Section */}
       <section id="how-it-works" className="how-it-works">
         <h2 className="section-title">How It Works</h2>
-        <div className="steps">
-          <div className="step">
-            <h4>Step 1: Create Test Cases</h4>
-            <p>Write test cases using natural language, making it accessible for team members without coding expertise.</p>
-          </div>
-          <div className="step">
-            <h4>Step 2: AI-Powered Test Maintenance</h4>
-            <p>
-            Leverage AI to automatically detect and update test cases when there are changes in the application, reducing maintenance efforts.
-            </p>
-          </div>
-          <div className="step">
-            <h4>Step 3: Execute Tests</h4>
-            <p>
-            Run tests simultaneously across various browsers, devices, and operating systems to ensure comprehensive coverage.
-            </p>
+
+        <div className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-3">
+            <StepCard
+              step="1"
+              title="Create Test Cases"
+              description="Write test cases using natural language, making it accessible for team members without coding expertise."
+            />
+            <StepCard
+              step="2"
+              title="AI-Powered Test Maintenance"
+              description="Leverage AI to automatically detect and update test cases when there are changes in the application, reducing maintenance efforts."
+            />
+            <StepCard
+              step="3"
+              title="Perform Actions"
+              description="Run tests simultaneously across various browsers, devices, and operating systems to ensure comprehensive coverage."
+            />
           </div>
         </div>
       </section>

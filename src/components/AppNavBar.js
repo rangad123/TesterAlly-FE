@@ -123,6 +123,9 @@ const AppNavBar = (props) => {
   const handleNavigateToDashboard = () => {
     navigate("/dashboard-user");
   };
+  const handleClick = () => {
+    navigate('/');
+  };
 
 
   return (
@@ -134,7 +137,8 @@ const AppNavBar = (props) => {
             className="mr-3 h-6 sm:h-9"
             alt="Flowbite React Logo"
           />
-          <span className="self-center whitespace-nowrap text-3xl font-bold dark:text-white bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent">
+          <span className="self-center whitespace-nowrap text-3xl font-bold dark:text-white bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent" 
+          onClick={handleClick}>
             TesterAlly
           </span>
         </Navbar.Brand>
