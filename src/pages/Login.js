@@ -142,7 +142,7 @@ const Login = (props) => {
           <p className="text-center text-sm text-gray-500">
             Not yet registered?{" "}
             <a
-              href="register"
+              href="/dashboard/register"
               className="font-semibold leading-6 text-purple-600 hover:text-purple-500"
             >
               Register Here
