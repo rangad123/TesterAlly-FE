@@ -337,8 +337,13 @@ const App = () => {
       localStorage.removeItem("email");
     };
 
+
     window.addEventListener("beforeunload", handleBeforeUnload);
 
+    // Add event listener to handle tab/window close
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Cleanup the event listener when component is unmounted
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
