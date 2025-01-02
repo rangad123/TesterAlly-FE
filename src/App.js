@@ -330,6 +330,20 @@ const App = () => {
       setName(storedName);
       setEmail(storedEmail);
     }
+
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("name");
+      localStorage.removeItem("email");
+    };
+
+    // Add event listener to handle tab/window close
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Cleanup the event listener when component is unmounted
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   
