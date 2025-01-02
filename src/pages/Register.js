@@ -1,10 +1,10 @@
-
 import axios from "axios";
 import { toast } from "react-toastify";
 import CountryInput from "../components/CountryInput";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import "./Login.css";
 
 const URL = "https://testerally-be-ylpr.onrender.com/api/register/";
 
@@ -13,15 +13,22 @@ const Register = (props) => {
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const togglePasswordVisiblity = () => {
+  const togglePasswordVisibility = () => {
     setIsPasswordVisible((prev) => !prev);
   };
 
   const [isConfPasswordVisible, setIsConfPasswordVisible] = useState(false);
 
-  const toggleConfPasswordVisiblity = () => {
+  const toggleConfPasswordVisibility = () => {
     setIsConfPasswordVisible((prev) => !prev);
   };
+
+  useEffect(() => {
+    const form = document.querySelector("form");
+    if (form) {
+      form.setAttribute("autocomplete", "off");
+    }
+  }, []);
 
   const handleRegister = async (ev) => {
     ev.preventDefault();
@@ -34,11 +41,10 @@ const Register = (props) => {
     const phone = ev.target.phone.value;
 
     if (country === "Select Country") {
-    toast.error("Select your country!");
-  } else if (password !== confirmpassword) {
-    toast.error("Passwords do not match!");
-  }
-    else {
+      toast.error("Select your country!");
+    } else if (password !== confirmpassword) {
+      toast.error("Passwords do not match!");
+    } else {
       const formData = {
         name: name,
         email: email,
@@ -49,12 +55,11 @@ const Register = (props) => {
       try {
         const res = await axios.post(URL, formData, {
           headers: {
-            "Content-Type": "application/json", 
-          }
+            "Content-Type": "application/json",
+          },
         });
         const data = res.data;
         if (data.success === true) {
-          localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("userName", name);
           localStorage.setItem("userEmail", email);
           toast.success("Registration successful! You can now log in.");
@@ -63,13 +68,28 @@ const Register = (props) => {
 
           ev.target.reset();
 
+          setTimeout(() => {
+            window.location.href = "/dashboard/login";
+          }, 2000);
+          
         } else {
           toast.error(data.message || "Registration failed. Please try again.");
         }
       } catch (err) {
-        console.error("Error during registration:", err);
-        toast.error("An error occurred during registration. Please try again.");
+
+        console.error('Error details:', err.response);
+        if (err.response) {
+
+          if (err.response.status === 409) {
+            toast.error(err.response.data.message || "Email is already registered..");
+          } else {
+            toast.error(err.response.data.message || "An error occurred during registration. Please try again.");
+          }
+        } else {
+          toast.error("An error occurred during registration. Please try again.");
+        }
       }
+      
     }
   };
 
@@ -96,9 +116,16 @@ const Register = (props) => {
                 id="name"
                 name="name"
                 type="text"
+                onChange={(e) => {
+                  const { value } = e.target;
+                  if (/[^a-zA-Z\s]/.test(value)) {
+                    toast.error("Name can only contain letters.");
+                  }
+                }}
                 placeholder="Your Name"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
                 required
+                autoComplete="off"
               />
             </div>
 
@@ -115,16 +142,14 @@ const Register = (props) => {
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-purple-600 focus:border-purple-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
                 placeholder="Your Email"
                 required
+                autoComplete="off"
               />
             </div>
 
             <div className="grid gap-6 mb-6 md:grid-cols-2">
               <div>
                 <div className="mb-2 block">
-                  <label
-                    htmlFor="password"
-                    className="text-sm font-medium required"
-                  >
+                  <label htmlFor="password" className="text-sm font-medium required">
                     Password
                   </label>
                 </div>
@@ -139,7 +164,7 @@ const Register = (props) => {
                 />
                 <div
                   className="-mt-8 md:ml-52 ml-60 cursor-pointer"
-                  onClick={togglePasswordVisiblity}
+                  onClick={togglePasswordVisibility}
                 >
                   {isPasswordVisible ? (
                     <FaEyeSlash className="w-5 h-5 text-gray-400" />
@@ -148,6 +173,7 @@ const Register = (props) => {
                   )}
                 </div>
               </div>
+
               <div>
                 <div className="mb-2 block">
                   <label
@@ -167,7 +193,7 @@ const Register = (props) => {
                 />
                 <div
                   className="-mt-8 md:ml-52 ml-60 cursor-pointer"
-                  onClick={toggleConfPasswordVisiblity}
+                  onClick={toggleConfPasswordVisibility}
                 >
                   {isConfPasswordVisible ? (
                     <FaEyeSlash className="w-5 h-5 text-gray-400" />
@@ -194,34 +220,9 @@ const Register = (props) => {
                 pattern="^[79][0-9]{9}"
                 placeholder="Your Phone Number"
                 aria-errormessage="Phone number must start with 7 or 9"
+                autoComplete="off"
               />
             </div>
-
-            {/* <div className="flex items-start"> */}
-              {/* <div className="flex items-center h-5">
-                <input
-                  id="terms"
-                  type="checkbox"
-                  className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  required
-                  aria-describedby="terms"
-                />
-              </div> */}
-              {/* <div className="ml-3 text-sm"> */}
-                {/* <label
-                  htmlFor="terms"
-                  className="font-light text-gray-500 dark:text-gray-300"
-                >
-                  I accept the{" "}
-                  <a
-                    className="font-medium text-purple-600 hover:underline dark:text-purple-500"
-                    href="#"
-                  >
-                    Terms and Conditions
-                  </a>
-                </label> */}
-              {/* </div> */}
-            {/* </div> */}
 
             <button
               type="submit"

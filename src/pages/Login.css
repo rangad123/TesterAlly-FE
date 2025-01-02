@@ -1,0 +1,13 @@
+
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-clear-button,
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  display: none;
+  appearance: none;
+}
+
+.password-input {
+  padding-right: 2.5rem; 
+}
