@@ -21,7 +21,7 @@
 
 .test-suite-btn {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
   color: white;
   border: none;
   border-radius: 8px;
@@ -31,7 +31,7 @@
 }
 
 .test-suite-btn:hover {
-  background-color: #0056b3;
+  background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
   transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
@@ -85,7 +85,7 @@
 }
 
 .btn-manual {
-  background-color: #ffc107;
+  background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
   color: black;
   padding: 10px 20px;
   border: none;
@@ -94,7 +94,7 @@
 }
 
 .btn-manual:hover {
-  background-color: #e0a800;
+  background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
   transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }

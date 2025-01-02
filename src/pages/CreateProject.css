@@ -30,7 +30,7 @@
 }
 
 .close-option button:hover {
-  color: #e74c3c;
+  color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
 }
 
 .animated-title {
@@ -68,7 +68,7 @@
 .input-container input:focus,
 .input-container textarea:focus,
 .input-container select:focus {
-  border-color: #4a90e2;
+  border-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
   outline: none;
   box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
 }
@@ -80,7 +80,7 @@ textarea {
 
 
 .toggle-btn {
-  background-color: lightblue;
+  background-color: rgb(172, 151, 240);
   color: black;
   border: none;
   padding: 6px 12px;
@@ -92,7 +92,7 @@ textarea {
 }
 
 .toggle-btn:hover {
-  background-color: rgb(85, 85, 182);
+  background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
   color: white;
 }
 

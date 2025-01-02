@@ -6,6 +6,7 @@
 
 body, html {
   height: 100%;
+  background-color: rgb(237 235 254 / var(--tw-bg-opacity, 1));
 }
 .navbar {
   width: 100%;

@@ -120,19 +120,21 @@ const AppNavBar = (props) => {
 
   const currentEmail = email || localStorage.getItem("userEmail") || "No email"
 
-  const handleNavigateToDashboard = () => {
-    navigate("/dashboard-user");
+  const handleLogoClick = () => {
+    if (!isLoggedIn) {
+      navigate("/");
+    }
   };
-
 
   return (
     <div className="py-2">
       <Navbar fluid>
         <Navbar.Brand>
           <img
-            src="/logo3.jpg"
+            src="/logo.png"
             className="mr-3 h-6 sm:h-9"
             alt="Flowbite React Logo"
+            onClick={handleLogoClick}
           />
           <span className="self-center whitespace-nowrap text-3xl font-bold dark:text-white bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent" >
             TesterAlly
@@ -142,13 +144,6 @@ const AppNavBar = (props) => {
         {isLoggedIn ? (
             <>
             <div className="flex items-center space-x-4">
-              <button
-                onClick={handleNavigateToDashboard}
-                className="text-white font-medium text-lg px-4 py-2 rounded-md bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
-              >
-                Dashboard
-              </button>
-
               <Dropdown
                 arrowIcon={false}
                 inline

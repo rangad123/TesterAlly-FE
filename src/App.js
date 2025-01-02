@@ -330,6 +330,18 @@ const App = () => {
       setName(storedName);
       setEmail(storedEmail);
     }
+
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("name");
+      localStorage.removeItem("email");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   

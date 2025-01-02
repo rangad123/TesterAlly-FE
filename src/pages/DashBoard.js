@@ -2,6 +2,7 @@ import React from "react";
 import "./Style2.css";
 import { useNavigate } from 'react-router-dom';
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
+import CookieConsent from "./CookieConsent";
 
 export default function Dashboard() {
 
@@ -24,6 +25,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
+      <CookieConsent />
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
@@ -31,7 +33,7 @@ export default function Dashboard() {
           <p>
            Accelerate your software development with AI-driven, end-to-end test automation for web, mobile, desktop, API, and Salesforce applications.
           </p>
-          <button className="btn primary-btn" onClick={() => navigate('/dashboard')}>
+          <button className="btn primary-btn" onClick={() => navigate('/dashboard/login')}>
           Start Free Trial
           </button>
         </div>
@@ -127,31 +129,6 @@ export default function Dashboard() {
           experts and a passion for innovation, we are transforming the
           software testing landscape. We are a leading provider of AI-driven test automation solutions, committed to empowering development and QA teams to deliver high-quality software efficiently. Our platform combines the power of AI with user-friendly interfaces to streamline the testing process across various applications and environments.
         </p>
-      </section>
-
-      {/* Pricing Plans Section */}
-      <section id="pricing" className="pricing">
-        <h2 className="section-title">Our Pricing Plans</h2>
-        <div className="pricing-grid">
-          <div className="pricing-card">
-            <h3>Starter Plan</h3>
-            <p>Ideal for small teams beginning their test automation journey.</p>
-            <p className="price">$29/month</p>
-            <button className="btn secondary-btn">Choose Starter</button>
-          </div>
-          <div className="pricing-card">
-            <h3>Professional Plan</h3>
-            <p>Designed for growing teams requiring advanced automation capabilities.</p>
-            <p className="price">$99/month</p>
-            <button className="btn secondary-btn">Choose Professional</button>
-          </div>
-          <div className="pricing-card">
-            <h3>Enterprise Plan</h3>
-            <p>Tailored solutions for large organizations with complex testing needs.</p>
-            <p className="price">Contact Us</p>
-            <button className="btn secondary-btn">Contact Sales</button>
-          </div>
-        </div>
       </section>
 
       {/* Blog Highlights Section */}

@@ -6,6 +6,7 @@ import {
   FaSave,
   FaCogs,
   FaUserCircle,
+  FaTachometerAlt,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./Sidebar.css";
@@ -49,6 +50,11 @@ const Sidebar = () => {
     setIsSubSidebarVisible(false); 
   };
 
+  const handleNavigateToDashboard = () => {
+    navigate("/dashboard-user"); 
+    setIsSubSidebarVisible(false);
+  };
+
   return (
     <div className="sidebar-container">
       {/* Main Sidebar */}
@@ -56,6 +62,12 @@ const Sidebar = () => {
         <div className="plus-button" onClick={toggleSidebar}>
           <FaPlus className="icon" />
         </div>
+
+        <div className="sidebar-option" onClick={handleNavigateToDashboard}>
+          <FaTachometerAlt className="icon project-icon" />
+          {isSidebarOpen && <span className="option-name">Dashboard</span>}
+        </div>
+
 
         <div className="sidebar-option" onClick={toggleSubSidebar}>
           <FaFolderPlus className="icon project-icon" />

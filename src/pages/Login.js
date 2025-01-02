@@ -87,10 +87,19 @@ const Login = (props) => {
               required
             />
           </div>
-          <div>
+          <div className="flex items-center justify-between">
             <label htmlFor="password" className="text-sm font-medium required">
               Password
             </label>
+            <div className="text-sm">
+              <span
+                className="font-semibold text-purple-600 hover:text-purple-500 cursor-pointer"
+                onClick={() => navigate("/forgotPassword")}
+              >
+                Forgot password?
+              </span>
+              </div>
+              </div>
             <div className="relative">
               <input
                 id="password"
@@ -110,7 +119,6 @@ const Login = (props) => {
                 )}
               </div>
             </div>
-          </div>
           <div className="flex items-center gap-2 mb-2">
             <input
               type="checkbox"
