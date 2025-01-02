@@ -52,13 +52,16 @@ const Login = (props) => {
         toast.error(data.message || "An error occurred during login.");
       }
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        const errorMessage = error.response.data.message || "Invalid email or password.";
-        toast.error(errorMessage);
+      if (error.response) {
+        if (error.response.status === 400) {
+          toast.error(error.response.data.message || "Invalid email or password.");
+        } else {
+          toast.error("An error occurred. Please try again.");
+        }
       } else {
-        toast.error("An error occurred. Please try again.");
+        toast.error("Network error. Please check your connection.");
       }
-    }
+    }    
   };
   
 
@@ -71,6 +74,7 @@ const Login = (props) => {
         <form
           className="w-full flex max-w-md flex-col gap-4"
           onSubmit={handleLogin}
+          autoComplete="off"
         >
           <div>
             <div className="mb-2 block">

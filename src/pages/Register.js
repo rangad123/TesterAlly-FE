@@ -1,17 +1,15 @@
-// pages/Register.js
 
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import CountryInput from "../components/CountryInput";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
 const URL = "https://testerally-be-ylpr.onrender.com/api/register/";
 
 const Register = (props) => {
-  const { isLoggedIn, setIsLoggedIn, setName, setEmail } = props;
+  const { setName, setEmail } = props;
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -25,22 +23,21 @@ const Register = (props) => {
     setIsConfPasswordVisible((prev) => !prev);
   };
 
-  let navigate = useNavigate();
-
-  useEffect(() => {
-    if (isLoggedIn) navigate("dashboard");
-  });
-
   const handleRegister = async (ev) => {
     ev.preventDefault();
+
     const name = ev.target.name.value.trim();
     const email = ev.target.email.value;
     const password = ev.target.password.value;
     const confirmpassword = ev.target.confirmpassword.value;
     const country = ev.target.country.value;
     const phone = ev.target.phone.value;
-    if (country === "Select Country") toast.error("Select your country !");
-    if (password !== confirmpassword) toast.error("Passwords do not match !");
+
+    if (country === "Select Country") {
+    toast.error("Select your country!");
+  } else if (password !== confirmpassword) {
+    toast.error("Passwords do not match!");
+  }
     else {
       const formData = {
         name: name,
@@ -60,16 +57,18 @@ const Register = (props) => {
           localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("userName", name);
           localStorage.setItem("userEmail", email);
-          toast.success(data.message);
-          setIsLoggedIn(true);
+          toast.success("Registration successful! You can now log in.");
           setName(name);
           setEmail(email);
-          navigate("/dashboard-user");
+
+          ev.target.reset();
+
         } else {
-          toast.error(data.message);
+          toast.error(data.message || "Registration failed. Please try again.");
         }
       } catch (err) {
-        console.log("Some error occured", err);
+        console.error("Error during registration:", err);
+        toast.error("An error occurred during registration. Please try again.");
       }
     }
   };
@@ -85,6 +84,7 @@ const Register = (props) => {
             className="space-y-4 md:space-y-"
             action="POST"
             onSubmit={handleRegister}
+            autoComplete="off"
           >
             <div>
               <div className="mb-2 block">
@@ -192,7 +192,7 @@ const Register = (props) => {
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
                 maxLength={10}
                 pattern="^[79][0-9]{9}"
-                placeholder="1234567890"
+                placeholder="Your Phone Number"
                 aria-errormessage="Phone number must start with 7 or 9"
               />
             </div>
