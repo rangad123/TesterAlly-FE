@@ -29,7 +29,7 @@ export default function Dashboard() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
-          <h1>AI-Driven Testing Automation</h1>
+          <h1>Deliver Reliable Automation for Enterprise-Grade Software</h1>
           <p>
            Accelerate your software development with AI-driven, end-to-end test automation for web, mobile, desktop, API, and Salesforce applications.
           </p>

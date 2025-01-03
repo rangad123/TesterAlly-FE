@@ -317,59 +317,49 @@ const App = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  // const navigate = useNavigate();
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
+  
   useEffect(() => {
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn");
     const storedName = localStorage.getItem("name");
     const storedEmail = localStorage.getItem("email");
+    const sessionActive = sessionStorage.getItem("sessionActive");
 
-    if (storedIsLoggedIn === "true") {
+    if (storedIsLoggedIn === "true" && sessionActive !== "true") {
+      handleLogout();
+    } else if (storedIsLoggedIn === "true") {
       setIsLoggedIn(true);
       setName(storedName);
       setEmail(storedEmail);
+      sessionStorage.setItem("sessionActive", "true");
     }
 
-    const handleBeforeUnload = () => {
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("name");
-      localStorage.removeItem("email");
+    const handleStorageChange = (event) => {
+      if (event.key === "isLoggedIn" && event.newValue !== "true") {
+        handleLogout(); 
+      }
     };
 
+    window.addEventListener("storage", handleStorageChange);
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    // Add event listener to handle tab/window close
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    // Cleanup the event listener when component is unmounted
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
-  
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
-
-  // const toggleDropdown = () => {
-  //   setIsDropdownOpen((prev) => !prev);
-  // };
-
-  // let navigate = useNavigate();
-  
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setIsSidebarOpen(false); // Reset sidebar state on logout
     setName("");
     setEmail("");
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("name");
     localStorage.removeItem("email");
-    // navigate("/");
+    sessionStorage.removeItem("sessionActive"); 
   };
+
 
   return (
     <div className="bg-purple-100">
