@@ -1,11 +1,10 @@
 import React from "react";
 import "./Style2.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 import CookieConsent from "./CookieConsent";
 
 export default function Dashboard() {
-
   const FeatureCard = ({ title, description, icon }) => (
     <div className="feature-cards">
       <div className="feature-icon">{icon}</div>
@@ -28,24 +27,40 @@ export default function Dashboard() {
       <CookieConsent />
       {/* Hero Section */}
       <section className="hero">
-        <div className="hero-content">
-          <h1>Deliver Reliable Automation for Enterprise-Grade Software</h1>
-          <p>
-          Tester Ally ensures robust test automation designed to meet the demands of enterprise software. 
-          With comprehensive test coverage powered by AI, the platform minimizes risks while accelerating time-to-market. 
-          Our functional UI testing tools provide seamless automation, enabling teams to deploy high-quality applications confidently.
-          </p>
-          <button className="btn primary-btn" onClick={() => navigate('/dashboard/login')}>
-          Start Free Trial
-          </button>
-        </div>
-        <div className="hero-image">
-          <img src="h2.jpg" alt="Hero Illustration" />
-        </div>
-      </section>
+  <div className="hero-content">
+    <h1>
+      Deliver Reliable Automation for Enterprise-Grade Software
+      <div className="text-size-small text-weight-semibold text-color-blue">
+        TesterAlly QA Platform
+      </div>
+    </h1>
+    <p>
+      Tester Ally ensures robust test automation designed to meet the demands of enterprise software.
+      With comprehensive test coverage powered by AI, the platform minimizes risks while accelerating time-to-market.
+      Our functional UI testing tools provide seamless automation, enabling teams to deploy high-quality applications confidently.
+    </p>
+    <button className="btn primary-btn" onClick={() => navigate("/dashboard/login")}>
+      Start Free Trial
+    </button>
+  </div>
+  <div className="hero-image">
+    <div className="animated-image">
+      <img src="ai-image-1.jpg" alt="AI Testing Illustration" />
+    </div>
+  </div>
+</section>
+
+{/* Marquee Section */}
+<section className="marquee">
+  <div className="marquee-content">
+    <p>
+      🚀 Unlock the power of AI in testing | 🌟 Seamless automate web, mobile, and API testing | 📈 Scale your testing with TesterAlly today!
+    </p>
+  </div>
+</section>
 
       {/* Features Section */}
-      <section id="features" className="features">
+  <section id="features" className="features">
   <h2 className="section-title">AI-Driven Web Testing</h2>
   <div className="space-y-5">
     <div className="grid grid-cols-1 md:grid-cols-3">
@@ -129,16 +144,19 @@ export default function Dashboard() {
           <div className="blog-card">
             <h4>The Future of AI in Test Automation</h4>
             <p>
-            Explore how AI is transforming the landscape of test automation and what it means for the future of software development. Discover the latest trends in AI and how they are revolutionizing
-              software testing.
+              Explore how AI is transforming the landscape of test automation
+              and what it means for the future of software development. Discover
+              the latest trends in AI and how they are revolutionizing software
+              testing.
             </p>
             <button className="btn primary-btn">Read More</button>
           </div>
           <div className="blog-card">
             <h4>Best Practices for Cross-Browser Testing</h4>
             <p>
-            Learn essential strategies to ensure your application performs flawlessly across all browsers and devices. Learn how AI can help QA teams achieve faster and more accurate
-              results.
+              Learn essential strategies to ensure your application performs
+              flawlessly across all browsers and devices. Learn how AI can help
+              QA teams achieve faster and more accurate results.
             </p>
             <button className="btn primary-btn">Read More</button>
           </div>
@@ -170,7 +188,11 @@ export default function Dashboard() {
       <footer id="contact" className="footer">
         <p>© 2024 TesterAlly. All Rights Reserved.</p>
         <div className="social-links">
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <FaLinkedin /> LinkedIn
           </a>
           <a href="https://github.com/rangad123/TesterAlly-FE/" target="_blank" rel="noopener noreferrer">

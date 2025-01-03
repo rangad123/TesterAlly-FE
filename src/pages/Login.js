@@ -9,6 +9,8 @@ const URL = "https://testerally-be-ylpr.onrender.com/api/login/";
 
 const Login = (props) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
 
   const togglePasswordVisiblity = () => {
     setIsPasswordVisible((prev) => !prev);
@@ -30,20 +32,22 @@ const Login = (props) => {
 
   const handleLogin = async (ev) => {
     ev.preventDefault();
+    setLoading(true); 
+
     const email = ev.target.email.value;
     const password = ev.target.password.value;
     const formData = { email, password };
-
+  
     try {
       const res = await axios.post(URL, formData);
       const data = res.data;
-
+  
       if (data.success === true) {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", email);
         localStorage.setItem("userName", data.user.name);
         toast.success(data.message);
-        console.log("user data",data.user)
+        console.log("user data", data.user);
         setIsLoggedIn(true);
         setEmail(email);
         setName(data.user.name);
@@ -59,8 +63,11 @@ const Login = (props) => {
       } else {
         toast.error("Network error. Please check your connection.");
       }
+    } finally {
+      setLoading(false); 
     }
   };
+  
 
   return (
     <div className="w-full flex justify-center my-4 items-center min-h-screen -mt-10">
@@ -132,8 +139,9 @@ const Login = (props) => {
           <button
             type="submit"
             className="focus:outline-none text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800"
+            disabled={loading}
           >
-            Submit
+            {loading ? "Logging in..." : "Submit"}
           </button>
           <p className="text-center text-sm text-gray-500">
             Not yet registered?{" "}
