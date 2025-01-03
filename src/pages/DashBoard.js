@@ -31,7 +31,9 @@ export default function Dashboard() {
         <div className="hero-content">
           <h1>Deliver Reliable Automation for Enterprise-Grade Software</h1>
           <p>
-           Accelerate your software development with AI-driven, end-to-end test automation for web, mobile, desktop, API, and Salesforce applications.
+          Tester Ally ensures robust test automation designed to meet the demands of enterprise software. 
+          With comprehensive test coverage powered by AI, the platform minimizes risks while accelerating time-to-market. 
+          Our functional UI testing tools provide seamless automation, enabling teams to deploy high-quality applications confidently.
           </p>
           <button className="btn primary-btn" onClick={() => navigate('/dashboard/login')}>
           Start Free Trial
@@ -44,76 +46,65 @@ export default function Dashboard() {
 
       {/* Features Section */}
       <section id="features" className="features">
-        <h2 className="section-title">Key Features</h2>
-        <div className="features-grid">
-          <div className="feature-card">
-            <img src="AI.png" alt="AI Automation" />
-            <h3>AI-Powered Automation</h3>
-            <p>
-            Utilize AI to create and maintain test cases in plain English, simplifying the testing process and reducing the need for extensive coding knowledge. Leverage AI to automate repetitive testing tasks and minimize
-              human errors. 
-            </p>
-          </div>
-          <div className="feature-card">
-            <img src="report.png" alt="Advanced Reports" />
-            <h3>Detailed Reporting</h3>
-            <p>
-            Access detailed reports and analytics in real-time to monitor test performance, identify issues promptly, and make informed decisions. Gain insights into test results with comprehensive analytics and
-              reporting tools.
-            </p>
-          </div>
-          <div className="feature-card">
-            <img src="secure.png" alt="Secure Platform" />
-            <h3>Secure Testing</h3>
-            <p>
-              Ensure security at every step with robust testing practices and
-              tools. Conduct tests using multiple data sets to validate application behavior under various conditions, improving test coverage and reliability.
-            </p>
-          </div>
-        </div>
+  <h2 className="section-title">AI-Driven Web Testing</h2>
+  <div className="space-y-5">
+    <div className="grid grid-cols-1 md:grid-cols-3">
+      <FeatureCard
+        title="Intelligent Test Automation"
+        description="Leverage advanced AI to generate and maintain test cases in simple, human-readable language. Streamline testing workflows by automating repetitive tasks, reducing manual effort, and ensuring higher accuracy in testing."
+        icon="⚙️"
+      />
+      <FeatureCard
+        title="Comprehensive Analytics"
+        description="Get real-time insights into testing performance with detailed analytics and reporting tools. Identify bottlenecks, track progress, and make informed decisions to enhance the quality of your testing processes."
+        icon="📊"
+      />
+      <FeatureCard
+        title="Reliable Test Coverage"
+        description="Perform robust testing with dynamic datasets to simulate real-world scenarios. Validate application behavior under various conditions to achieve higher reliability and enhanced test coverage."
+        icon="🔒"
+      />
+      <FeatureCard
+        title="AI-Driven Workflows"
+        description="Accelerate testing with automated workflows powered by cutting-edge AI technology."
+        icon="🤖"
+      />
+      <FeatureCard
+        title="Smart Element Recognition"
+        description="Identify and interact with UI elements through intelligent visual detection and precise coordinate mapping."
+        icon="👁"
+      />
+      <FeatureCard
+        title="Efficient Interaction Testing"
+        description="Automate complex testing tasks, such as form interactions and multi-step operations, with precision and ease."
+        icon="⚡"
+      />
+      
+    </div>
+  </div>
+</section>
 
-          <div className="space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-3">
-            <FeatureCard
-              title="AI-Based Automation"
-              description="Automate repetitive testing tasks using AI-driven workflows."
-              icon="🤖"
-            />
-            <FeatureCard
-              title="Vision Agent"
-              description="Capture coordinates of elements from images for precise operations."
-              icon="👁"
-            />
-            <FeatureCard
-              title="Streamlined Testing"
-              description="Perform complex testing actions like button clicks and form filling."
-              icon="⚡"
-            />
-          </div>
-        </div>
-
-      </section>
 
       {/* How It Works Section */}
       <section id="how-it-works" className="how-it-works">
-        <h2 className="section-title">How It Works</h2>
+        <h2 className="section-title">How Tester-ally works </h2>
 
         <div className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-3">
             <StepCard
               step="1"
-              title="Create Test Cases"
-              description="Write test cases using natural language, making it accessible for team members without coding expertise."
+              title="Codeless Test Creation"
+              description="Empower anyone to create test cases in simple, natural language, speeding up the test authoring process without the need for coding expertise."
             />
             <StepCard
               step="2"
-              title="AI-Powered Test Maintenance"
-              description="Leverage AI to automatically detect and update test cases when there are changes in the application, reducing maintenance efforts."
+              title="Test Execution Scheduling"
+              description="Set up tests to run as frequently as needed, whenever you choose, using the flexible Execution Planner to automate your testing cycles."
             />
             <StepCard
               step="3"
-              title="Perform Actions"
-              description="Run tests simultaneously across various browsers, devices, and operating systems to ensure comprehensive coverage."
+              title="Comprehensive Test Reporting"
+              description="Gather detailed insights from your test results, along with AI-generated suggestions to diagnose why a test may have failed, helping teams pinpoint issues efficiently."
             />
           </div>
         </div>
@@ -123,11 +114,11 @@ export default function Dashboard() {
       <section id="about-us" className="about-us">
         <h2 className="section-title">About Us</h2>
         <p>
-          TesterAlly is at the forefront of AI-driven testing solutions. Our
-          mission is to empower developers and QA teams to deliver flawless
-          software with unmatched speed and precision. With a dedicated team of
-          experts and a passion for innovation, we are transforming the
-          software testing landscape. We are a leading provider of AI-driven test automation solutions, committed to empowering development and QA teams to deliver high-quality software efficiently. Our platform combines the power of AI with user-friendly interfaces to streamline the testing process across various applications and environments.
+        TesterAlly is leading the charge in AI-powered test automation solutions. 
+        Our mission is to empower development and QA teams to achieve impeccable software quality with unparalleled speed and accuracy. 
+        Driven by innovation and a commitment to excellence, we are revolutionizing the testing process. With our cutting-edge platform, 
+        we combine AI’s power with intuitive, codeless interfaces to simplify and accelerate testing across web, mobile, and API applications. 
+        TesterAlly is your trusted partner for automating and enhancing the testing lifecycle, ensuring seamless delivery of high-quality software at scale.
         </p>
       </section>
 
@@ -182,7 +173,7 @@ export default function Dashboard() {
           <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
             <FaLinkedin /> LinkedIn
           </a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/rangad123/TesterAlly-FE/" target="_blank" rel="noopener noreferrer">
             <FaGithub /> GitHub
           </a>
           <a href="mailto:contact@testerally.com">

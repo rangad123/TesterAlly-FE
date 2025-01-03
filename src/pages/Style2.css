@@ -105,7 +105,7 @@ a {
 
 @media (min-width: 768px) {
   .hero-content h1 {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
 }
 
@@ -177,44 +177,6 @@ a {
   border-radius: 2px;
 }
 
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-}
-
-.feature-card {
-  background: white;
-  border-radius: 10px;
-  padding: 25px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.feature-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-}
-
-.feature-card img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  margin-bottom: 15px;
-  border-radius: 50%;
-}
-
-.feature-card h3 {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.feature-card p {
-  font-size: 1rem;
-  color: #555;
-}
 
 
 .how-it-works {
@@ -456,7 +418,6 @@ section {
 .section-title {
   font-size: 2.5rem;
   margin-bottom: 40px;
-  color: #333;
 }
 
 
@@ -514,7 +475,6 @@ section {
 
 .blog-highlights .section-title {
   font-size: 2.5rem;
-  color: #2c3e50;
   margin-bottom: 30px;
   position: relative;
 }
@@ -524,7 +484,6 @@ section {
   display: block;
   width: 50px;
   height: 4px;
-  background-color: #2c3e50;
   margin: 10px auto 0;
   border-radius: 2px;
 }
