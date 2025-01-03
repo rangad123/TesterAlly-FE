@@ -1,11 +1,10 @@
 import React from "react";
 import "./Style2.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 import CookieConsent from "./CookieConsent";
 
 export default function Dashboard() {
-
   const FeatureCard = ({ title, description, icon }) => (
     <div className="feature-cards">
       <div className="feature-icon">{icon}</div>
@@ -29,37 +28,68 @@ export default function Dashboard() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
-          <h1>Deliver Reliable Automation for Enterprise-Grade Software</h1>
+          <h1 class="text-dark text-500">
+            Streamline and scale{" "}
+            <span class="highlighted-text">web testing</span> with flexible
+            coding options
+            <div class="text-size-small text-weight-semibold text-color-blue">TesterAlly QA Platform</div>
+          </h1>
           <p>
-           Accelerate your software development with AI-driven, end-to-end test automation for web, mobile, desktop, API, and Salesforce applications.
+            Empower your testing process with cutting-edge AI solutions.
+            Automate end-to-end testing across web, mobile, API, and enterprise
+            applications for faster, smarter development cycles.
+            
           </p>
-          <button className="btn primary-btn" onClick={() => navigate('/dashboard/login')}>
-          Start Free Trial
+          <button
+            className="btn primary-btn"
+            onClick={() => navigate("/dashboard/login")}
+          >
+            Start Free Trial
           </button>
         </div>
         <div className="hero-image">
-          <img src="h2.jpg" alt="Hero Illustration" />
+          <div className="animated-image">
+            <img src="ai-image-1.jpg" alt="AI Testing Illustration" />
+          </div>
         </div>
       </section>
 
+
+      {/* Marquee Section */}
+<section className="marquee">
+  <div className="marquee-content">
+    <p>
+      🚀 Unlock the power of AI in testing | 🌟 Seamless automate web, mobile, and API testing | 📈 Scale your testing with TesterAlly today!
+    </p>
+  </div>
+</section>
+
+
       {/* Features Section */}
       <section id="features" className="features">
-        <h2 className="section-title">Key Features</h2>
+        <h2 class="section-title">
+          Empowering enterprise digital transformation with scalable{" "}
+          <span class="highlighted-text">AI-driven web testing</span>
+        </h2>
         <div className="features-grid">
           <div className="feature-card">
             <img src="AI.png" alt="AI Automation" />
             <h3>AI-Powered Automation</h3>
             <p>
-            Utilize AI to create and maintain test cases in plain English, simplifying the testing process and reducing the need for extensive coding knowledge. Leverage AI to automate repetitive testing tasks and minimize
-              human errors. 
+              Utilize AI to create and maintain test cases in plain English,
+              simplifying the testing process and reducing the need for
+              extensive coding knowledge. Leverage AI to automate repetitive
+              testing tasks and minimize human errors.
             </p>
           </div>
           <div className="feature-card">
             <img src="report.png" alt="Advanced Reports" />
             <h3>Detailed Reporting</h3>
             <p>
-            Access detailed reports and analytics in real-time to monitor test performance, identify issues promptly, and make informed decisions. Gain insights into test results with comprehensive analytics and
-              reporting tools.
+              Access detailed reports and analytics in real-time to monitor test
+              performance, identify issues promptly, and make informed
+              decisions. Gain insights into test results with comprehensive
+              analytics and reporting tools.
             </p>
           </div>
           <div className="feature-card">
@@ -67,12 +97,14 @@ export default function Dashboard() {
             <h3>Secure Testing</h3>
             <p>
               Ensure security at every step with robust testing practices and
-              tools. Conduct tests using multiple data sets to validate application behavior under various conditions, improving test coverage and reliability.
+              tools. Conduct tests using multiple data sets to validate
+              application behavior under various conditions, improving test
+              coverage and reliability.
             </p>
           </div>
         </div>
 
-          <div className="space-y-5">
+        <div className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-3">
             <FeatureCard
               title="AI-Based Automation"
@@ -91,12 +123,11 @@ export default function Dashboard() {
             />
           </div>
         </div>
-
       </section>
 
       {/* How It Works Section */}
       <section id="how-it-works" className="how-it-works">
-        <h2 className="section-title">How It Works</h2>
+        <h2 className="section-title">How TesterAlly Works</h2>
 
         <div className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-3">
@@ -126,8 +157,12 @@ export default function Dashboard() {
           TesterAlly is at the forefront of AI-driven testing solutions. Our
           mission is to empower developers and QA teams to deliver flawless
           software with unmatched speed and precision. With a dedicated team of
-          experts and a passion for innovation, we are transforming the
-          software testing landscape. We are a leading provider of AI-driven test automation solutions, committed to empowering development and QA teams to deliver high-quality software efficiently. Our platform combines the power of AI with user-friendly interfaces to streamline the testing process across various applications and environments.
+          experts and a passion for innovation, we are transforming the software
+          testing landscape. We are a leading provider of AI-driven test
+          automation solutions, committed to empowering development and QA teams
+          to deliver high-quality software efficiently. Our platform combines
+          the power of AI with user-friendly interfaces to streamline the
+          testing process across various applications and environments.
         </p>
       </section>
 
@@ -138,16 +173,19 @@ export default function Dashboard() {
           <div className="blog-card">
             <h4>The Future of AI in Test Automation</h4>
             <p>
-            Explore how AI is transforming the landscape of test automation and what it means for the future of software development. Discover the latest trends in AI and how they are revolutionizing
-              software testing.
+              Explore how AI is transforming the landscape of test automation
+              and what it means for the future of software development. Discover
+              the latest trends in AI and how they are revolutionizing software
+              testing.
             </p>
             <button className="btn primary-btn">Read More</button>
           </div>
           <div className="blog-card">
             <h4>Best Practices for Cross-Browser Testing</h4>
             <p>
-            Learn essential strategies to ensure your application performs flawlessly across all browsers and devices. Learn how AI can help QA teams achieve faster and more accurate
-              results.
+              Learn essential strategies to ensure your application performs
+              flawlessly across all browsers and devices. Learn how AI can help
+              QA teams achieve faster and more accurate results.
             </p>
             <button className="btn primary-btn">Read More</button>
           </div>
@@ -179,10 +217,18 @@ export default function Dashboard() {
       <footer id="contact" className="footer">
         <p>© 2024 TesterAlly. All Rights Reserved.</p>
         <div className="social-links">
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <FaLinkedin /> LinkedIn
           </a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <FaGithub /> GitHub
           </a>
           <a href="mailto:contact@testerally.com">

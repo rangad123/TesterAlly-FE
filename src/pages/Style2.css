@@ -95,6 +95,7 @@ a {
 .hero-content {
   max-width: 600px;
   margin: 20px;
+  margin-top: 130px;
 }
 
 .hero-content h1 {
@@ -136,6 +137,179 @@ a {
   margin: 20px;
 }
 
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  background: linear-gradient(120deg, #f5f7fa, #e4ebf5);
+}
+
+.hero-content {
+  max-width: 50%;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.hero-content .highlighted-text {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.hero-content .btn {
+  background-color: #007bff;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.hero-content .btn:hover {
+  background-color: #0056b3;
+}
+
+.hero-image {
+  max-width: 40%;
+  position: relative;
+}
+
+.animated-image {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.animated-image img {
+  width: 100%;
+  height: auto;
+  transform: scale(1);
+  transition: transform 1s, filter 1s;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.15));
+  animation: float 5s ease-in-out infinite, fade-in 2s ease-in-out;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-15px) scale(1.05);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Fade-in Animation */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animated-image img:hover {
+  transform: scale(1.1) rotate(3deg);
+  filter: brightness(1.1);
+}
+
+.text-color-blue{
+  color: #2776fb;
+}
+.text-weight-semibold{
+  font-weight: 600;
+}
+.text-size-small{
+  margin-bottom: 0;
+  font-size: .875rem;
+  line-height: 1.6;
+
+}
+.marquee {
+  background: linear-gradient(90deg, #d1e9ff, #c1ddff);
+  color: #004085;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  position: relative;
+  border: 1px solid #b3c7e6;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 0 20px; /* Adding padding to prevent text from touching edges */
+}
+
+.marquee-content {
+  display: flex;
+  animation: scroll-left 0s linear infinite;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap; /* Ensure content stays on one line */
+  padding-right: 100%; /* Make sure it starts from outside the view */
+}
+
+/* Keyframe for scrolling text from right to left */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%); /* Start off-screen from the right */
+  }
+  100% {
+    transform: translateX(-100%); /* End off-screen to the left */
+  }
+}
+
+/* Pulse effect on text */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.marquee-content p {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.section-title{
+  font-family: Roboto;
+  font-size: 36px;
+  margin: 20px auto;
+  max-width: 800px;
+  text-align: center;
+}
+.section-title .highlighted-text{
+  color: #4f46e5;;
+}
+span{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  font-family: "Inter", sans-serif;
+}
 .hero-image img {
   width: 100%;
   max-width: 100%;
@@ -157,6 +331,21 @@ a {
 .features {
   padding: 60px 50px;
   border-radius: 10px;
+}
+.features h3 {
+  color: #004085; /* Dark blue shade, adjust as needed */
+  font-size: 1.5rem; /* You can adjust the size if needed */
+  font-weight: bold;
+}
+.how-it-works h3{
+  color: #004085; /* Dark blue shade */
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.about-us h3 {
+  color: #004085; /* Dark blue shade */
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .section-title {
