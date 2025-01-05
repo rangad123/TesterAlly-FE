@@ -1,3 +1,9 @@
+.create-test-cases-page-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
 .create-test-cases-wrapper {
   flex: 1;
   display: flex;
@@ -11,7 +17,7 @@
   overflow-y: auto;
 }
 
-.button-top-right {
+.create-test-cases-button-top-right {
   position: absolute;
   top: 20px;
   right: 150px;
@@ -19,35 +25,43 @@
   gap: 10px;
 }
 
-.test-suite-btn {
+.create-test-cases-title{
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: slideInDown 1s ease-out;
+}
+
+.create-test-cases-test-suite-btn {
   padding: 10px 20px;
-  background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
-  color: white;
+  color: rgb(126, 58, 242);
   border: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 20px; 
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
 
-.test-suite-btn:hover {
+.create-test-cases-test-suite-btn:hover {
   background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
+  color: white;
   transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.btn-cancel {
-  background-color: #f44336;
-  color: white;
+.create-test-cases-btn-cancel {
+  color: rgb(126, 58, 242);
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
+  font-size: 20px; 
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
 
-.btn-cancel:hover {
-  background-color: #e53935;
+.create-test-cases-btn-cancel:hover {
+  background-color: rgb(126, 58, 242);
+  color: white;
 }
 
 .create-test-cases-container {
@@ -59,11 +73,11 @@
   width: 100%;
 }
 
-.input-container {
+.create-test-cases-input-container {
   margin-bottom: 20px;
 }
 
-.input {
+.create-test-cases-input {
   width: 100%;
   padding: 12px 15px;
   font-size: 14px;
@@ -71,76 +85,78 @@
   border-radius: 8px;
 }
 
-.input:focus {
-  border-color: #4caf50;
+.create-test-cases-input:focus {
+  border-color: rgb(126, 58, 242);
   outline: none;
   box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
 }
 
-.button-group {
+.create-test-cases-button-group {
   display: flex;
   justify-content: space-between;
   gap: 10px;
   margin-top: 20px;
 }
 
-.btn-manual {
-  background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
-  color: black;
+.create-test-cases-btn-manual {
+  color: rgb(126, 58, 242);
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
+  font-size: 16px; 
   cursor: pointer;
 }
 
-.btn-manual:hover {
+.create-test-cases-btn-manual:hover {
   background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
+  color: white;
   transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.btn-create {
-  background-color: #4caf50;
+.create-test-cases-btn-create {
+  background-color: rgb(126, 58, 242);
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
+  font-size: 16px; 
   cursor: pointer;
 }
 
-.btn:hover {
+.create-test-cases-btn-create:hover {
   transform: scale(1.05);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
-  .button-top-right {
+  .create-test-cases-button-top-right {
     flex-direction: column;
     gap: 15px;
   }
 
-  .test-suite-btn,
-  .btn-cancel {
+  .create-test-cases-test-suite-btn,
+  .create-test-cases-btn-cancel {
     width: 100%;
     font-size: 12px;
     padding: 8px 16px;
   }
 
-  .input {
+  .create-test-cases-input {
     padding: 10px;
     font-size: 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .button-group {
+  .create-test-cases-button-group {
     flex-direction: column;
     gap: 10px;
   }
 
-  .btn-create,
-  .btn-manual,
-  .btn-cancel {
+  .create-test-cases-btn-create,
+  .create-test-cases-btn-manual,
+  .create-test-cases-btn-cancel {
     width: 100%;
   }
 }
@@ -151,17 +167,17 @@
     color: #ffffff;
   }
 
-  .input {
+  .create-test-cases-input {
     border-color: #555555;
     background-color: #222222;
     color: #ffffff;
   }
 
-  .btn-create {
-    background-color: #388e3c;
+  .create-test-cases-btn-create {
+    background-color: rgb(126, 58, 242);
   }
 
-  .btn-cancel {
-    background-color: #d32f2f;
+  .create-test-cases-btn-cancel {
+    background-color: rgb(126, 58, 242);
   }
 }

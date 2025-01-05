@@ -1,8 +1,8 @@
 import React from "react";
 import "./Style2.css";
-import { useNavigate } from "react-router-dom";
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 import CookieConsent from "./CookieConsent";
+import HeroSection from "./HeroSection";
 
 export default function Dashboard() {
   const FeatureCard = ({ title, description, icon }) => (
@@ -20,35 +20,15 @@ export default function Dashboard() {
     </div>
   );
 
-  const navigate = useNavigate();
+ 
 
   return (
     <div className="dashboard">
       <CookieConsent />
       {/* Hero Section */}
       <section className="hero">
-  <div className="hero-content">
-    <h1>
-      Deliver Reliable Automation for Enterprise-Grade Software
-      <div className="text-size-small text-weight-semibold text-color-blue">
-        TesterAlly QA Platform
-      </div>
-    </h1>
-    <p>
-      Tester Ally ensures robust test automation designed to meet the demands of enterprise software.
-      With comprehensive test coverage powered by AI, the platform minimizes risks while accelerating time-to-market.
-      Our functional UI testing tools provide seamless automation, enabling teams to deploy high-quality applications confidently.
-    </p>
-    <button className="btn primary-btn" onClick={() => navigate("/dashboard/login")}>
-      Start Free Trial
-    </button>
-  </div>
-  <div className="hero-image">
-    <div className="animated-image">
-      <img src="ai-image-1.jpg" alt="AI Testing Illustration" />
-    </div>
-  </div>
-</section>
+        <HeroSection />
+      </section>
 
 {/* Marquee Section */}
 <section className="marquee">

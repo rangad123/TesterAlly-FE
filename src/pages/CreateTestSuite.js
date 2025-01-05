@@ -16,7 +16,7 @@ const CreateTestSuite = () => {
       return;
     }
     alert("Test Suite Created Successfully!");
-    navigate("/test-suite"); 
+    navigate("/test-suite");
   };
 
   const handleCancel = () => {
@@ -24,64 +24,62 @@ const CreateTestSuite = () => {
   };
 
   return (
-    <div className="page-container">
-    <div className="create-test-suite-page">
-      <div className="header">
-        <button onClick={handleCancel} className="btn btn-cancel">
+    <div className="create-test-suite-container">
+      <div className="create-test-suite-header">
+        <button onClick={handleCancel} className="create-test-suite-btn-cancel">
           Cancel
         </button>
-        <button onClick={handleCreate} className="btn btn-create">
+        <button onClick={handleCreate} className="create-test-suite-btn-create">
           Create
         </button>
       </div>
-      <div className="content">
-        <h1>Create Test Suite</h1>
-        <form className="form">
-          <div className="input-group">
-            <label className="label">Title of the Test Suite *</label>
+      <div className="create-test-suite-content">
+        <h1 className="animated-slide-in">Create Test Suite</h1>
+        <form className="create-test-suite-form">
+          <div className="create-test-suite-input-group">
+            <label className="create-test-suite-label">Title of the Test Suite *</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter test suite title"
-              className="input"
+              className="create-test-suite-input"
             />
           </div>
-          <div className="input-group">
-            <label className="label">Description</label>
+          <div className="create-test-suite-input-group">
+            <label className="create-test-suite-label">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter description"
-              className="textarea"
+              className="create-test-suite-textarea"
             ></textarea>
           </div>
-          <div className="input-group">
-            <label className="label">Pre-Requisite</label>
+          <div className="create-test-suite-input-group">
+            <label className="create-test-suite-label">Pre-Requisite</label>
             <textarea
               value={preRequisite}
               onChange={(e) => setPreRequisite(e.target.value)}
               placeholder="Enter pre-requisites"
-              className="textarea"
+              className="create-test-suite-textarea"
             ></textarea>
           </div>
-          <div className="input-group">
-            <label className="label">Labels</label>
+          <div className="create-test-suite-input-group">
+            <label className="create-test-suite-label">Labels</label>
             <input
               type="text"
               value={labels}
               onChange={(e) => setLabels(e.target.value)}
               placeholder="Enter labels (comma-separated)"
-              className="input"
+              className="create-test-suite-input"
             />
           </div>
-          <div className="input-group">
-            <label className="label">Select Test Cases</label>
-            <button className="btn btn-add-test-case">+ Add Test Cases</button>
+          <div className="create-test-suite-input-group">
+            <label className="create-test-suite-label">Select Test Cases</label>
+            <button className="create-test-suite-btn-add-test-case">+ Add Test Cases</button>
           </div>
         </form>
       </div>
-    </div>
     </div>
   );
 };

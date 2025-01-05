@@ -6,7 +6,7 @@
 }
 
 .sidebar {
-  background-color: #1e293b;
+  background-color: white;
   color: white;
   height: 100vh;
   position: fixed;
@@ -26,9 +26,16 @@
 .sidebar.expanded {
   width: 230px;
 }
+.page-container {
+  margin-left: 60px;
+  transition: margin-left 0.3s ease;
+}
 
+.sidebar.expanded + .page-container {
+  margin-left: 250px; 
+}
 .plus-button {
-  color: white;
+  color: rgb(126, 58, 242);;
   font-size: 1rem;
   text-align: center;
   border-radius: 50%;
@@ -43,7 +50,7 @@
 }
 
 .plus-button:hover {
-  background-color: #4338ca;
+  background-color: rgb(243, 232, 255);
   transform: scale(1.1);
 }
 
@@ -58,24 +65,30 @@
 }
 
 .sidebar-option:hover {
-  background-color: #475569;
+  background-color: rgb(243, 232, 255);
   transform: translateX(5px);
 }
 
 .project-icon {
-  font-size: 1.8rem;
-  color: #facc15;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: rgb(126, 58, 242);
+}
+.sub-sidebar-item .icon{
+  width: 1.25rem;
+  height: 1.25rem;
+  color: rgb(126, 58, 242);
 }
 
 .option-name {
   font-size: 1rem;
-  font-weight: bold;
-  color: white;
+  font-weight: 500;
+  color: black;
 }
 
 .sub-sidebar {
   position: fixed; 
-  background-color: #34495e;
+  background-color: white;
   border-left: 2px solid #2c3e50;
   border-radius: 5px;
   padding: 15px;
@@ -98,7 +111,7 @@
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 15px;
-  color: white;
+  color: black;
 }
 
 .sub-sidebar-item {
@@ -107,13 +120,13 @@
   gap: 10px;
   padding: 10px 15px;
   border-radius: 5px;
-  color: white;
+  color: black;
   transition: background-color 0.3s ease;
   cursor: pointer;
 }
 
 .sub-sidebar-item:hover {
-  background-color: #475569;
+  background-color: rgb(243, 232, 255);;
   transform: translateX(3px);
 }
 

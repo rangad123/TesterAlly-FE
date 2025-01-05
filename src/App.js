@@ -506,7 +506,7 @@ const App = () => {
                 exact
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
-                    <SaveTestCases />
+                    <SaveTestCases  />
                   </PrivateRoute>
                 }
               />

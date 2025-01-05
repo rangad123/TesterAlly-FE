@@ -1,193 +1,166 @@
-.write-test-manually-container {
-  position: relative; /* Removed absolute positioning */
-  padding: 25px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 500px;
+.write-manually-page {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 30px;
+}
+.write-manually-page-wrapper {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: fadeIn 0.3s ease-in-out;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-  z-index: 100;
+  justify-content: center;
+  padding: 20px;
+  height: 80vh;
+  position: relative;
+  margin-top: 0;
+  overflow-y: auto;
+}
+.create-test-cases-button-top-right {
+  position: absolute;
+  top: 20px;
+  right: 150px;
+  display: flex;
+  gap: 10px;
 }
 
-  .title {
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: #2c3e50;
-    text-align: center;
+.wm-cancel-btn {
+  color: rgb(126, 58, 242);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 20px; 
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.wm-cancel-btn:hover {
+  background-color: rgb(126, 58, 242);
+  color: white;
+}
+
+.wm-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.wm-title {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: slideInDown 1s ease-out;
+}
+
+.wm-error {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.wm-step {
+  margin-bottom: 20px;
+}
+
+.wm-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: rgb(126, 58, 242);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.wm-required {
+  color: red;
+}
+
+.wm-input {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.wm-input:focus {
+  outline: none;
+  border-color: rgb(126, 58, 242);
+  box-shadow: 0 0 5px rgba(126, 58, 242, 0.5);
+}
+
+.wm-review {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #333;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.wm-review p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.wm-review span {
+  font-weight: bold;
+}
+
+.wm-edit-btn {
+  background: transparent;
+  color: rgb(126, 58, 242);
+  border: 1px solid rgb(126, 58, 242);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.wm-edit-btn:hover {
+  background-color: rgb(126, 58, 242);
+  color: white;
+}
+
+.wm-next-btn,
+.wm-save-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  color: white;
+  background-color: rgb(126, 58, 242);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.wm-next-btn:disabled,
+.wm-save-btn:disabled {
+  background-color: #d1c4e9;
+  cursor: not-allowed;
+}
+
+.wm-next-btn:hover,
+.wm-save-btn:hover {
+  background-color: #6a3ac8;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
   }
-  
-  .step-item {
-    width: 100%;
-    margin-bottom: 20px;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
-  
-  .step-label {
-    font-weight: bold;
-    color: #34495e;
-    margin-bottom: 8px;
-    font-size: 16px;
-    display: block;
-  }
-  
-  .step-input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    margin-top: 8px;
-    border-radius: 6px;
-    border: 1px solid #bdc3c7;
-    transition: border 0.3s ease;
-    font-size: 16px;
-    background-color: #ecf0f1;
-  }
-  
-  .step-input:focus {
-    border: 1px solid #3498db;
-    outline: none;
-    background-color: #ffffff;
-  }
-  
-  .error-message {
-    color: #e74c3c;
-    font-size: 14px;
-    margin-bottom: 10px;
-    text-align: center;
-  }
-  
-  .btn-next {
-    width: 100%;
-    padding: 12px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-next:disabled {
-    background-color: #bdc3c7;
-    cursor: not-allowed;
-  }
-  
-  .btn-next:hover {
-    background-color: #2980b9;
-  }
-  
-  .btn-cancel-top-right {
-    position: absolute;
-    top: 150px;
-    right: 250px;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: all 0.3s ease-in-out;
-    z-index: 200;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .btn-cancel-top-right:hover {
-    background-color: #c0392b;
-    transform: scale(1.05);
-  }
-  
-  @media (max-width: 600px) {
-    .btn-cancel-top-right {
-      padding: 6px 12px;
-      font-size: 12px;
-      top: 10px;
-      right: 10px;
-    }
-  }
-  
-  .entered-data {
-    margin-top: 15px;
-    font-size: 14px;
-    color: #2c3e50;
-    width: 100%;
-    background: #f8f9fa;
-    padding: 10px 15px;
-    border-radius: 6px;
-    border: 1px solid #dfe6e9;
-  }
-  
-  .entered-data p {
-    margin: 8px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .entered-data span {
-    font-weight: 500;
-    color: #7f8c8d;
-  }
-  
-  .btn-edit {
-    background-color: transparent;
-    color: #3498db;
-    border: 1px solid #3498db;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .btn-edit:hover {
-    background-color: #3498db;
-    color: white;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  .animated-slide-in {
-    animation: slideIn 0.5s ease-out;
-  }
-  
-  @keyframes slideIn {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-  
-  @media (max-width: 600px) {
-    .write-test-manually-container {
-      padding: 15px;
-      max-width: 100%;
-      width: 90%;
-    }
-  
-    .title {
-      font-size: 22px;
-    }
-  
-    .step-input {
-      padding: 10px;
-    }
-  
-    .btn-next {
-      padding: 10px;
-    }
-  }
-  
+}

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import {
-  FaPlus,
+  FaBars,
   FaFolderPlus,
   FaTasks,
-  FaSave,
+  FaRegFolderOpen,
   FaCogs,
-  FaUserCircle,
-  FaTachometerAlt,
 } from "react-icons/fa";
+import { MdDashboard, MdAccountCircle } from 'react-icons/md';
+import { BiAddToQueue } from 'react-icons/bi';
 import { useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
@@ -60,17 +60,17 @@ const Sidebar = () => {
       {/* Main Sidebar */}
       <div className={`sidebar ${isSidebarOpen ? "expanded" : "collapsed"}`}>
         <div className="plus-button" onClick={toggleSidebar}>
-          <FaPlus className="icon" />
+          <FaBars className="icon" />
         </div>
 
         <div className="sidebar-option" onClick={handleNavigateToDashboard}>
-          <FaTachometerAlt className="icon project-icon" />
+          <MdDashboard className="icon project-icon" />
           {isSidebarOpen && <span className="option-name">Dashboard</span>}
         </div>
 
 
         <div className="sidebar-option" onClick={toggleSubSidebar}>
-          <FaFolderPlus className="icon project-icon" />
+          <BiAddToQueue className="icon project-icon" />
           {isSidebarOpen && <span className="option-name">Create Project</span>}
         </div>
 
@@ -81,14 +81,14 @@ const Sidebar = () => {
             setIsSubSidebarVisible(false); 
           }}
         >
-          <FaSave className="icon project-icon" />
+          <FaRegFolderOpen className="icon project-icon" />
           {isSidebarOpen && (
             <span className="option-name">Saved Test Cases</span>
           )}
         </div>
 
         <div className="sidebar-option" onClick={handleNavigateToProfile}>
-          <FaUserCircle className="icon project-icon" />
+          <MdAccountCircle className="icon project-icon" />
           {isSidebarOpen && <span className="option-name">Profile</span>}
         </div>
       </div>

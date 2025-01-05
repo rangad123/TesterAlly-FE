@@ -88,7 +88,6 @@ a {
   .hero {
     flex-direction: row;
     text-align: left;
-    padding: 100px 50px;
   }
 }
 
@@ -118,7 +117,7 @@ a {
 }
 
 .hero-content button {
-  background: #4f46e5;
+  background: rgb(126,58,242);
   color: white;
   padding: 12px 25px;
   font-size: 1rem;
@@ -129,7 +128,7 @@ a {
 }
 
 .hero-content button:hover {
-  background: #4f46e5;
+  background: rgb(126,58,242);
 }
 
 .hero-image {
@@ -140,9 +139,6 @@ a {
 .hero {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 2rem;
-  background: linear-gradient(120deg, #f5f7fa, #e4ebf5);
 }
 
 .hero-content {
@@ -331,17 +327,18 @@ span{
   border-radius: 10px;
 }
 .features h3 {
-  color: #004085; /* Dark blue shade, adjust as needed */
-  font-size: 1.5rem; /* You can adjust the size if needed */
+  color: #004085; 
+  font-size: 1.5rem; 
   font-weight: bold;
+  margin-bottom: 10px;
 }
 .how-it-works h3{
-  color: #004085; /* Dark blue shade */
+  color: #004085; 
   font-size: 1.5rem;
   font-weight: bold;
 }
 .about-us h3 {
-  color: #004085; /* Dark blue shade */
+  color: #004085; 
   font-size: 1.5rem;
   font-weight: bold;
 }
@@ -379,7 +376,6 @@ span{
 }
 
 .step {
-  background: linear-gradient(90deg, #ff9a8b, #ffdab9, #f6e7d8);
 
   border-radius: 15px;
   padding: 25px;
@@ -411,8 +407,8 @@ span{
   left: 0;
 }
 
-.step h4 {
-  color: #4f46e5;
+.step-card h4 {
+  color: #004085;
   margin-bottom: 15px;
   font-size: 1rem;
   font-weight: bold;
@@ -598,7 +594,6 @@ span{
 
 
 section {
-  padding: 60px 20px;
   text-align: center;
 }
 
@@ -696,7 +691,7 @@ section {
 
 .blog-card h4 {
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: #004085;
   margin-bottom: 10px;
 }
 
@@ -711,7 +706,7 @@ section {
   color: #fff;
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 2rem;
   cursor: pointer;
   transition: background-color 0.3s;
 }

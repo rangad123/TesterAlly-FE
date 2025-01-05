@@ -47,7 +47,9 @@ const Login = (props) => {
         localStorage.setItem("userEmail", email);
         localStorage.setItem("userName", data.user.name);
         toast.success(data.message);
+        
         console.log("user data", data.user);
+
         setIsLoggedIn(true);
         setEmail(email);
         setName(data.user.name);

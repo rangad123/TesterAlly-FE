@@ -1,307 +1,185 @@
-
 .create-project-container {
   flex-grow: 1;
+  top: 50px;
+  position: relative; 
   max-width: 600px;
   margin: auto;
   padding: 30px;
-  background: linear-gradient(135deg, #f9f9f9, #eaf4fc);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  animation: fadeInUp 0.6s ease-out;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
   overflow: hidden;
 }
 
-
-.close-option {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  padding: 5px;
+.create-project-box {
+  max-width: 500px;
+  width: 100%;
+  border-radius: 8px;
+  padding: 20px;
+  left: 20px;
+  position: relative;
 }
 
-.close-option button {
-  background: none;
-  border: none;
-  font-size: 14px;
-  color: #555;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.close-option button:hover {
-  color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
-}
-
-.animated-title {
-  font-size: 2.5rem;
-  font-weight: bold;
+.create-project-title {
+  font-size: 1.8rem;
   text-align: center;
   margin-bottom: 20px;
-  color: #4a90e2;
-  animation: slideIn 1s ease-in-out;
+  animation: slideInDown 1s ease-out;
 }
 
-
-.input-container {
+.create-project-input-group {
   margin-bottom: 20px;
 }
 
-.input-container label {
-  display: block;
+.create-project-label {
   font-weight: 600;
+  display: block;
   margin-bottom: 8px;
-  color: #333;
 }
 
-.input-container input,
-.input-container textarea,
-.input-container select {
+.create-project-required {
+  color: #d9534f;
+}
+
+.create-project-optional {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.create-project-input,
+.create-project-textarea,
+.create-project-select {
   width: 100%;
   padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   font-size: 1rem;
-  transition: all 0.3s ease;
 }
 
-.input-container input:focus,
-.input-container textarea:focus,
-.input-container select:focus {
-  border-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
+.create-project-input:focus,
+.create-project-textarea:focus,
+.create-project-select:focus {
   outline: none;
-  box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
+  border-color: rgb(126, 58, 242);
 }
 
-textarea {
-  resize: none;
-  height: 100px;
+.create-project-error-border {
+  border-color: #d9534f;
 }
 
+.create-project-error {
+  color: #d9534f;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
 
-.toggle-btn {
-  background-color: rgb(172, 151, 240);
-  color: black;
+.create-project-toggle-btn {
+  background-color: rgb(126, 58, 242);
+  color: #ffffff;
   border: none;
   padding: 6px 12px;
-  border-radius: 5px;
+  border-radius: 2rem;
   cursor: pointer;
-  margin-top: 10px;
-  font-size: 14px;
-  transition: background-color 0.3s;
 }
 
-.toggle-btn:hover {
-  background-color: rgb(126 58 242 / var(--tw-bg-opacity, 1));
-  color: white;
+.create-project-toggle-btn:hover {
+  background-color: rgb(126, 58, 242);
 }
 
-.button-group {
+.create-project-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
 }
 
-.btn {
+.create-project-cancel-btn {
+  color: rgb(126, 58, 242);
   padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 20px; 
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease-in-out;
 }
 
-.btn-create {
-  background-color: #4caf50;
+.create-project-cancel-btn:hover {
+  background-color: rgb(126, 58, 242);
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   color: white;
 }
 
-.btn-create:hover {
-  background-color: #388e3c;
-  transform: scale(1.05);
-}
-
-.btn-cancel {
-  background-color: #e74c3c;
+.create-project-create-btn {
+  background-color: rgb(126, 58, 242);
   color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px; 
+  cursor: pointer;
 }
 
-.btn-cancel:hover {
-  background-color: #c0392b;
+.create-project-create-btn:hover {
+  background-color: rgb(126, 58, 242);
   transform: scale(1.05);
-}
-
-.error-message {
-  color: red;
-  font-size: 0.9em;
-  margin-top: 5px;
-}
-
-.error-border {
-  border: 2px solid red;
-  animation: shake 0.2s ease-in-out;
-}
-
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  25%, 75% {
-    transform: translateX(-5px);
-  }
-  50% {
-    transform: translateX(5px);
-  }
-}
-
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  color: white;
 }
 
 @media (max-width: 768px) {
   .create-project-container {
-    max-width: 95%; 
-    padding: 15px; 
+    padding: 20px;
   }
 
-  .animated-title {
-    font-size: 1.8rem; 
-    margin-bottom: 15px;
+  .create-project-box {
+    max-width: 90%;
+    top: 30px;
+    left: 20px;
   }
 
-  .input-container label {
-    font-size: 0.9rem; 
+  .create-project-title {
+    font-size: 1.6rem;
   }
 
-  .btn {
-    font-size: 0.9rem; 
-    padding: 8px 12px; 
+  .create-project-input,
+  .create-project-textarea,
+  .create-project-select {
+    font-size: 0.9rem;
+    padding: 8px;
   }
 
-  .btn-create,
-  .btn-cancel {
-    width: 48%;
-    margin: 0;
+  .create-project-buttons {
+    flex-direction: column;
+    gap: 10px;
   }
 
-  .button-group {
-    flex-wrap: wrap;
-    gap: 10px; 
-  }
-
-
-  .sidebar {
-    padding: 8px 0;
-  }
-
-  .profile-icon {
-    width: 32px;
-    height: 32px;
+  .create-project-cancel-btn,
+  .create-project-create-btn {
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .create-project-container {
-    max-width: 90%;
-    margin: 0 auto;
-    padding: 10px;
-    border-radius: 10px;
+  .create-project-box {
+    max-width: 100%;
+    top: 20px;
+    left: 10px;
   }
 
-  .animated-title {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+  .create-project-title {
+    font-size: 1.4rem;
   }
 
-  .input-container label {
-    font-size: 0.85rem;
-  }
-
-  .input-container input,
-  .input-container textarea,
-  .input-container select {
-    font-size: 0.85rem;
-    padding: 8px;
-  }
-
-  .toggle-btn {
+  .create-project-input,
+  .create-project-textarea,
+  .create-project-select {
     font-size: 0.8rem;
+    padding: 6px;
+  }
+
+  .create-project-toggle-btn {
+    font-size: 0.85rem;
     padding: 5px 10px;
-  }
-
-  .button-group {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .btn-create,
-  .btn-cancel {
-    width: 100%;
-    font-size: 0.9rem;
-  }
-
-  .sidebar {
-    padding: 5px 0;
-  }
-
-  .profile-icon {
-    width: 28px;
-    height: 28px;
-  }
-
-  .error-message {
-    font-size: 0.75rem;
-  }
-}
-
-
-@media (prefers-color-scheme: dark) {
-  .create-project-container {
-    background: linear-gradient(135deg, #2a2a2a, #1e1e1e);
-    color: #f5f5f5;
-  }
-
-  .input-container input,
-  .input-container textarea,
-  .input-container select {
-    background: #333;
-    color: #fff;
-    border: 2px solid #555;
-  }
-
-  .input-container input:focus,
-  .input-container textarea:focus,
-  .input-container select:focus {
-    border-color: #4a90e2;
-    box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
-  }
-
-  .btn-create {
-    background-color: #1e7c34;
-  }
-
-  .btn-cancel {
-    background-color: #8a2c2c;
   }
 }

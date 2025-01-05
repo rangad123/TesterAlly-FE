@@ -173,13 +173,13 @@ const AppNavBar = (props) => {
             <div className="auth-buttons">
               <button
                 onClick={() => navigate("/dashboard/login")}
-                className="text-white font-medium text-lg px-4 py-2 rounded-md bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
+                className="text-white font-medium text-lg px-4 py-2 rounded-[2rem] bg-[rgb(126,58,242)] hover:bg-[rgb(100,40,200)]"
               >
                 Login
               </button>
               <button
                 onClick={() => navigate("/dashboard/register")}
-                className="text-white font-medium text-lg px-4 py-2 rounded-md bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800"
+                className="text-white font-medium text-lg px-4 py-2 rounded-[2rem] bg-[rgb(126,58,242)] hover:bg-[rgb(100,40,200)]"
               >
                 Sign Up
               </button>
