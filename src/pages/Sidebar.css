@@ -99,6 +99,48 @@
   z-index: 1000;
 }
 
+.sub-sidebar-settings {
+  position: fixed; 
+  background-color: white;
+  border-left: 2px solid #2c3e50;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  margin-top: 50px;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.sub-sidebar-settings.aligned-expanded {
+  left: 230px; 
+}
+
+.sub-sidebar-settings.aligned-collapsed {
+  left: 70px; 
+}
+
+.sub-sidebar-projects {
+  position: fixed; 
+  background-color: white;
+  border-left: 2px solid #2c3e50;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  margin-top: 50px;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.sub-sidebar-projects.aligned-expanded {
+  left: 230px; 
+}
+
+.sub-sidebar-projects.aligned-collapsed {
+  left: 70px; 
+}
+
 .sub-sidebar.aligned-expanded {
   left: 230px; 
 }
@@ -133,6 +175,7 @@
 .sub-sidebar-item .icon {
   font-size: 1.2rem;
 }
+
 
 @keyframes fadeIn {
   from {
