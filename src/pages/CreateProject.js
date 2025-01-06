@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
 import "./CreateProject.css";
 
 const CreateProject = () => {
@@ -20,7 +21,7 @@ const CreateProject = () => {
       isValid = false;
     }
 
-    if (projectType === "Select Type") {
+    if (!projectType || projectType === "Select Type") {
       newErrors.projectType = "Please select a valid Project Type!";
       isValid = false;
     }
@@ -31,7 +32,6 @@ const CreateProject = () => {
 
   const handleCreateProject = () => {
     if (!validateFields()) return;
-
     alert("Project Created Successfully");
   };
 
@@ -46,20 +46,21 @@ const CreateProject = () => {
   return (
     <div className="create-project-container">
       <div className="create-project-box">
-        <h2 className="create-project-title animated-slide-in">Create Project</h2>
+        <h2 className="create-project-title">Create Project</h2>
 
         <div className="create-project-input-group">
-          <label className="create-project-label">
+          <label htmlFor="projectName" className="create-project-label">
             Project Name<span className="create-project-required">*</span>
           </label>
           <input
+            id="projectName"
             type="text"
             value={projectName}
             onChange={(e) => {
               setProjectName(e.target.value);
               setErrors((prevErrors) => ({ ...prevErrors, projectName: "" }));
             }}
-            placeholder="Enter project name"
+            placeholder="Enter your project name"
             className={`create-project-input ${
               errors.projectName ? "create-project-error-border" : ""
             }`}
@@ -70,29 +71,32 @@ const CreateProject = () => {
         </div>
 
         <div className="create-project-input-group">
-          <label className="create-project-label">
-            Description <span className="create-project-optional">(optional)</span>
+          <label htmlFor="description" className="create-project-label">
+            Description<span className="create-project-optional">(optional)</span>
           </label>
-
-          <button onClick={toggleDescription} className="create-project-toggle-btn">
-            {showDescription ? "Hide Description" : "Show Description"}
+          <button
+            onClick={toggleDescription}
+            className="create-project-toggle-btn"
+          >
+            {showDescription ? "Hide Description" : "Add Description"}
           </button>
-
           {showDescription && (
             <textarea
+              id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter description"
+              placeholder="Enter a brief description"
               className="create-project-textarea"
             />
           )}
         </div>
 
         <div className="create-project-input-group">
-          <label className="create-project-label">
+          <label htmlFor="projectType" className="create-project-label">
             Project Type<span className="create-project-required">*</span>
           </label>
           <select
+            id="projectType"
             value={projectType}
             onChange={(e) => {
               setProjectType(e.target.value);
@@ -107,6 +111,8 @@ const CreateProject = () => {
             </option>
             <option value="Web Application">Web Application</option>
             <option value="Mobile Application">Mobile Application</option>
+            <option value="API Development">API Development</option>
+            <option value="Data Analysis">Data Analysis</option>
           </select>
           {errors.projectType && (
             <span className="create-project-error">{errors.projectType}</span>
@@ -114,11 +120,17 @@ const CreateProject = () => {
         </div>
 
         <div className="create-project-buttons">
-          <button onClick={handleCancel} className="create-project-cancel-btn">
-            Cancel
+          <button
+            onClick={handleCancel}
+            className="create-project-cancel-btn"
+          >
+            <AiOutlineClose /> Cancel
           </button>
-          <button onClick={handleCreateProject} className="create-project-create-btn">
-            Create
+          <button
+            onClick={handleCreateProject}
+            className="create-project-create-btn"
+          >
+            <AiOutlinePlus /> Create
           </button>
         </div>
       </div>

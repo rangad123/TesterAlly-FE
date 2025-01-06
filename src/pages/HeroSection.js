@@ -80,33 +80,35 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen bg-[rgb(237,235,254)]">
+    <section className="relative bg-[rgb(237,235,254)]">
       <div 
         ref={containerRef} 
         className="absolute inset-0 z-0"
       />
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <motion.h1 
-              className="text-4xl md:text-5xl font-bold leading-tight text-[rgb(126,58,242)]"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+      <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+
+        <motion.div 
+            className="space-y-6 px-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-[rgb(126,58,242)]">
               Deliver Reliable Automation for Enterprise-Grade Software
               <div className="text-sm font-semibold mt-2 text-[rgb(126,58,242)]">
                 TesterAlly QA Platform
               </div>
-            </motion.h1>
+            </h1>
             
             <motion.p 
-              className="text-lg text-gray-700"
+              className="text-base md:text-lg text-gray-700"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
+              style={{textAlign:"justify"}}
             >
               Tester Ally ensures robust test automation designed to meet the demands of enterprise software.
               With comprehensive test coverage powered by AI, the platform minimizes risks while accelerating time-to-market.
@@ -114,7 +116,7 @@ const HeroSection = () => {
             </motion.p>
 
             <motion.button 
-              className="px-8 py-3 bg-[rgb(126,58,242)] text-white rounded-lg hover:bg-opacity-90 transition-all"
+              className="w-full md:w-auto px-8 py-4 bg-[rgb(126,58,242)] text-white rounded-lg hover:bg-opacity-90 transition-all transform hover:scale-105"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -122,7 +124,7 @@ const HeroSection = () => {
             >
               Start Free Trial
             </motion.button>
-          </div>
+          </motion.div>
 
           <motion.div 
             className="relative h-[500px]"
