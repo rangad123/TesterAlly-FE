@@ -73,6 +73,9 @@ const Login = (props) => {
 
   return (
     <div className="w-full flex justify-center my-4 items-center min-h-screen -mt-10">
+      <div className="hidden lg:block w-1/2">
+        <img src="/login.svg" alt="TesterAlly Login" className="w-full max-w-lg mx-auto" />
+      </div>
       <div className="w-full max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
           Login to your account

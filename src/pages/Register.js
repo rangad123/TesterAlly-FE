@@ -94,7 +94,11 @@ const Register = (props) => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center px-6 py-8 mx-auto my-5 lg:py-0">
+    <div className="w-full flex items-center justify-center px-6 py-8 mx-auto my-5 lg:py-0">
+      <div className="hidden lg:block w-1/2">
+        <img src="/register-illustration.svg" alt="TesterAlly Register" className="w-full max-w-2xl mx-auto transform scale-125 transition-transform duration-300 hover:scale-130" />
+      </div>
+      
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-xl xl:p-0 dark:bg-gray-800 dark:border-gray-700 " style={{ marginTop: "50px" }}>
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
@@ -104,7 +108,7 @@ const Register = (props) => {
             className="space-y-4 md:space-y-"
             action="POST"
             onSubmit={handleRegister}
-            autoComplete="off"
+            autoComplete="new-password"
           >
             <div>
               <div className="mb-2 block">
@@ -161,6 +165,7 @@ const Register = (props) => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-purple-600 focus:border-purple-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
                   required
                   minLength="6"
+                  autoComplete="new-password"
                 />
                 <div
                   className="-mt-8 md:ml-52 ml-60 cursor-pointer"
@@ -190,6 +195,7 @@ const Register = (props) => {
                   placeholder="Re-enter Password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-purple-600 focus:border-purple-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
                   required
+                  autoComplete="new-password"
                 />
                 <div
                   className="-mt-8 md:ml-52 ml-60 cursor-pointer"

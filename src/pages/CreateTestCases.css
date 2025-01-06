@@ -181,3 +181,8 @@
     background-color: rgb(126, 58, 242);
   }
 }
+
+
+.error-message {
+  color: #d9534f;
+}

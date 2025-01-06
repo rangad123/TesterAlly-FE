@@ -7,15 +7,28 @@ const CreateTestSuite = () => {
   const [description, setDescription] = useState("");
   const [preRequisite, setPreRequisite] = useState("");
   const [labels, setLabels] = useState("");
+  const [errors, setErrors] = useState({}); // State to store error messages
 
   const navigate = useNavigate();
 
-  const handleCreate = () => {
+  const validateForm = () => {
+    const newErrors = {};
     if (!title.trim()) {
-      alert("Title of the test suite is required!");
+      newErrors.title = "Title of the test suite is required.";
+    }
+    return newErrors;
+  };
+
+  const handleCreate = () => {
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
-    alert("Test Suite Created Successfully!");
+
+    // Proceed with form submission
+    setErrors({});
+    console.log({ title, description, preRequisite, labels });
     navigate("/test-suite");
   };
 
@@ -43,8 +56,9 @@ const CreateTestSuite = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter test suite title"
-              className="create-test-suite-input"
+              className={`create-test-suite-input ${errors.title ? "error-border" : ""}`}
             />
+            {errors.title && <p className="error-message">{errors.title}</p>}
           </div>
           <div className="create-test-suite-input-group">
             <label className="create-test-suite-label">Description</label>
@@ -76,7 +90,9 @@ const CreateTestSuite = () => {
           </div>
           <div className="create-test-suite-input-group">
             <label className="create-test-suite-label">Select Test Cases</label>
-            <button className="create-test-suite-btn-add-test-case">+ Add Test Cases</button>
+            <button type="button" className="create-test-suite-btn-add-test-case">
+              + Add Test Cases
+            </button>
           </div>
         </form>
       </div>

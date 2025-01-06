@@ -142,3 +142,13 @@ h1 {
     transform: translateY(0);
   }
 }
+
+.error-border {
+  border: 1px solid red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 4px;
+}
