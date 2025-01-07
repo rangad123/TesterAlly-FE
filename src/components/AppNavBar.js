@@ -131,7 +131,7 @@ const AppNavBar = (props) => {
       <Navbar fluid>
         <Navbar.Brand>
           <img
-            src="/ai-image-1.webp"
+            src="/logo2.jpg"
             className="mr-3 h-8 sm:h-12 logo-img"
             alt="Flowbite React Logo"
             onClick={handleLogoClick}

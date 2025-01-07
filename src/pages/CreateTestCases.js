@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import "./CreateTestCases.css";
+import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
 
 
 const CreateTestCases = ( ) => {
@@ -49,17 +50,23 @@ const CreateTestCases = ( ) => {
   return (
     <div className="create-test-cases-page-container">
     <div className="create-test-cases-wrapper">
-      <div className="create-test-cases-button-top-right">
-        <button onClick={handleTestSuite} className="create-test-cases-test-suite-btn">
-          Test Suite
-        </button>
-        <button onClick={handleCancel} className="create-test-cases-btn-cancel">
-          Cancel
-        </button>
+    <div className="create-test-cases-container animated-fade-in">
+
+      <div className="create-test-cases-header">
+        <h2 className="create-test-cases-title">Create Test Cases</h2>
+
+        <div className="create-test-cases-button-group-right">
+          <button onClick={handleCancel} className="cancel-btn">
+            <AiOutlineClose className="inline-icon" />
+            Cancel
+          </button>
+          <button onClick={handleCreateTestCase} className="create-btn">
+            <AiOutlinePlus className="inline-icon" />
+            Create
+          </button>
+        </div>
       </div>
 
-      <div className="create-test-cases-container animated-fade-in">
-        <h2 className="create-test-cases-title animated-slide-in">Create Test Cases</h2>
 
         <div className="create-test-cases-input-container">
           <label className="create-test-cases-label">
@@ -96,13 +103,12 @@ const CreateTestCases = ( ) => {
         </div>
 
         <div className="create-test-cases-button-group">
-
           <button onClick={handleWriteTestManually} className="create-test-cases-btn-manual">
             Write Test Manually
           </button>
 
-          <button onClick={handleCreateTestCase} className="create-test-cases-btn-create">
-            Create
+          <button onClick={handleTestSuite} className="create-test-cases-test-suite-btn">
+          Test Suite
           </button>
         </div>
       </div>

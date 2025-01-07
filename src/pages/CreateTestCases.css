@@ -9,26 +9,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding: 20px;
   height: 80vh;
   position: relative;
   margin-top: 0;
+  margin-bottom: 15px;
   overflow-y: auto;
 }
 
-.create-test-cases-button-top-right {
-  position: absolute;
-  top: 20px;
-  right: 150px;
+.create-test-cases-top-right {
+  position: relative;
+  top: 0px;
+  right: 0px;
   display: flex;
   gap: 10px;
+  margin-bottom: 15px;
 }
 
 .create-test-cases-title{
   font-size: 1.8rem;
   text-align: center;
-  margin-bottom: 20px;
   animation: slideInDown 1s ease-out;
 }
 
@@ -69,7 +69,7 @@
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
+  max-width: 800px;
   width: 100%;
 }
 
@@ -185,4 +185,53 @@
 
 .error-message {
   color: #d9534f;
+}
+
+
+.create-test-cases-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.create-test-cases-title {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.create-test-cases-button-group-right {
+  display: flex;
+  gap: 10px;
+}
+
+.create-btn, 
+.cancel-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.create-btn {
+  background-color: rgb(126, 58, 242);
+  color: white;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: rgb(126, 58, 242);
+  border: 2px solid rgb(126, 58, 242);
+}
+
+.create-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-btn:hover {
+  background-color: rgb(126, 58, 242);
+  color: white;
 }

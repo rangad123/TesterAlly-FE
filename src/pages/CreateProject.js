@@ -46,7 +46,21 @@ const CreateProject = () => {
   return (
     <div className="create-project-container">
       <div className="create-project-box">
-        <h2 className="create-project-title">Create Project</h2>
+
+        <div className="create-test-cases-header">
+          <h2 className="create-test-cases-title">Create Project</h2>
+        
+            <div className="create-test-cases-button-group-right">
+              <button onClick={handleCancel} className="cancel-btn">
+                <AiOutlineClose className="inline-icon" />
+                  Cancel
+              </button>
+              <button onClick={handleCreateProject} className="create-btn">
+                <AiOutlinePlus className="inline-icon" />
+                Create
+              </button>
+            </div>
+          </div>
 
         <div className="create-project-input-group">
           <label htmlFor="projectName" className="create-project-label">
@@ -117,21 +131,6 @@ const CreateProject = () => {
           {errors.projectType && (
             <span className="create-project-error">{errors.projectType}</span>
           )}
-        </div>
-
-        <div className="create-project-buttons">
-          <button
-            onClick={handleCancel}
-            className="create-project-cancel-btn"
-          >
-            <AiOutlineClose /> Cancel
-          </button>
-          <button
-            onClick={handleCreateProject}
-            className="create-project-create-btn"
-          >
-            <AiOutlinePlus /> Create
-          </button>
         </div>
       </div>
     </div>

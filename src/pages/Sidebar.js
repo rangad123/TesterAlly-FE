@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FaBars,
   FaFolderPlus,
@@ -24,6 +24,23 @@ const Sidebar = () => {
   const [isSubSidebarVisible, setIsSubSidebarVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); 
   const [isProjectSettingsVisible, setIsProjectSettingsVisible] = useState(false);
+
+
+  const sidebarRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setIsSubSidebarVisible(false);
+        setIsSettingsVisible(false);
+        setIsProjectSettingsVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prevState) => {
@@ -117,14 +134,14 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="sidebar-container">
+    <div className="sidebar-container" ref={sidebarRef}>
       {/* Main Sidebar */}
       <div className={`sidebar ${isSidebarOpen ? "expanded" : "collapsed"}`}>
         <div className="plus-button" onClick={toggleSidebar}>
           {isSidebarOpen ? (
-            <FaTimes className="icon" />
+            <FaTimes className="icon menu-icon" />
           ) : (
-            <FaBars className="icon" />
+            <FaBars className="icon menu-icon" />
           )}
         </div>
 
@@ -157,17 +174,18 @@ const Sidebar = () => {
           {isSidebarOpen && <span className="option-name">Profile</span>}
         </div>
 
-        <div className="sidebar-option" onClick={toggleSettingsSidebar}>
-          <FiSettings className="icon project-icon" />
-          {isSidebarOpen && <span className="option-name">Settings</span>}
-        </div>
-
         <div className="sidebar-option" onClick={toggleProjectSettingsSidebar}>
           <FaCogs className="icon project-icon" />
           {isSidebarOpen && (
             <span className="option-name">Project Settings</span>
           )}
         </div>
+
+        <div className="sidebar-option" onClick={toggleSettingsSidebar}>
+          <FiSettings className="icon project-icon" />
+          {isSidebarOpen && <span className="option-name">Settings</span>}
+        </div>
+
       </div>
 
       {/* Sub-sidebar: Create Project */}

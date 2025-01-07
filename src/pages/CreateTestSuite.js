@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CreateTestSuite.css";
+import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
 
 const CreateTestSuite = () => {
   const [title, setTitle] = useState("");
@@ -26,7 +27,6 @@ const CreateTestSuite = () => {
       return;
     }
 
-    // Proceed with form submission
     setErrors({});
     console.log({ title, description, preRequisite, labels });
     navigate("/test-suite");
@@ -38,16 +38,22 @@ const CreateTestSuite = () => {
 
   return (
     <div className="create-test-suite-container">
-      <div className="create-test-suite-header">
-        <button onClick={handleCancel} className="create-test-suite-btn-cancel">
-          Cancel
-        </button>
-        <button onClick={handleCreate} className="create-test-suite-btn-create">
-          Create
-        </button>
-      </div>
       <div className="create-test-suite-content">
-        <h1 className="animated-slide-in">Create Test Suite</h1>
+        <div className="create-test-cases-header">
+          <h2 className="create-test-cases-title">Create Test Suite</h2>
+              
+          <div className="create-test-cases-button-group-right">
+            <button onClick={handleCancel} className="cancel-btn">
+              <AiOutlineClose className="inline-icon" />
+              Cancel
+            </button>
+            <button onClick={handleCreate} className="create-btn">
+              <AiOutlinePlus className="inline-icon" />
+              Create
+            </button>
+          </div>
+        </div>
+        
         <form className="create-test-suite-form">
           <div className="create-test-suite-input-group">
             <label className="create-test-suite-label">Title of the Test Suite *</label>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./WriteManually.css";
+import { AiOutlineClose } from "react-icons/ai";
 
 const WriteTestManually = ({ setShowWriteTestManually }) => {
   const [step, setStep] = useState(1);
@@ -39,14 +40,18 @@ const WriteTestManually = ({ setShowWriteTestManually }) => {
   return (
     <div className="write-manually-page">
       <div className="write-manually-page-wrapper">
-        <div className="create-test-cases-button-top-right">
-          <button onClick={handleCancel} className="wm-cancel-btn">
-            Cancel
-          </button>
-        </div>
 
       <div className="wm-container">
-        <h2 className="wm-title">Write Test Manually</h2>
+        <div className="create-test-cases-header">
+          <h2 className="create-test-cases-title">Write Test Manually</h2>
+                      
+          <div className="create-test-cases-button-group-right">
+            <button onClick={handleCancel} className="cancel-btn">
+              <AiOutlineClose className="inline-icon" />
+              Cancel
+            </button>
+          </div>
+        </div>
 
         {error && <div className="wm-error">{error}</div>}
 
