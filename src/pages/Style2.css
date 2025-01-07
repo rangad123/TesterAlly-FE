@@ -747,13 +747,25 @@ body {
   }
 }
 
-@media (max-width: 480px) {
-  .hero-content h1 {
-    font-size: 2rem;
+@media (max-width: 640px) {
+  .hero {
+    min-height: auto;
+    padding: 2rem 1rem;
   }
+  
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .feature-cards,
+  .step-card {
+    padding: 1.5rem;
+  }
+}
 
-  .hero-content button {
-    width: 100%;
-    padding: 12px 20px;
+@media (min-width: 1024px) {
+  .hero {
+    min-height: 70vh;
   }
 }

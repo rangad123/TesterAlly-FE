@@ -80,7 +80,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative bg-[rgb(237,235,254)]">
+    <section className="relative bg-[rgb(237,235,254)] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div 
         ref={containerRef} 
         className="absolute inset-0 z-0"
@@ -116,7 +116,7 @@ const HeroSection = () => {
             </motion.p>
 
             <motion.button 
-              className="w-full md:w-auto px-8 py-4 bg-[rgb(126,58,242)] text-white rounded-lg hover:bg-opacity-90 transition-all transform hover:scale-105"
+              className="w-full md:w-auto px-8 py-4 bg-[rgb(126,58,242)] rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
