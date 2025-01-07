@@ -13,7 +13,7 @@ const CountryInput = () => {
   return (
     <div className="max-w-xl">
       <div className="mb-2 block">
-        <label htmlFor="country" className="text-sm font-medium required">
+        <label htmlFor="country" className="font-medium required">
           Country
         </label>
       </div>

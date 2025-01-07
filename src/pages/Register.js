@@ -101,7 +101,7 @@ const Register = (props) => {
       
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-xl xl:p-0 dark:bg-gray-800 dark:border-gray-700 " style={{ marginTop: "50px" }}>
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
+          <h1 className="mb-6 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
             Create an account
           </h1>
           <form
@@ -112,7 +112,7 @@ const Register = (props) => {
           >
             <div>
               <div className="mb-2 block">
-                <label htmlFor="name" className="text-sm font-medium required">
+                <label htmlFor="name" className="font-medium required">
                   Name
                 </label>
               </div>
@@ -135,7 +135,7 @@ const Register = (props) => {
 
             <div>
               <div className="mb-2 block">
-                <label htmlFor="email" className="text-sm font-medium required">
+                <label htmlFor="email" className="font-medium required">
                   Email
                 </label>
               </div>
@@ -151,69 +151,72 @@ const Register = (props) => {
             </div>
 
             <div className="grid gap-6 mb-6 md:grid-cols-2">
-              <div>
+              <div className="relative">
                 <div className="mb-2 block">
-                  <label htmlFor="password" className="text-sm font-medium required">
+                  <label htmlFor="password" className="block mb-2 font-medium required">
                     Password
                   </label>
                 </div>
-                <input
-                  type={isPasswordVisible ? "text" : "password"}
-                  name="password"
-                  id="password"
-                  placeholder="Your Password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-purple-600 focus:border-purple-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
-                  required
-                  minLength="6"
-                  autoComplete="new-password"
-                />
-                <div
-                  className="-mt-8 md:ml-52 ml-60 cursor-pointer"
-                  onClick={togglePasswordVisibility}
-                >
-                  {isPasswordVisible ? (
-                    <FaEyeSlash className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <FaEye className="w-5 h-5 text-gray-400" />
-                  )}
-                </div>
-              </div>
+                <div className="relative">
+            <input
+              type={isPasswordVisible ? "text" : "password"}
+              name="password"
+              id="password"
+              placeholder="Your Password"
+              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-purple-600 focus:border-purple-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
+              required
+              minLength="6"
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none mr-[10px]"
+              onClick={togglePasswordVisibility}
+              aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+            >
+              {isPasswordVisible ? (
+                <FaEyeSlash className="w-5 h-5" />
+              ) : (
+                <FaEye className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+          </div>
 
-              <div>
-                <div className="mb-2 block">
-                  <label
-                    htmlFor="confirmpassword"
-                    className="text-sm font-medium required"
-                  >
-                    Confirm Password
-                  </label>
-                </div>
-                <input
-                  type={isConfPasswordVisible ? "text" : "password"}
-                  name="confirmpassword"
-                  id="confirmpassword"
-                  placeholder="Re-enter Password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-purple-600 focus:border-purple-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
-                  required
-                  autoComplete="new-password"
-                />
-                <div
-                  className="-mt-8 md:ml-52 ml-60 cursor-pointer"
-                  onClick={toggleConfPasswordVisibility}
-                >
-                  {isConfPasswordVisible ? (
-                    <FaEyeSlash className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <FaEye className="w-5 h-5 text-gray-400" />
-                  )}
-                </div>
-              </div>
-            </div>
+          <div className="relative">
+          <label htmlFor="confirmpassword" className="block mb-2 font-medium required">
+            Confirm Password
+          </label>
+          <div className="relative">
+            <input
+              type={isConfPasswordVisible ? "text" : "password"}
+              name="confirmpassword"
+              id="confirmpassword"
+              placeholder="Re-enter Password"
+              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-purple-600 focus:border-purple-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
+              required
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none mr-[10px]"
+              onClick={toggleConfPasswordVisibility}
+              aria-label={isConfPasswordVisible ? "Hide password" : "Show password"}
+            >
+              {isConfPasswordVisible ? (
+                <FaEyeSlash className="w-5 h-5" />
+              ) : (
+                <FaEye className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
 
             <CountryInput />
             <div className="max-w-xl">
               <div className="mb-2 block">
-                <label htmlFor="phone" className="text-sm font-medium">
+                <label htmlFor="phone" className="font-medium">
                   Phone Number
                 </label>
               </div>
@@ -232,8 +235,8 @@ const Register = (props) => {
 
             <button
               type="submit"
-              className="w-full focus:outline-none text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800"
-            >
+                className="w-full py-3 px-5 text-base font-medium text-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 rounded-lg dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 transition-colors"
+              >
               Create an account
             </button>
             <p className="text-center text-sm text-gray-500">

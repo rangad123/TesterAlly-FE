@@ -11,3 +11,11 @@ input::-webkit-outer-spin-button {
 .password-input {
   padding-right: 2.5rem; 
 }
+
+
+
+.forgot-password {
+  text-align: right;
+  margin-top: -1rem;
+}
+

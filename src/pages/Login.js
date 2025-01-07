@@ -72,23 +72,25 @@ const Login = (props) => {
   
 
   return (
-    <div className="w-full flex justify-center my-4 items-center min-h-screen -mt-10">
+    <div className="w-full flex justify-center my-4 items-center min-h-screen -mt-10 px-6 py-8">
       <div className="hidden lg:block w-1/2">
         <img src="/login.svg" alt="TesterAlly Login" className="w-full max-w-lg mx-auto" />
       </div>
-      <div className="w-full max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
+      <div className="w-full max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" style={{ marginTop: "50px" }}>
+        <h5 className="mb-6 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
           Login to your account
         </h5>
         <form
-          className="w-full flex max-w-md flex-col gap-4"
+          className="w-full flex flex-col gap-5"
           onSubmit={handleLogin}
           autoComplete="off"
         >
           <div>
-            <label htmlFor="email" className="text-sm font-medium required">
+            <label htmlFor="email" className=" font-medium required ">
               Email
             </label>
+          </div>
+          <div>
             <input
               id="email"
               name="email"
@@ -99,37 +101,39 @@ const Login = (props) => {
               required
             />
           </div>
-          <div className="flex items-center justify-between">
-            <label htmlFor="password" className="text-sm font-medium required">
-              Password
+          <div>
+          <label htmlFor="password" className=" font-medium required ">
+            Password
             </label>
-            <div className="text-sm">
+            </div>
+            <div className="relative w-full">
+              <input
+                id="password"
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="Your Password"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
+                required
+              />
+              <button
+              type="button"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none mr-[20px]"
+              onClick={togglePasswordVisiblity}
+              aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+            >
+              {isPasswordVisible ? (
+                <FaEyeSlash className="w-5 h-5" />
+              ) : (
+                <FaEye className="w-5 h-5" />
+              )}
+            </button>
+            </div>
+            <div className="forgot-password">
               <span
                 className="font-semibold text-purple-600 hover:text-purple-500 cursor-pointer"
                 onClick={() => navigate("/forgotPassword")}
               >
                 Forgot password?
               </span>
-              </div>
-              </div>
-            <div className="relative">
-              <input
-                id="password"
-                type={isPasswordVisible ? "text" : "password"}
-                placeholder="Your Password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500 pr-10"
-                required
-              />
-              <div
-                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-                onClick={togglePasswordVisiblity}
-              >
-                {isPasswordVisible ? (
-                  <FaEyeSlash className="w-5 h-5 text-gray-400" />
-                ) : (
-                  <FaEye className="w-5 h-5 text-gray-400" />
-                )}
-              </div>
             </div>
           <div className="flex items-center gap-2 mb-2">
             <input
@@ -137,22 +141,22 @@ const Login = (props) => {
               id="remember"
               className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
-            <label htmlFor="remember" className="text-sm font-medium">
+            <label htmlFor="remember" className="font-medium">
               Remember me
             </label>
           </div>
           <button
             type="submit"
-            className="focus:outline-none text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800"
+            className="w-full py-3 px-5 text-base font-medium text-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 rounded-lg dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 transition-colors"
             disabled={loading}
           >
             {loading ? "Logging in..." : "Submit"}
           </button>
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-gray-600 dark:text-gray-400">
             Not yet registered?{" "}
             <a
               href="/dashboard/register"
-              className="font-semibold leading-6 text-purple-600 hover:text-purple-500"
+              className="font-semibold text-purple-700 hover:text-purple-800 dark:text-purple-500 dark:hover:text-purple-400"
             >
               Register Here
             </a>
