@@ -97,11 +97,11 @@ const Register = (props) => {
     <div className="w-full flex flex-col lg:flex-row justify-center items-center min-h-screen -mt-10 px-6 py-8 gap-8">
       <div className="hidden lg:block w-2/5  p-6 rounded-lg"  style={{ marginTop: "50px" }}>
         <img
-          src="/logo1.webp"
+          src="/ai-image-1.jpg"
           alt="TesterAlly Login"
           className="w-full max-w-md mx-auto mb-6 rounded-3xl shadow-md transform hover:scale-105 transition-transform duration-300"
         />
-        <h1 className="text-3xl font-bold text-gray-800 text-center">TesterAlly</h1>
+        <h1 className="text-3xl font-bold text-gray-800 text-center">Join TesterAlly</h1>
         <p className="text-lg text-gray-600 text-center mt-2">
           Revolutionizing Automation Testing with AI
         </p>
@@ -111,7 +111,7 @@ const Register = (props) => {
               &#10003;
             </span>
             <span className="text-gray-700">
-              Write test cases effortlessly with AI-powered automation tools.
+              Sign up for AI-powered tools that make writing test cases a breeze.
             </span>
           </li>
           <li className="flex items-start">
@@ -119,7 +119,7 @@ const Register = (props) => {
               &#10003;
             </span>
             <span className="text-gray-700">
-              Codeless testing solutions for faster test creation and execution.
+            Access codeless testing solutions for fast and efficient workflows.
             </span>
           </li>
           <li className="flex items-start">
@@ -127,7 +127,7 @@ const Register = (props) => {
               &#10003;
             </span>
             <span className="text-gray-700">
-              No coding skills required – plain English testing made easy.
+            Start your journey with plain English, no coding skills required.
             </span>
           </li>
           <li className="flex items-start">
@@ -135,12 +135,12 @@ const Register = (props) => {
               &#10003;
             </span>
             <span className="text-gray-700">
-              Get started with no credit card required.
+            Free signup – no credit card required!
             </span>
           </li>
         </ul>
         <p className="text-sm text-gray-500 text-center mt-4">
-          Trusted by teams worldwide to accelerate testing with cutting-edge AI.
+        Join teams worldwide using TesterAlly to accelerate testing with cutting-edge AI.
         </p>
       </div>
       

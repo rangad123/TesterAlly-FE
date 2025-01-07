@@ -23,7 +23,7 @@ export default function Dashboard() {
  
 
   return (
-    <div className="dashboard">
+    <div className="min-h-screen bg-indigo-50">
       <CookieConsent />
       {/* Hero Section */}
       <section className="hero">
@@ -31,13 +31,11 @@ export default function Dashboard() {
       </section>
 
 {/* Marquee Section */}
-<section className="marquee">
-  <div className="marquee-content">
-    <p>
-      🚀 Unlock the power of AI in testing | 🌟 Seamless automate web, mobile, and API testing | 📈 Scale your testing with TesterAlly today!
-    </p>
-  </div>
-</section>
+      <div className="bg-gradient-to-r from-blue-100 to-blue-200 p-4 my-8 mx-4 md:mx-8 lg:mx-auto lg:max-w-7xl rounded-lg">
+        <p className="text-blue-800 text-sm md:text-base lg:text-lg font-semibold text-center animate-pulse">
+          🚀 Unlock the power of AI in testing | 🌟 Seamless automate web, mobile, and API testing | 📈 Scale your testing with TesterAlly today!
+        </p>
+      </div>
 
       {/* Features Section */}
   <section id="features" className="features max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
