@@ -94,9 +94,54 @@ const Register = (props) => {
   };
 
   return (
-    <div className="w-full flex items-center justify-center px-6 py-8 mx-auto my-5 lg:py-0">
-      <div className="hidden lg:block w-1/2">
-        <img src="/register-illustration.svg" alt="TesterAlly Register" className="w-full max-w-2xl mx-auto transform scale-125 transition-transform duration-300 hover:scale-130" />
+    <div className="w-full flex flex-col lg:flex-row justify-center items-center min-h-screen -mt-10 px-6 py-8 gap-8">
+      <div className="hidden lg:block w-2/5  p-6 rounded-lg"  style={{ marginTop: "50px" }}>
+        <img
+          src="/logo1.webp"
+          alt="TesterAlly Login"
+          className="w-full max-w-md mx-auto mb-6 rounded-3xl shadow-md transform hover:scale-105 transition-transform duration-300"
+        />
+        <h1 className="text-3xl font-bold text-gray-800 text-center">TesterAlly</h1>
+        <p className="text-lg text-gray-600 text-center mt-2">
+          Revolutionizing Automation Testing with AI
+        </p>
+        <ul className="mt-6 space-y-4">
+          <li className="flex items-start">
+            <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center mr-3">
+              &#10003;
+            </span>
+            <span className="text-gray-700">
+              Write test cases effortlessly with AI-powered automation tools.
+            </span>
+          </li>
+          <li className="flex items-start">
+            <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center mr-3">
+              &#10003;
+            </span>
+            <span className="text-gray-700">
+              Codeless testing solutions for faster test creation and execution.
+            </span>
+          </li>
+          <li className="flex items-start">
+            <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center mr-3">
+              &#10003;
+            </span>
+            <span className="text-gray-700">
+              No coding skills required – plain English testing made easy.
+            </span>
+          </li>
+          <li className="flex items-start">
+            <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center mr-3">
+              &#10003;
+            </span>
+            <span className="text-gray-700">
+              Get started with no credit card required.
+            </span>
+          </li>
+        </ul>
+        <p className="text-sm text-gray-500 text-center mt-4">
+          Trusted by teams worldwide to accelerate testing with cutting-edge AI.
+        </p>
       </div>
       
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-xl xl:p-0 dark:bg-gray-800 dark:border-gray-700 " style={{ marginTop: "50px" }}>
