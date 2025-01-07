@@ -11,7 +11,6 @@ const Login = (props) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
   const togglePasswordVisiblity = () => {
     setIsPasswordVisible((prev) => !prev);
   };
@@ -32,22 +31,22 @@ const Login = (props) => {
 
   const handleLogin = async (ev) => {
     ev.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     const email = ev.target.email.value;
     const password = ev.target.password.value;
     const formData = { email, password };
-  
+
     try {
       const res = await axios.post(URL, formData);
       const data = res.data;
-  
+
       if (data.success === true) {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", email);
         localStorage.setItem("userName", data.user.name);
         toast.success(data.message);
-        
+
         console.log("user data", data.user);
 
         setIsLoggedIn(true);
@@ -66,17 +65,64 @@ const Login = (props) => {
         toast.error("Network error. Please check your connection.");
       }
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
-  
 
   return (
-    <div className="w-full flex justify-center my-4 items-center min-h-screen -mt-10 px-6 py-8">
-      <div className="hidden lg:block w-1/2">
-        <img src="/login.svg" alt="TesterAlly Login" className="w-full max-w-lg mx-auto" />
+    <div className="w-full flex flex-col lg:flex-row justify-center items-center min-h-screen -mt-10 px-6 py-8 gap-8">
+      {/* Left section with image and text */}
+      <div className="hidden lg:block w-2/5 bg-gray-100 p-6 rounded-lg shadow-lg">
+        <img
+          src="/logo1.webp"
+          alt="TesterAlly Login"
+          className="w-full max-w-md mx-auto mb-6 rounded-3xl shadow-md transform hover:scale-105 transition-transform duration-300"
+        />
+        <h1 className="text-3xl font-bold text-gray-800 text-center">TesterAlly</h1>
+        <p className="text-lg text-gray-600 text-center mt-2">
+          Revolutionizing Automation Testing with AI
+        </p>
+        <ul className="mt-6 space-y-4">
+          <li className="flex items-start">
+            <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center mr-3">
+              &#10003;
+            </span>
+            <span className="text-gray-700">
+              Write test cases effortlessly with AI-powered automation tools.
+            </span>
+          </li>
+          <li className="flex items-start">
+            <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center mr-3">
+              &#10003;
+            </span>
+            <span className="text-gray-700">
+              Codeless testing solutions for faster test creation and execution.
+            </span>
+          </li>
+          <li className="flex items-start">
+            <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center mr-3">
+              &#10003;
+            </span>
+            <span className="text-gray-700">
+              No coding skills required – plain English testing made easy.
+            </span>
+          </li>
+          <li className="flex items-start">
+            <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center mr-3">
+              &#10003;
+            </span>
+            <span className="text-gray-700">
+              Get started with no credit card required.
+            </span>
+          </li>
+        </ul>
+        <p className="text-sm text-gray-500 text-center mt-4">
+          Trusted by teams worldwide to accelerate testing with cutting-edge AI.
+        </p>
       </div>
-      <div className="w-full max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" style={{ marginTop: "50px" }}>
+
+      {/* Right section with login form */}
+      <div className="w-full max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
         <h5 className="mb-6 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
           Login to your account
         </h5>
@@ -86,7 +132,7 @@ const Login = (props) => {
           autoComplete="off"
         >
           <div>
-            <label htmlFor="email" className=" font-medium required ">
+            <label htmlFor="email" className="font-medium required">
               Email
             </label>
           </div>
@@ -102,21 +148,21 @@ const Login = (props) => {
             />
           </div>
           <div>
-          <label htmlFor="password" className=" font-medium required ">
-            Password
+            <label htmlFor="password" className="font-medium required">
+              Password
             </label>
-            </div>
-            <div className="relative w-full">
-              <input
-                id="password"
-                type={isPasswordVisible ? "text" : "password"}
-                placeholder="Your Password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
-                required
-              />
-              <button
+          </div>
+          <div className="relative w-full">
+            <input
+              id="password"
+              type={isPasswordVisible ? "text" : "password"}
+              placeholder="Your Password"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
+              required
+            />
+            <button
               type="button"
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none mr-[20px]"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
               onClick={togglePasswordVisiblity}
               aria-label={isPasswordVisible ? "Hide password" : "Show password"}
             >
@@ -126,15 +172,15 @@ const Login = (props) => {
                 <FaEye className="w-5 h-5" />
               )}
             </button>
-            </div>
-            <div className="forgot-password">
-              <span
-                className="font-semibold text-purple-600 hover:text-purple-500 cursor-pointer"
-                onClick={() => navigate("/forgotPassword")}
-              >
-                Forgot password?
-              </span>
-            </div>
+          </div>
+          <div className="forgot-password">
+            <span
+              className="font-semibold text-purple-600 hover:text-purple-500 cursor-pointer"
+              onClick={() => navigate("/forgotPassword")}
+            >
+              Forgot password?
+            </span>
+          </div>
           <div className="flex items-center gap-2 mb-2">
             <input
               type="checkbox"
