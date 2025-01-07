@@ -166,18 +166,12 @@ const AppNavBar = (props) => {
             </Dropdown>
           </div>
         ) : (
-          <div className="auth-buttons">
+          <div className="text-sm/6 font-semibold text-gray-900 auth-buttons">
             <button
               onClick={() => navigate("/dashboard/login")}
               className="login-button"
             >
-              Login
-            </button>
-            <button
-              onClick={() => navigate("/dashboard/register")}
-              className="signup-button"
-            >
-              Sign Up
+              Login<span aria-hidden="true">&rarr;</span>
             </button>
           </div>
         )}

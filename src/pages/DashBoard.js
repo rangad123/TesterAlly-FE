@@ -40,7 +40,7 @@ export default function Dashboard() {
 </section>
 
       {/* Features Section */}
-  <section id="features" className="features">
+  <section id="features" className="features max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
   <h2 className="section-title">AI-Driven Web Testing</h2>
   <div className="space-y-5">
     <div className="grid grid-cols-1 md:grid-cols-3">
@@ -81,7 +81,7 @@ export default function Dashboard() {
 
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="how-it-works">
+      <section id="how-it-works" className="how-it-works max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="section-title">How Tester-ally works </h2>
 
         <div className="space-y-5">
@@ -118,7 +118,7 @@ export default function Dashboard() {
       </section>
 
       {/* Blog Highlights Section */}
-      <section id="blog" className="blog-highlights">
+      <section id="blog" className="blog-highlights max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="section-title">From Our Blog</h2>
         <div className="blog-grid">
           <div className="blog-card">
@@ -144,7 +144,7 @@ export default function Dashboard() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="testimonials">
+      <section id="testimonials" className="testimonials max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <h2 className="section-title">What Our Users Say</h2>
         <div className="testimonials-grid">
           <div className="testimonial-card">
