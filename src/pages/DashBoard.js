@@ -23,7 +23,7 @@ export default function Dashboard() {
  
 
   return (
-    <div className="min-h-screen bg-indigo-50">
+    <div className="">
       <CookieConsent />
       {/* Hero Section */}
       <section className="hero">

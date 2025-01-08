@@ -402,7 +402,7 @@ const App = () => {
           {/* Content Area */}
           <div
             className={`transition-all duration-300 ease-in-out flex-grow ${
-              isSidebarOpen && isLoggedIn ? "ml-64" : "ml-16"
+              isSidebarOpen && isLoggedIn ? "ml-64" : "ml-0"
             }`}
           >
             <Routes>
