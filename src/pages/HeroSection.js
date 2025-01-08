@@ -116,7 +116,7 @@ const HeroSection = () => {
             </motion.p>
 
             <motion.button 
-              className="w-full md:w-auto px-8 py-4 bg-[rgb(126,58,242)] rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="w-full md:w-auto px-8 py-4 bg-[#4f46e5] rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -132,58 +132,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <svg viewBox="0 0 400 400" className="w-full h-full">
-              <motion.path
-                d="M50 250 L200 350 L350 250 L200 150 Z"
-                fill="#e0e7ff"
-                stroke="#c7d2fe"
-                strokeWidth="2"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 1.5 }}
-              />
-
-              <motion.g
-                initial={{ y: -10 }}
-                animate={{ y: 10 }}
-                transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-              >
-                <rect x="150" y="100" width="120" height="90" fill="#7e3af2" rx="8"/>
-                <rect x="160" y="120" width="100" height="12" fill="white" opacity="0.6" rx="2"/>
-                <rect x="160" y="140" width="80" height="12" fill="white" opacity="0.6" rx="2"/>
-                <circle cx="250" cy="115" r="8" fill="#4CAF50"/>
-              </motion.g>
-
-              <motion.g
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1, delay: 0.5 }}
-              >
-                <rect x="250" y="180" width="90" height="70" fill="#9061f9" rx="6"/>
-                <rect x="260" y="190" width="70" height="8" fill="white" opacity="0.6" rx="1"/>
-                <rect x="260" y="205" width="50" height="8" fill="white" opacity="0.6" rx="1"/>
-                <rect x="260" y="220" width="60" height="8" fill="white" opacity="0.6" rx="1"/>
-              </motion.g>
-
-              <motion.g
-                initial={{ rotate: 0 }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              >
-                <circle cx="120" cy="200" r="20" fill="#7e3af2"/>
-                <path d="M110 200 L130 200 M120 190 L120 210" stroke="white" strokeWidth="3"/>
-              </motion.g>
-
-              <motion.path
-                d="M120 220 C 150 250, 200 250, 250 220"
-                stroke="#7e3af2"
-                strokeWidth="3"
-                fill="none"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </svg>
+            <img src='/hero.svg'  alt='TeaterAlly' />
           </motion.div>
         </div>
       </div>

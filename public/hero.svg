@@ -5,7 +5,7 @@
   <circle cx="75" cy="600" r="12" fill="#e2e8f0" opacity="0.6"/>
   
   <!-- Connected nodes representing test automation network -->
-  <g transform="translate(600,450) scale(1.5)">
+  <g transform="translate(600,450) scale(2.1)">
     <path d="M0,-180 A180,180 0 1,1 0,180 A180,180 0 1,1 0,-180 Z" fill="#6b21a8" opacity="0.1"/>
     
     <!-- Connection lines -->

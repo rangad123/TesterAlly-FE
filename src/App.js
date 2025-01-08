@@ -307,6 +307,7 @@ import TestSuite from "./pages/TestSuite";
 import CreateTestSuite from "./pages/CreateTestSuite";
 import DashBoard from "./pages/DashBoard";
 import PrivateRoute from "./pages/PrivateRoute";
+import ProjectDetails from "./pages/ProjectDetails";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -401,7 +402,7 @@ const App = () => {
           {/* Content Area */}
           <div
             className={`transition-all duration-300 ease-in-out flex-grow ${
-              isSidebarOpen && isLoggedIn ? "ml-72" : "ml-0"
+              isSidebarOpen && isLoggedIn ? "ml-64" : "ml-16"
             }`}
           >
             <Routes>
@@ -525,6 +526,15 @@ const App = () => {
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <CreateTestSuite />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="project-details"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <ProjectDetails />
                   </PrivateRoute>
                 }
               />

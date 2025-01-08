@@ -5,6 +5,16 @@
   position: relative; 
 }
 
+.active {
+  background-color: #9ac5e2; 
+  color: white;
+}
+
+.active .icon {
+  color: white;
+}
+
+
 .sidebar {
   background-color: white;
   color: white;

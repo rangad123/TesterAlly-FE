@@ -1,9 +1,11 @@
 import React from "react";
 import "./style.css";
+import ProjectSidebar from "./Projectsidebar";
 
 const UserDashboard = () => {
   return (
     <div className="dashboard-container">
+      <ProjectSidebar />
       <div className="main-content">
 
         <div className="text-center space-y-5">
