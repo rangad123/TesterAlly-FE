@@ -22,6 +22,8 @@ const Login = (props) => {
     if (isLoggedIn) navigate("/dashboard-user");
   }, [isLoggedIn, navigate]);
 
+
+
   useEffect(() => {
     const form = document.querySelector("form");
     if (form) {
@@ -29,49 +31,63 @@ const Login = (props) => {
     }
   }, []);
 
+
+
   const handleLogin = async (ev) => {
-    ev.preventDefault();
-    setLoading(true);
+  ev.preventDefault();
+  console.time("Login Total Time"); 
+  setLoading(true);
 
-    const email = ev.target.email.value;
-    const password = ev.target.password.value;
-    const formData = { email, password };
+  const email = ev.target.email.value;
+  const password = ev.target.password.value;
+  const formData = { email, password };
 
-    try {
-      const res = await axios.post(URL, formData);
-      const data = res.data;
+  console.time("Form Data Setup");
+  console.log("Form Data:", formData);
+  console.timeEnd("Form Data Setup");
 
-      if (data.success === true) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("userName", data.user.name);
-        toast.success(data.message);
+  try {
+    console.time("API Call"); 
+    const res = await axios.post(URL, formData);
+    console.timeEnd("API Call");
 
-        console.log("user data", data.user);
+    const data = res.data;
+    console.log("API Response Data:", data);
 
-        setIsLoggedIn(true);
-        setEmail(email);
-        setName(data.user.name);
-        navigate("/dashboard-user");
-      } else {
-        toast.error(data.message || "An error occurred during login.");
-      }
-    } catch (error) {
-      if (error.response) {
-        toast.error(
-          error.response.data.message || "Invalid email or password."
-        );
-      } else {
-        toast.error("Network error. Please check your connection.");
-      }
-    } finally {
-      setLoading(false);
+    if (data.success === true) {
+      console.time("Post-Success Operations"); 
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userName", data.user.name);
+
+      toast.success(data.message);
+      setIsLoggedIn(true);
+      setEmail(email);
+      setName(data.user.name);
+      navigate("/dashboard-user");
+      console.timeEnd("Post-Success Operations");
+    } else {
+      console.warn("API Error Message:", data.message);
+      toast.error(data.message || "An error occurred during login.");
     }
-  };
+  } catch (error) {
+    console.error("Error Details:", error);
+    if (error.response) {
+      toast.error(
+        error.response.data.message || "Invalid email or password."
+      );
+    } else {
+      toast.error("Network error. Please check your connection.");
+    }
+  } finally {
+    setLoading(false);
+    console.timeEnd("Login Total Time"); 
+  }
+};
+
 
   return (
     <div className="w-full flex flex-col lg:flex-row justify-center items-center min-h-screen -mt-10 px-6 py-8 gap-8">
-      {/* Left section with image and text */}
       <div className="hidden lg:block w-2/5 p-6 rounded-lg" style={{ marginTop: "50px" }}>
         <img
           src="/logo1.webp"

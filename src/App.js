@@ -308,6 +308,7 @@ import CreateTestSuite from "./pages/CreateTestSuite";
 import DashBoard from "./pages/DashBoard";
 import PrivateRoute from "./pages/PrivateRoute";
 import ProjectDetails from "./pages/ProjectDetails";
+import ProjectMembers from "./pages/ProjectMembers";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -535,6 +536,15 @@ const App = () => {
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <ProjectDetails />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="project-members"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <ProjectMembers />
                   </PrivateRoute>
                 }
               />

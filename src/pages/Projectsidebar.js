@@ -115,10 +115,10 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
 
   return (
     <div
-      className={`fixed top-0 ${isL1Expanded ? "left-64" : "left-16"} h-full w-64 bg-white border-l border-gray-200 transition-all duration-300 ease-in-out md:block`}
-    >
+  className={`fixed ${isL1Expanded ? "left-64" : "left-16"} top-16 h-[calc(100%-4rem)] w-64 bg-white border-l border-gray-200 transition-all duration-300 ease-in-out md:block`}
+>
       <div
-        className="relative w-4/5 p-2 bg-white border border-purple-600 rounded-md flex justify-between items-center cursor-pointer mt-[100px] left-1/2 transform -translate-x-1/2"
+        className="relative w-4/5 p-2 bg-white border border-purple-600 rounded-md flex justify-between items-center cursor-pointer mt-[30px] left-1/2 transform -translate-x-1/2"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
       >
         <span className="text-black">{selectedProject}</span>

@@ -31,8 +31,7 @@ const Sidebar = () => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setIsSubSidebarVisible(false);
         setIsSettingsVisible(false);
-        setIsProjectSettingsVisible(false);
-        setIsTestCasesVisible(false);
+
         
       }
     };
@@ -71,6 +70,7 @@ const Sidebar = () => {
 
   const toggleProjectSettingsSidebar = () => {
     setIsProjectSettingsVisible((prevState) => !prevState);
+    navigate("/project-details");
     setIsSubSidebarVisible(false);
     setIsSettingsVisible(false);
     setIsTestCasesVisible(false);
@@ -127,6 +127,7 @@ const Sidebar = () => {
 
   const toggleTestCasesSidebar = () => {
     setIsTestCasesVisible((prevState) => !prevState);
+    navigate("/create-testcases");
     setIsProjectSettingsVisible(false);
     setIsSettingsVisible(false);
     setIsSubSidebarVisible(false);
@@ -190,7 +191,7 @@ const Sidebar = () => {
         </div>
 
         <Projectsidebar 
-          isVisible={isProjectSettingsVisible || isTestCasesVisible} // Keeps Projectsidebar open when either option is active
+          isVisible={isProjectSettingsVisible || isTestCasesVisible} 
           isProjectSettings={isProjectSettingsVisible}
           isL1Expanded={isSidebarOpen}
         />
