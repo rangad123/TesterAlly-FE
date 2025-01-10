@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
 import "./CreateProject.css";
 
-const CreateProject = () => {
+const CreateProject = ({ onProjectCreated }) => {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [projectType, setProjectType] = useState("");
@@ -30,10 +30,52 @@ const CreateProject = () => {
     return isValid;
   };
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     if (!validateFields()) return;
-    alert("Project Created Successfully");
+  
+    const projectData = {
+      name: projectName,
+      description: description || "No description provided",
+      project_type: projectType, 
+    };
+  
+    console.log("Payload:", projectData);
+  
+    try {
+      const response = await fetch(
+        "https://testerally-be-ylpr.onrender.com/api/projects/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(projectData),
+        }
+      );
+  
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        console.error("Backend Error Response:", errorResponse);
+        throw new Error(errorResponse.message || "Failed to create project");
+      }
+  
+      const createdProject = await response.json();
+      alert("Project Created Successfully");
+  
+      if (onProjectCreated) {
+        onProjectCreated(createdProject.name);
+      }
+  
+      setProjectName("");
+      setDescription("");
+      setProjectType("");
+      setShowDescription(false);
+    } catch (error) {
+      console.error("Error creating project:", error);
+      alert("Error creating project. Please try again.");
+    }
   };
+  
 
   const handleCancel = () => {
     navigate("/dashboard-user");
@@ -56,7 +98,6 @@ const CreateProject = () => {
                   Cancel
               </button>
               <button onClick={handleCreateProject} className="create-btn">
-                <AiOutlinePlus className="inline-icon" />
                 Create
               </button>
             </div>
@@ -69,6 +110,7 @@ const CreateProject = () => {
           <input
             id="projectName"
             type="text"
+            autoComplete="off"
             value={projectName}
             onChange={(e) => {
               setProjectName(e.target.value);
@@ -97,6 +139,7 @@ const CreateProject = () => {
           {showDescription && (
             <textarea
               id="description"
+              autoComplete="off"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter a brief description"

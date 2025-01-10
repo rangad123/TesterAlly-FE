@@ -177,6 +177,9 @@
 }
 
 @media (max-width: 480px) {
+  .create-project-container{
+    margin-left: 50px;
+  }
   .create-project-box {
     padding: 15px;
     max-width: 100%;

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import "./CreateTestCases.css";
-import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
 
-
-const CreateTestCases = ( ) => {
+const CreateTestCases = () => {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [errors, setErrors] = useState({ name: "", url: "" });
-  const navigate = useNavigate(); 
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const validateFields = () => {
     let isValid = true;
@@ -28,19 +28,41 @@ const CreateTestCases = ( ) => {
     return isValid;
   };
 
-  const handleCreateTestCase = () => {
+  const handleCreateTestCase = async () => {
     if (!validateFields()) return;
 
-    alert("Test Case Created Successfully");
+    setIsLoading(true);
 
+    try {
+      const response = await fetch("https://testerally-be-ylpr.onrender.com/api/testcases/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, url }),
+      });
+
+      if (response.ok) {
+        alert("Test Case Created Successfully");
+        setName("");
+        setUrl("");
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to create test case: ${errorData.detail || "Unknown error"}`);
+      }
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
-    navigate("/dashboard-user"); 
+    navigate("/dashboard-user");
   };
 
   const handleTestSuite = () => {
-    navigate('/testsuite')
+    navigate("/testsuite");
   };
 
   const handleWriteTestManually = () => {
@@ -49,70 +71,69 @@ const CreateTestCases = ( ) => {
 
   return (
     <div className="create-test-cases-page-container">
-    <div className="create-test-cases-wrapper">
-    <div className="create-test-cases-container animated-fade-in">
+      <div className="create-test-cases-wrapper">
+        <div className="create-test-cases-container animated-fade-in">
+          <div className="create-test-cases-header">
+            <h2 className="create-test-cases-title">Create Test Cases</h2>
 
-      <div className="create-test-cases-header">
-        <h2 className="create-test-cases-title">Create Test Cases</h2>
+            <div className="create-test-cases-button-group-right">
+              <button onClick={handleCancel} className="cancel-btn">
+                <AiOutlineClose className="inline-icon" />
+                Cancel
+              </button>
+              <button onClick={handleCreateTestCase} className="create-btn" disabled={isLoading}>
+                {isLoading ? "Creating..." : "Create"}
+              </button>
+            </div>
+          </div>
 
-        <div className="create-test-cases-button-group-right">
-          <button onClick={handleCancel} className="cancel-btn">
-            <AiOutlineClose className="inline-icon" />
-            Cancel
-          </button>
-          <button onClick={handleCreateTestCase} className="create-btn">
-            <AiOutlinePlus className="inline-icon" />
-            Create
-          </button>
+          <div className="create-test-cases-input-container">
+            <label className="create-test-cases-label">
+              Name<span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="text"
+              autoComplete="off"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setErrors((prevErrors) => ({ ...prevErrors, name: "" }));
+              }}
+              placeholder="Enter test case name"
+              className={`create-test-cases-input ${errors.name ? "error-border" : ""}`}
+            />
+            {errors.name && <span className="error-message">{errors.name}</span>}
+          </div>
+
+          <div className="create-test-cases-input-container">
+            <label className="create-test-cases-label">
+              URL<span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="text"
+              autoComplete="off"
+              value={url}
+              onChange={(e) => {
+                setUrl(e.target.value);
+                setErrors((prevErrors) => ({ ...prevErrors, url: "" }));
+              }}
+              placeholder="Enter URL"
+              className={`create-test-cases-input ${errors.url ? "error-border" : ""}`}
+            />
+            {errors.url && <span className="error-message">{errors.url}</span>}
+          </div>
+
+          <div className="create-test-cases-button-group">
+            <button onClick={handleWriteTestManually} className="create-test-cases-btn-manual">
+              Write Test Manually
+            </button>
+
+            <button onClick={handleTestSuite} className="create-test-cases-test-suite-btn">
+              Test Suite
+            </button>
+          </div>
         </div>
       </div>
-
-
-        <div className="create-test-cases-input-container">
-          <label className="create-test-cases-label">
-            Name<span style={{ color: "red" }}>*</span>
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setErrors((prevErrors) => ({ ...prevErrors, name: "" }));
-            }}
-            placeholder="Enter test case name"
-            className={`create-test-cases-input ${errors.name ? "error-border" : ""}`}
-          />
-          {errors.name && <span className="error-message">{errors.name}</span>}
-        </div>
-
-        <div className="create-test-cases-input-container">
-          <label className="create-test-cases-label">
-            URL<span style={{ color: "red" }}>*</span>
-          </label>
-          <input
-            type="text"
-            value={url}
-            onChange={(e) => {
-              setUrl(e.target.value);
-              setErrors((prevErrors) => ({ ...prevErrors, url: "" }));
-            }}
-            placeholder="Enter URL"
-            className={`create-test-cases-input ${errors.url ? "error-border" : ""}`}
-          />
-          {errors.url && <span className="error-message">{errors.url}</span>}
-        </div>
-
-        <div className="create-test-cases-button-group">
-          <button onClick={handleWriteTestManually} className="create-test-cases-btn-manual">
-            Write Test Manually
-          </button>
-
-          <button onClick={handleTestSuite} className="create-test-cases-test-suite-btn">
-          Test Suite
-          </button>
-        </div>
-      </div>
-    </div>
     </div>
   );
 };

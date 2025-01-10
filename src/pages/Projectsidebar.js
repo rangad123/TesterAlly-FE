@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaInfoCircle,
@@ -15,9 +15,37 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProject, setSelectedProject] = useState("Simply Travel (Demo)");
-  const [projects, ] = useState(["Simply Travel (Demo)"]);
-  const [activeMenuItem, setActiveMenuItem] = useState(""); // Active menu item
+  const [selectedProject, setSelectedProject] = useState("Sample Demo Project"); 
+  const [projects, setProjects] = useState(["Sample Demo Project"]); 
+  const [activeMenuItem, setActiveMenuItem] = useState("");
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch(
+          "https://testerally-be-ylpr.onrender.com/api/projects/"
+        );
+        if (response.ok) {
+          const data = await response.json();
+          const fetchedProjects = data.map((project) => project.name);
+
+          setProjects((prevProjects) => {
+            const uniqueProjects = Array.from(new Set([...prevProjects, ...fetchedProjects]));
+            if (uniqueProjects.length === prevProjects.length) {
+              return prevProjects;
+            }
+            return uniqueProjects;
+          });
+        } else {
+          console.error("Failed to fetch projects");
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []); 
 
   const projectSettingsItems = [
     {
@@ -57,7 +85,7 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
       label: "Test Case Priorities",
       onClick: () => {
         setActiveMenuItem("Test Case Priorities");
-        navigate("/test-case-priorities");
+        navigate("/testcaseproperties");
       },
     },
   ];
@@ -68,7 +96,7 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
       label: "Test Cases",
       onClick: () => {
         setActiveMenuItem("Test Cases");
-        navigate("/create-testcases");
+        navigate("/test-cases");
       },
     },
     {
@@ -100,7 +128,7 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
       label: "Test Suites",
       onClick: () => {
         setActiveMenuItem("Test Suites");
-        navigate("/test-suites");
+        navigate("/testsuite");
       },
     },
   ];
@@ -115,8 +143,10 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
 
   return (
     <div
-  className={`fixed ${isL1Expanded ? "left-64" : "left-16"} top-16 h-[calc(100%-4rem)] w-64 bg-white border-l border-gray-200 transition-all duration-300 ease-in-out md:block`}
->
+      className={`fixed ${
+        isL1Expanded ? "left-60" : "left-16"
+      } top-16 h-[calc(100%-4rem)] w-64 bg-white border-l border-gray-200 transition-all duration-300 ease-in-out md:block`}
+    >
       <div
         className="relative w-4/5 p-2 bg-white border border-purple-600 rounded-md flex justify-between items-center cursor-pointer mt-[30px] left-1/2 transform -translate-x-1/2"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -124,7 +154,9 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
         <span className="text-black">{selectedProject}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className={`w-4 h-4 transform transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
+          className={`w-4 h-4 transform transition-transform ${
+            isDropdownOpen ? "rotate-180" : ""
+          }`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -170,11 +202,15 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
 
       <div className="overflow-y-none mt-4">
         {isProjectSettings && (
-          <div className="flex justify-center text-lg text-gray-500 p-2">Project Settings</div>
+          <div className="flex justify-center text-lg text-gray-500 p-2">
+            Project Settings
+          </div>
         )}
 
         {!isProjectSettings && (
-          <div className="flex justify-center text-lg text-gray-500 p-2">Test Development</div>
+          <div className="flex justify-center text-lg text-gray-500 p-2">
+            Test Development
+          </div>
         )}
 
         {menuItems.map((item, index) => (

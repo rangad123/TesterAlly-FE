@@ -302,13 +302,14 @@ import { useState, useEffect } from "react";
 import CreateProject from "./pages/CreateProject";
 import CreateTestCases from "./pages/CreateTestCases";
 import WriteTestManually from "./pages/WriteTestManually";
-import SaveTestCases from "./pages/SaveTestCases";
 import TestSuite from "./pages/TestSuite";
 import CreateTestSuite from "./pages/CreateTestSuite";
 import DashBoard from "./pages/DashBoard";
 import PrivateRoute from "./pages/PrivateRoute";
 import ProjectDetails from "./pages/ProjectDetails";
 import ProjectMembers from "./pages/ProjectMembers";
+import TestCaseProperties from "./pages/TestCaseProperties";
+import TestCases from "./pages/TestCases";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -504,15 +505,6 @@ const App = () => {
                 }
               />
               <Route
-                path="saved-testcases"
-                exact
-                element={
-                  <PrivateRoute isLoggedIn={isLoggedIn}>
-                    <SaveTestCases  />
-                  </PrivateRoute>
-                }
-              />
-              <Route
                 path="testsuite"
                 exact
                 element={
@@ -545,6 +537,24 @@ const App = () => {
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <ProjectMembers />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="test-cases"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <TestCases />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="project-members"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <TestCaseProperties />
                   </PrivateRoute>
                 }
               />

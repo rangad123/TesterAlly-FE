@@ -70,7 +70,6 @@ const Sidebar = () => {
 
   const toggleProjectSettingsSidebar = () => {
     setIsProjectSettingsVisible((prevState) => !prevState);
-    navigate("/project-details");
     setIsSubSidebarVisible(false);
     setIsSettingsVisible(false);
     setIsTestCasesVisible(false);
@@ -86,7 +85,7 @@ const Sidebar = () => {
   const handleNavigateToCreateTestCases = () => {
     navigate("/create-testcases");
     setIsSubSidebarVisible(false);
-    setIsTestCasesVisible(true);
+    setIsTestCasesVisible(false);
     setIsProjectSettingsVisible(false);
   };
 
@@ -127,7 +126,6 @@ const Sidebar = () => {
 
   const toggleTestCasesSidebar = () => {
     setIsTestCasesVisible((prevState) => !prevState);
-    navigate("/create-testcases");
     setIsProjectSettingsVisible(false);
     setIsSettingsVisible(false);
     setIsSubSidebarVisible(false);

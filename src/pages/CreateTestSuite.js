@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CreateTestSuite.css";
-import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
 
 const CreateTestSuite = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [preRequisite, setPreRequisite] = useState("");
   const [labels, setLabels] = useState("");
-  const [errors, setErrors] = useState({}); // State to store error messages
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ const CreateTestSuite = () => {
     return newErrors;
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -28,8 +29,38 @@ const CreateTestSuite = () => {
     }
 
     setErrors({});
-    console.log({ title, description, preRequisite, labels });
-    navigate("/test-suite");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("https://testerally-be-ylpr.onrender.com/api/testsuites/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          pre_requisite: preRequisite,
+          labels,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Test Suite Created Successfully");
+        setTitle("");
+        setDescription("");
+        setPreRequisite("");
+        setLabels("");
+        navigate("/testsuite");
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to create test suite: ${errorData.detail || "Unknown error"}`);
+      }
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -41,19 +72,18 @@ const CreateTestSuite = () => {
       <div className="create-test-suite-content">
         <div className="create-test-cases-header">
           <h2 className="create-test-cases-title">Create Test Suite</h2>
-              
+
           <div className="create-test-cases-button-group-right">
             <button onClick={handleCancel} className="cancel-btn">
               <AiOutlineClose className="inline-icon" />
               Cancel
             </button>
-            <button onClick={handleCreate} className="create-btn">
-              <AiOutlinePlus className="inline-icon" />
-              Create
+            <button onClick={handleCreate} className="create-btn" disabled={isLoading}>
+              {isLoading ? "Creating..." : <> Create</>}
             </button>
           </div>
         </div>
-        
+
         <form className="create-test-suite-form">
           <div className="create-test-suite-input-group">
             <label className="create-test-suite-label">Title of the Test Suite *</label>
