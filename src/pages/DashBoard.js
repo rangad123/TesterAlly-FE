@@ -104,7 +104,7 @@ export default function Dashboard() {
       </section>
 
       {/* About Us Section */}
-      <section id="about-us" className="about-us">
+      <section id="about-us" className="about-us max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="section-title">About Us</h2>
         <p>
         TesterAlly is leading the charge in AI-powered test automation solutions. 

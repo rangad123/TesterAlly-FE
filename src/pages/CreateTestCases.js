@@ -58,7 +58,7 @@ const CreateTestCases = () => {
   };
 
   const handleCancel = () => {
-    navigate("/dashboard-user");
+    navigate("/test-cases");
   };
 
   const handleTestSuite = () => {

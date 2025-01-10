@@ -132,7 +132,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <img src='/hero.svg'  alt='TeaterAlly' />
+            <img src='/hero.svg' className='mt-[30px]' alt='TeaterAlly' />
           </motion.div>
         </div>
       </div>

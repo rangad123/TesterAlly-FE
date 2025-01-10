@@ -69,7 +69,7 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
       label: "Requirement Types",
       onClick: () => {
         setActiveMenuItem("Requirement Types");
-        navigate("/requirement-types");
+        navigate("/requirement-type");
       },
     },
     {
@@ -77,7 +77,7 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
       label: "Test Case Types",
       onClick: () => {
         setActiveMenuItem("Test Case Types");
-        navigate("/test-case-types");
+        navigate("/testcases-type");
       },
     },
     {
@@ -85,7 +85,7 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
       label: "Test Case Priorities",
       onClick: () => {
         setActiveMenuItem("Test Case Priorities");
-        navigate("/testcaseproperties");
+        navigate("/testcase-Priorities");
       },
     },
   ];
@@ -120,7 +120,7 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
       label: "Requirements",
       onClick: () => {
         setActiveMenuItem("Requirements");
-        navigate("/requirements");
+        navigate("/create-requirement");
       },
     },
     {
@@ -128,7 +128,7 @@ const Projectsidebar = ({ isL1Expanded, isVisible, isProjectSettings }) => {
       label: "Test Suites",
       onClick: () => {
         setActiveMenuItem("Test Suites");
-        navigate("/testsuite");
+        navigate("/createtestsuite");
       },
     },
   ];

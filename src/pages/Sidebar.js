@@ -143,15 +143,6 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* Dashboard Option */}
-        <div
-          className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/dashboard-user" ? "active" : ""}`}
-          onClick={handleNavigateToDashboard}
-        >
-          <MdDashboard className="icon project-icon" />
-          {isSidebarOpen && <span className="option-name">Dashboard</span>}
-        </div>
-
         {/* Create Project Option */}
         <div
           className={`sidebar-option ${isSidebarOpen && isSubSidebarVisible ? "active" : ""}`}
@@ -161,6 +152,16 @@ const Sidebar = () => {
           {isSidebarOpen && <span className="option-name">Create Project</span>}
         </div>
 
+        {/* Dashboard Option */}
+        <div
+          className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/dashboard-user" ? "active" : ""}`}
+          onClick={handleNavigateToDashboard}
+        >
+          <MdDashboard className="icon project-icon" />
+          {isSidebarOpen && <span className="option-name">Dashboard</span>}
+        </div>
+
+
         {/* Test Development Option */}
         <div
           className={`sidebar-option ${isSidebarOpen && isTestCasesVisible ? "active" : ""}`}
@@ -168,15 +169,6 @@ const Sidebar = () => {
         >
           <FaCode className="icon icon project-icon" />
           {isSidebarOpen && <span className="option-name">Test Development</span>}
-        </div>
-
-        {/* Profile Option */}
-        <div
-          className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/profile" ? "active" : ""}`}
-          onClick={handleNavigateToProfile}
-        >
-          <MdAccountCircle className="icon project-icon" />
-          {isSidebarOpen && <span className="option-name">Profile</span>}
         </div>
 
         {/* Project Settings Option */}
@@ -201,6 +193,15 @@ const Sidebar = () => {
         >
           <FiSettings className="icon project-icon" />
           {isSidebarOpen && <span className="option-name">Settings</span>}
+        </div>
+
+        {/* Profile Option */}
+        <div
+          className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/profile" ? "active" : ""}`}
+          onClick={handleNavigateToProfile}
+        >
+          <MdAccountCircle className="icon project-icon" />
+          {isSidebarOpen && <span className="option-name">Profile</span>}
         </div>
 
       </div>

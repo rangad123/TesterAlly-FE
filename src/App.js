@@ -308,8 +308,11 @@ import DashBoard from "./pages/DashBoard";
 import PrivateRoute from "./pages/PrivateRoute";
 import ProjectDetails from "./pages/ProjectDetails";
 import ProjectMembers from "./pages/ProjectMembers";
-import TestCaseProperties from "./pages/TestCaseProperties";
+import TestCasePriorities from "./pages/TestCasePriorities";
 import TestCases from "./pages/TestCases";
+import Requirement from "./pages/Requirement";
+import RequirementTypes from "./pages/RequirementTypes";
+import TestcasesTypes from "./pages/TestcasesTypes"
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -514,7 +517,7 @@ const App = () => {
                 }
               />
               <Route
-                path="testsuite/createtestsuite"
+                path="createtestsuite"
                 exact
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
@@ -550,11 +553,38 @@ const App = () => {
                 }
               />
               <Route
-                path="project-members"
+                path="testcase-Priorities"
                 exact
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
-                    <TestCaseProperties />
+                    <TestCasePriorities />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="create-requirement"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <Requirement />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="requirement-type"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <RequirementTypes />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="testcases-type"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <TestcasesTypes />
                   </PrivateRoute>
                 }
               />
