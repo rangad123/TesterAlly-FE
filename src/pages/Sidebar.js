@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  FaBars,
   FaFolderPlus,
   FaTasks,
   FaCode,
   FaCogs,
-  FaTimes,
   FaUserShield,
   FaUsers,
 } from "react-icons/fa";
@@ -18,7 +16,7 @@ import Projectsidebar from "./Projectsidebar";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen ] = useState(false);
   const [isSubSidebarVisible, setIsSubSidebarVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); 
   const [isProjectSettingsVisible, setIsProjectSettingsVisible] = useState(false);
@@ -42,17 +40,6 @@ const Sidebar = () => {
     };
   }, []);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prevState) => {
-      if (prevState) {
-        setIsSubSidebarVisible(false);
-        setIsSettingsVisible(false); 
-        setIsProjectSettingsVisible(false);
-        setIsTestCasesVisible(false);
-      }
-      return !prevState;
-    });
-  };
 
   const toggleSubSidebar = () => {
     setIsSubSidebarVisible((prevState) => !prevState);
@@ -65,13 +52,6 @@ const Sidebar = () => {
     setIsSettingsVisible((prevState) => !prevState);
     setIsSubSidebarVisible(false); 
     setIsProjectSettingsVisible(false);
-    setIsTestCasesVisible(false);
-  };
-
-  const toggleProjectSettingsSidebar = () => {
-    setIsProjectSettingsVisible((prevState) => !prevState);
-    setIsSubSidebarVisible(false);
-    setIsSettingsVisible(false);
     setIsTestCasesVisible(false);
   };
 
@@ -134,77 +114,70 @@ const Sidebar = () => {
   return (
     <div className="sidebar-container" ref={sidebarRef}>
       {/* Main Sidebar */}
-      <div className={`sidebar ${isSidebarOpen ? "expanded" : "collapsed"}`}>
-        <div className="plus-button" onClick={toggleSidebar}>
-          {isSidebarOpen ? (
-            <FaTimes className="icon menu-icon" />
-          ) : (
-            <FaBars className="icon menu-icon" />
-          )}
-        </div>
+      <div className="sidebar collapsed">
+        <div className="plus-button mt-[40px]"></div>
 
         {/* Create Project Option */}
-        <div
-          className={`sidebar-option ${isSidebarOpen && isSubSidebarVisible ? "active" : ""}`}
-          onClick={toggleSubSidebar}
-        >
-          <BiAddToQueue className="icon project-icon" />
-          {isSidebarOpen && <span className="option-name">Create Project</span>}
-        </div>
-
-        {/* Dashboard Option */}
-        <div
-          className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/dashboard-user" ? "active" : ""}`}
-          onClick={handleNavigateToDashboard}
-        >
-          <MdDashboard className="icon project-icon" />
-          {isSidebarOpen && <span className="option-name">Dashboard</span>}
-        </div>
-
-
-        {/* Test Development Option */}
-        <div
-          className={`sidebar-option ${isSidebarOpen && isTestCasesVisible ? "active" : ""}`}
-          onClick={toggleTestCasesSidebar}
-        >
-          <FaCode className="icon icon project-icon" />
-          {isSidebarOpen && <span className="option-name">Test Development</span>}
-        </div>
-
-        {/* Project Settings Option */}
-        <div
-          className={`sidebar-option ${isSidebarOpen && isProjectSettingsVisible ? "active" : ""}`}
-          onClick={toggleProjectSettingsSidebar}
-        >
-          <FaCogs className="icon project-icon" />
-          {isSidebarOpen && <span className="option-name">Project Settings</span>}
-        </div>
-
-        <Projectsidebar 
-          isVisible={isProjectSettingsVisible || isTestCasesVisible} 
-          isProjectSettings={isProjectSettingsVisible}
-          isL1Expanded={isSidebarOpen}
-        />
-
-        {/* Settings Option */}
-        <div
-          className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/settings" ? "active" : ""}`}
-          onClick={toggleSettingsSidebar}
-        >
-          <FiSettings className="icon project-icon" />
-          {isSidebarOpen && <span className="option-name">Settings</span>}
-        </div>
-
-        {/* Profile Option */}
-        <div
-          className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/profile" ? "active" : ""}`}
-          onClick={handleNavigateToProfile}
-        >
-          <MdAccountCircle className="icon project-icon" />
-          {isSidebarOpen && <span className="option-name">Profile</span>}
-        </div>
-
+    <div
+        className={`sidebar-option ${isSidebarOpen && isSubSidebarVisible ? "active" : ""}`}
+        onClick={toggleSubSidebar}
+      >
+      <BiAddToQueue className="icon project-icon" />
+      <div className="option-name-container">
+        <span className="option-name">Create Project</span>
       </div>
+    </div>
+
+    {/* Dashboard Option */}
+    <div
+      className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/dashboard-user" ? "active" : ""}`}
+      onClick={handleNavigateToDashboard}
+    >
+      <MdDashboard className="icon project-icon" />
+      <div className="option-name-container">
+        <span className="option-name">Dashboard</span>
+      </div>
+    </div>
+
+      {/* Test Development Option */}
+    <div
+      className={`sidebar-option ${isSidebarOpen && isTestCasesVisible ? "active" : ""}`}
+      onClick={toggleTestCasesSidebar}
+    >
+      <FaCode className="icon project-icon" />
+      <div className="option-name-container">
+        <span className="option-name">Test Development</span>
+      </div>
+    </div>
+
+    <Projectsidebar 
+      isVisible={isProjectSettingsVisible || isTestCasesVisible} 
+      isProjectSettings={isProjectSettingsVisible}
+      isL1Expanded={isSidebarOpen}
+    />
+
+    {/* Settings Option */}
+    <div
+      className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/settings" ? "active" : ""}`}
+      onClick={toggleSettingsSidebar}
+    >
+      <FiSettings className="icon project-icon" />
+      <div className="option-name-container">
+        <span className="option-name">Settings</span>
+      </div>
+    </div>
+
+    {/* Profile Option */}
+    <div
+      className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/profile" ? "active" : ""}`}
+      onClick={handleNavigateToProfile}
+    >
+      <MdAccountCircle className="icon project-icon" />
+      <div className="option-name-container">
+        <span className="option-name">Profile</span>
+      </div>
+    </div>
+  </div>
 
       {/* Sub-sidebar: Create Project */}
       {isSubSidebarVisible && (

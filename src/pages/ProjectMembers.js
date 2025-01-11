@@ -9,7 +9,9 @@ const ProjectMembers = () => {
   ];
 
   return (
-    <div className="flex flex-col p-6">
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
+        <div className="p-6">
       <h2 className="create-test-cases-title mb-6">
         Project Members
       </h2>
@@ -36,6 +38,8 @@ const ProjectMembers = () => {
           </div>
         </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 };

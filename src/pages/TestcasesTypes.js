@@ -27,6 +27,9 @@ const TestcasesTypes = () => {
   ];
 
   return (
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
+        <div className="p-6"></div>
     <div className="requirement-types-container">
       <div className="header">
         <h2 className="create-test-cases-title">Test Cases Types</h2>
@@ -56,6 +59,8 @@ const TestcasesTypes = () => {
           </li>
         ))}
       </ul>
+    </div>
+    </div>
     </div>
   );
 };

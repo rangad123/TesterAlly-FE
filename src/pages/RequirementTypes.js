@@ -27,7 +27,10 @@ const RequirementTypes = () => {
   ];
 
   return (
-    <div className="requirement-types-container">
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
+        <div className="p-6">
+        <div className="requirement-types-container">
       <div className="header">
         <h2 className="create-test-cases-title">Requirement Types</h2>
         <button className="add-type-button" onClick={handleAddTypeClick}>
@@ -56,6 +59,9 @@ const RequirementTypes = () => {
           </li>
         ))}
       </ul>
+    </div>
+    </div>
+    </div>
     </div>
   );
 };

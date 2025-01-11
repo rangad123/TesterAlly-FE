@@ -127,7 +127,7 @@ export default function Dashboard() {
               the latest trends in AI and how they are revolutionizing software
               testing.
             </p>
-            <button className="btn primary-btn" onClick={() => window.location.href = "https://www.crowd4test.com/"} >Read More</button>
+            <button className="btn primary-btn" onClick={() => window.location.href = "https://www.crowd4test.com/blog/artificial-intelligence/crowd-intelligence-its-impact-on-the-training-of-ai/"} >Read More</button>
           </div>
           <div className="blog-card">
             <h4>Best Practices for Cross-Browser Testing</h4>
@@ -136,7 +136,7 @@ export default function Dashboard() {
               flawlessly across all browsers and devices. Learn how AI can help
               QA teams achieve faster and more accurate results.
             </p>
-            <button className="btn primary-btn" onClick={() => window.location.href = "https://www.crowd4test.com/"} >Read More</button>
+            <button className="btn primary-btn" onClick={() => window.location.href = "https://www.crowd4test.com/blog/software-testing/artificial-intelligence-ai-and-software-testing-the-scope/"} >Read More</button>
           </div>
         </div>
       </section>
