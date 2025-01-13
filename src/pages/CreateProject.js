@@ -95,6 +95,9 @@ const CreateProject = ({ onProjectCreated }) => {
   };
 
   return (
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
+        <div className="p-6">
     <div className="create-project-container">
       <div className="create-project-box">
 
@@ -185,6 +188,9 @@ const CreateProject = ({ onProjectCreated }) => {
           )}
         </div>
       </div>
+    </div>
+    </div>
+    </div>
     </div>
   );
 };

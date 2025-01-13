@@ -8,7 +8,8 @@ import {
   FaCog,
   FaFlag,
   FaFileAlt,
-  FaTasks,
+  FaRegFileAlt,
+  FaClipboardList
 } from "react-icons/fa";
 
 const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
@@ -23,8 +24,13 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       const userId = localStorage.getItem("userId");
-
+      if (!userId) {
+        console.warn("No userId found in localStorage");
+        return;
+      }
+  
       try {
+<<<<<<< HEAD
         const response = axios({
           method: 'GET',
           url: '/api/projects',
@@ -34,27 +40,41 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
           },
       })
 
+=======
+        const response = await fetch(
+          `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+>>>>>>> 12887d9b9ab30d07cef394b116926587dfcad49f
         if (response.ok) {
           const data = await response.json();
-          console.log("Fetched projects:", data);  
-
+          console.log("Fetched projects:", data);
+  
           const fetchedProjects = data.map((project) => project.name);
           setProjects((prevProjects) => Array.from(new Set([...prevProjects, ...fetchedProjects])));
-
+  
           if (fetchedProjects.length > 0) {
             setSelectedProject(fetchedProjects[0]);
           }
         } else {
-          console.error("Failed to fetch projects");
+          const errorResponse = await response.json();
+          console.error("Failed to fetch projects:", errorResponse);
         }
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
     };
-
+  
     fetchProjects();
   }, []);
-
+  
+  
 
   const projectSettingsItems = [
     { icon: FaInfoCircle, label: "Project Details", onClick: () => navigate("/project-details") },
@@ -66,8 +86,8 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
 
   const menuItems = [
     { icon: FaFileAlt, label: "Test Cases", onClick: () => navigate("/test-cases") },
-    { icon: FaList, label: "Requirements", onClick: () => navigate("/create-requirement") },
-    { icon: FaTasks, label: "Test Suites", onClick: () => navigate("/createtestsuite") },
+    { icon: FaRegFileAlt, label: "Requirements", onClick: () => navigate("/create-requirement") },
+    { icon: FaClipboardList, label: "Test Suites", onClick: () => navigate("/createtestsuite") },
     {
       icon: FaCog,
       label: "Project Settings",

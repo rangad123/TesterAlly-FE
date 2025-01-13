@@ -70,6 +70,9 @@ const CreateTestCases = () => {
   };
 
   return (
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
+        <div className="p-6">
     <div className="create-test-cases-page-container">
       <div className="create-test-cases-wrapper">
         <div className="create-test-cases-container animated-fade-in">
@@ -134,6 +137,9 @@ const CreateTestCases = () => {
           </div>
         </div>
       </div>
+    </div>
+    </div>
+    </div>
     </div>
   );
 };
