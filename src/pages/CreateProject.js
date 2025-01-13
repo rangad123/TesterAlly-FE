@@ -34,6 +34,7 @@ const CreateProject = ({ onProjectCreated }) => {
     if (!validateFields()) return;
 
     const userId = localStorage.getItem("userId"); 
+    
 
   if (!userId) {
     console.error("User ID not found in localStorage");

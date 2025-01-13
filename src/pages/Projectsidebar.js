@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios'
 import {
   FaInfoCircle,
   FaUsers,
@@ -24,16 +25,14 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
       const userId = localStorage.getItem("userId");
 
       try {
-        const response = await fetch(
-          "https://testerally-be-ylpr.onrender.com/api/projects/", 
-          {
-            method: "POST",  
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ user_id: userId }), 
-          }
-        );
+        const response = axios({
+          method: 'GET',
+          url: '/api/projects',
+          body: { user_id:userId}, // Non-standard body
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      })
 
         if (response.ok) {
           const data = await response.json();
