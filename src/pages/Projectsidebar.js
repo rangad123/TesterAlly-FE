@@ -30,17 +30,6 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
       }
   
       try {
-<<<<<<< HEAD
-        const response = axios({
-          method: 'GET',
-          url: '/api/projects',
-          body: { user_id:userId}, // Non-standard body
-          headers: {
-              'Content-Type': 'application/json',
-          },
-      })
-
-=======
         const response = await fetch(
           `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`,
           {
@@ -51,7 +40,6 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
           }
         );
   
->>>>>>> 12887d9b9ab30d07cef394b116926587dfcad49f
         if (response.ok) {
           const data = await response.json();
           console.log("Fetched projects:", data);
