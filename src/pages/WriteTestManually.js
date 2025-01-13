@@ -38,6 +38,9 @@ const WriteTestManually = ({ setShowWriteTestManually }) => {
   };
 
   return (
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
+        <div className="p-6">
     <div className="write-manually-page">
       <div className="write-manually-page-wrapper">
 
@@ -153,6 +156,9 @@ const WriteTestManually = ({ setShowWriteTestManually }) => {
         )}
       </div>
       </div>
+    </div>
+    </div>
+    </div>
     </div>
   );
 };

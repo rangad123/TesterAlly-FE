@@ -31,10 +31,8 @@ const TestCases = () => {
 
     return (
         <div className="flex flex-col min-h-screen">
-            {/* Main content wrapper that adjusts based on sidebar */}
             <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
                 <div className="p-6">
-                    {/* Header Section */}
                     <div className="bg-white rounded-lg shadow mb-6">
                         <div className="flex flex-col sm:flex-row justify-between items-center p-4 border-b">
                             <div className="flex space-x-4 mb-4 sm:mb-0">
@@ -54,7 +52,6 @@ const TestCases = () => {
                             </button>
                         </div>
 
-                        {/* Search Section */}
                         <div className="p-4 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
                             <h2 className="text-lg font-medium text-gray-700">All Test Cases</h2>
                             <div className="relative w-full sm:w-64">
@@ -68,7 +65,6 @@ const TestCases = () => {
                         </div>
                     </div>
 
-                    {/* Table Section */}
                     <div className="bg-white rounded-lg shadow overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200">
