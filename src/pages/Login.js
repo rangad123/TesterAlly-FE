@@ -59,6 +59,11 @@ const Login = (props) => {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userEmail", email);
       localStorage.setItem("userName", data.user.name);
+      localStorage.setItem("userId", data.user.id);
+
+      const userId = localStorage.getItem("userId");
+  
+  console.log("User ID stored in localStorage:", userId);
 
       toast.success(data.message);
       setIsLoggedIn(true);

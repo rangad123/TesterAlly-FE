@@ -32,8 +32,16 @@ const CreateProject = ({ onProjectCreated }) => {
 
   const handleCreateProject = async () => {
     if (!validateFields()) return;
-  
+
+    const userId = localStorage.getItem("userId"); 
+
+  if (!userId) {
+    console.error("User ID not found in localStorage");
+    return;
+  }
+
     const projectData = {
+      user_id: parseInt(userId), 
       name: projectName,
       description: description || "No description provided",
       project_type: projectType, 

@@ -17,18 +17,34 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
   const [selectedProject, setSelectedProject] = useState("Sample Demo Project");
   const [projects, setProjects] = useState(["Sample Demo Project"]);
   const [activeMenuItem, setActiveMenuItem] = useState("");
-  const [isProjectSettingsExpanded, setIsProjectSettingsExpanded] = useState(false); // Toggle for Project Settings
+  const [isProjectSettingsExpanded, setIsProjectSettingsExpanded] = useState(false); 
 
   useEffect(() => {
     const fetchProjects = async () => {
+      const userId = localStorage.getItem("userId");
+
       try {
         const response = await fetch(
-          "https://testerally-be-ylpr.onrender.com/api/projects/"
+          "https://testerally-be-ylpr.onrender.com/api/projects/", 
+          {
+            method: "POST",  
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user_id: userId }), 
+          }
         );
+
         if (response.ok) {
           const data = await response.json();
+          console.log("Fetched projects:", data);  
+
           const fetchedProjects = data.map((project) => project.name);
           setProjects((prevProjects) => Array.from(new Set([...prevProjects, ...fetchedProjects])));
+
+          if (fetchedProjects.length > 0) {
+            setSelectedProject(fetchedProjects[0]);
+          }
         } else {
           console.error("Failed to fetch projects");
         }
@@ -36,8 +52,10 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
         console.error("Error fetching projects:", error);
       }
     };
+
     fetchProjects();
   }, []);
+
 
   const projectSettingsItems = [
     { icon: FaInfoCircle, label: "Project Details", onClick: () => navigate("/project-details") },
