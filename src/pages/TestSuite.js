@@ -7,7 +7,7 @@ const TestSuite = () => {
     const navigate = useNavigate(); 
 
   const handleCreateTestSuite = () => {
-    navigate("/createtestsuite")
+    navigate("/test-suites/create-testsuite")
   };
 
   return (

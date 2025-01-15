@@ -88,10 +88,24 @@
   transition: all 0.3s ease;
 }
 
-.active .project-icon {
-  color: #9ac5e2;
+.active-icon {
+  color: white;
   transform: scale(1.1);
 }
+
+.sidebar-option {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-option:hover {
+  background-color: rgba(154, 197, 226, 0.1);
+}
+
+.active .sidebar-option {
+  background-color: rgba(154, 197, 226, 0.15);
+  border-left-color: #9ac5e2;
+}
+
 
 
 .sub-sidebar,

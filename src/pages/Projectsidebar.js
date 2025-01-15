@@ -15,10 +15,10 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProject, setSelectedProject] = useState("Sample Demo Project");
-  const [projects, setProjects] = useState(["Sample Demo Project"]);
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
   const [activeMenuItem, setActiveMenuItem] = useState("");
-  const [isProjectSettingsExpanded, setIsProjectSettingsExpanded] = useState(false); 
+  const [isProjectSettingsExpanded, setIsProjectSettingsExpanded] = useState(false);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -27,54 +27,59 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
         console.warn("No userId found in localStorage");
         return;
       }
-  
+
       try {
         const response = await fetch(
           `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`,
           {
-            method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
           }
         );
-  
+
         if (response.ok) {
           const data = await response.json();
-          console.log("Fetched projects:", data);
-  
-          const fetchedProjects = data.map((project) => project.name);
-          setProjects((prevProjects) => Array.from(new Set([...prevProjects, ...fetchedProjects])));
-  
-          if (fetchedProjects.length > 0) {
-            setSelectedProject(fetchedProjects[0]);
+          setProjects(data);
+          
+          const savedProject = localStorage.getItem("selectedProject");
+          if (savedProject) {
+            setSelectedProject(JSON.parse(savedProject));
+          } else if (data.length > 0) {
+            setSelectedProject(data[0]);
+            localStorage.setItem("selectedProject", JSON.stringify(data[0]));
           }
         } else {
-          const errorResponse = await response.json();
-          console.error("Failed to fetch projects:", errorResponse);
+          console.error("Failed to fetch projects:", await response.json());
         }
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
     };
-  
+
     fetchProjects();
   }, []);
-  
-  
+
+  const handleProjectSelect = (project) => {
+    setSelectedProject(project);
+    localStorage.setItem("selectedProject", JSON.stringify(project));
+    setIsDropdownOpen(false);
+    setSearchTerm("");
+    window.dispatchEvent(new CustomEvent("projectChanged", { detail: project }));
+  };
 
   const projectSettingsItems = [
-    { icon: FaInfoCircle, label: "Project Details", onClick: () => navigate("/project-details") },
-    { icon: FaUsers, label: "Project Members", onClick: () => navigate("/project-members") },
-    { icon: FaList, label: "Requirement Types", onClick: () => navigate("/requirement-type") },
-    { icon: FaCog, label: "Test Case Types", onClick: () => navigate("/testcases-type") },
-    { icon: FaFlag, label: "Test Case Priorities", onClick: () => navigate("/testcase-Priorities") },
+    { icon: FaInfoCircle, label: "Project Details", path: "/project-details" },
+    { icon: FaUsers, label: "Project Members", path: "/project-members" },
+    { icon: FaList, label: "Requirement Types", path: "/requirement-type" },
+    { icon: FaCog, label: "Test Case Types", path: "/testcases-type" },
+    { icon: FaFlag, label: "Test Case Priorities", path: "/testcase-Priorities" },
   ];
 
   const menuItems = [
-    { icon: FaFileAlt, label: "Test Cases", onClick: () => navigate("/test-cases") },
-    { icon: FaRegFileAlt, label: "Requirements", onClick: () => navigate("/create-requirement") },
-    { icon: FaClipboardList, label: "Test Suites", onClick: () => navigate("/createtestsuite") },
+    { icon: FaFileAlt, label: "Test Cases", path: "/test-cases" },
+    { icon: FaRegFileAlt, label: "Requirements", path: "/create-requirement" },
+    { icon: FaClipboardList, label: "Test Suites", path: "/test-suites" },
     {
       icon: FaCog,
       label: "Project Settings",
@@ -83,8 +88,16 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
     },
   ];
 
+  const handleMenuClick = (path) => {
+    if (!selectedProject) {
+      alert("Please select a project first");
+      return;
+    }
+    navigate(path);
+  };
+
   const filteredProjects = projects.filter((project) =>
-    project.toLowerCase().includes(searchTerm.toLowerCase())
+    project.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (!isVisible) return null;
@@ -100,7 +113,9 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
         className="relative w-4/5 p-2 bg-white border border-purple-600 rounded-md flex justify-between items-center cursor-pointer mt-[18px] left-1/2 transform -translate-x-1/2"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
       >
-        <span className="text-black">{selectedProject}</span>
+        <span className="text-black truncate">
+          {selectedProject?.name || "Select Project"}
+        </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className={`w-4 h-4 transform transition-transform ${
@@ -114,6 +129,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
         </svg>
       </div>
 
+      {/* Dropdown Menu */}
       {isDropdownOpen && (
         <div className="absolute left-0 w-full bg-white border border-gray-300 rounded-md mt-1 z-10">
           <div className="p-2 border-b border-gray-200">
@@ -129,15 +145,11 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
           <div className="max-h-[200px] overflow-y-auto text-black">
             {filteredProjects.map((project) => (
               <div
-                key={project}
-                onClick={() => {
-                  setSelectedProject(project);
-                  setIsDropdownOpen(false);
-                  setSearchTerm("");
-                }}
+                key={project.id}
+                onClick={() => handleProjectSelect(project)}
                 className="p-2 cursor-pointer hover:bg-blue-100"
               >
-                {project}
+                {project.name}
               </div>
             ))}
           </div>
@@ -152,7 +164,6 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
 
         {menuItems.map((item, index) => (
           <div key={index}>
-            {/* Expandable Project Settings */}
             {item.isExpandable ? (
               <>
                 <div
@@ -179,7 +190,6 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
                   </svg>
                 </div>
 
-                {/* Sub-menu for Project Settings */}
                 {isProjectSettingsExpanded &&
                   item.items.map((subItem, subIndex) => (
                     <div
@@ -189,7 +199,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
                       } hover:bg-blue-50`}
                       onClick={() => {
                         setActiveMenuItem(subItem.label);
-                        subItem.onClick();
+                        handleMenuClick(subItem.path);
                       }}
                     >
                       <subItem.icon 
@@ -207,7 +217,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
                 } hover:bg-blue-100`}
                 onClick={() => {
                   setActiveMenuItem(item.label);
-                  item.onClick && item.onClick();
+                  handleMenuClick(item.path);
                 }}
               >
                 <item.icon className="icon" />

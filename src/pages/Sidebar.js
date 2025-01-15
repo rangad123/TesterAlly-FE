@@ -10,12 +10,13 @@ import {
 import { FiSettings } from "react-icons/fi";
 import { MdDashboard, MdAccountCircle } from "react-icons/md";
 import { BiAddToQueue } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 import Projectsidebar from "./Projectsidebar";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSidebarOpen ] = useState(false);
   const [isSubSidebarVisible, setIsSubSidebarVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); 
@@ -63,17 +64,15 @@ const Sidebar = () => {
   };
 
   const handleNavigateToCreateTestCases = () => {
-    navigate("/create-testcases");
+    navigate("test-cases/create-testcases");
     setIsSubSidebarVisible(false);
-    setIsTestCasesVisible(false);
-    setIsProjectSettingsVisible(false);
+    setIsTestCasesVisible(true);
   };
 
   const handleNavigateToTestSuite = () => {
-    navigate("/testsuite");
+    navigate("test-suites/create-testsuite");
     setIsSubSidebarVisible(false);
-    setIsTestCasesVisible(false);
-    setIsProjectSettingsVisible(false);
+    setIsTestCasesVisible(true);
   };
 
   const handleNavigateToProfile = () => {
@@ -111,6 +110,8 @@ const Sidebar = () => {
     setIsSubSidebarVisible(false);
   };
 
+  const currentPath = location.pathname;
+
   return (
     <div className="sidebar-container" ref={sidebarRef}>
       {/* Main Sidebar */}
@@ -119,7 +120,7 @@ const Sidebar = () => {
 
         {/* Create Project Option */}
     <div
-        className={`sidebar-option ${isSidebarOpen && isSubSidebarVisible ? "active" : ""}`}
+        className={`sidebar-option ${isSidebarOpen && (isSubSidebarVisible || isProjectSettingsVisible || isTestCasesVisible) ? "active" : ""}`}
         onClick={toggleSubSidebar}
       >
       <BiAddToQueue className="icon project-icon" />
@@ -130,10 +131,10 @@ const Sidebar = () => {
 
     {/* Dashboard Option */}
     <div
-      className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/dashboard-user" ? "active" : ""}`}
+      className={`sidebar-option ${currentPath === "/dashboard-user" ? "active" : ""}`}
       onClick={handleNavigateToDashboard}
     >
-      <MdDashboard className="icon project-icon" />
+      <MdDashboard className={`icon project-icon ${window.location.pathname === "/dashboard-user" ? "active-icon" : ""}`}  />
       <div className="option-name-container">
         <span className="option-name">Dashboard</span>
       </div>
@@ -161,7 +162,7 @@ const Sidebar = () => {
       className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/settings" ? "active" : ""}`}
       onClick={toggleSettingsSidebar}
     >
-      <FiSettings className="icon project-icon" />
+      <FiSettings className={`icon project-icon ${window.location.pathname === "/settings" ? "active-icon" : ""}`}  />
       <div className="option-name-container">
         <span className="option-name">Settings</span>
       </div>
@@ -169,10 +170,10 @@ const Sidebar = () => {
 
     {/* Profile Option */}
     <div
-      className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/profile" ? "active" : ""}`}
+      className={`sidebar-option ${currentPath === "/profile" ? "active" : ""}`}
       onClick={handleNavigateToProfile}
     >
-      <MdAccountCircle className="icon project-icon" />
+      <MdAccountCircle className={`icon project-icon ${window.location.pathname === "/profile" ? "active-icon" : ""}`}  />
       <div className="option-name-container">
         <span className="option-name">Profile</span>
       </div>

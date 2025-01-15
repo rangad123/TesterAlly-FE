@@ -313,6 +313,7 @@ import TestCases from "./pages/TestCases";
 import Requirement from "./pages/Requirement";
 import RequirementTypes from "./pages/RequirementTypes";
 import TestcasesTypes from "./pages/TestcasesTypes"
+import TestSuites from "./pages/TestSuites";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -490,7 +491,7 @@ const App = () => {
                 }
               />
               <Route
-                path="create-testcases"
+                path="test-cases/create-testcases"
                 exact
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
@@ -517,7 +518,7 @@ const App = () => {
                 }
               />
               <Route
-                path="createtestsuite"
+                path="/test-suites/create-testsuite"
                 exact
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
@@ -585,6 +586,15 @@ const App = () => {
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <TestcasesTypes />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="test-suites"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <TestSuites />
                   </PrivateRoute>
                 }
               />

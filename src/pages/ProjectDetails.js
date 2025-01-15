@@ -1,83 +1,131 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProjectDetails = () => {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const [selectedProject, setSelectedProject] = useState(null);
   const [editingProject, setEditingProject] = useState(null);
   const [editFormData, setEditFormData] = useState({ name: "", description: "", type: "" });
-
+  const [testCases, setTestCases] = useState([]);
+  const [testSuites, setTestSuites] = useState([]);
+  const [activeTab, setActiveTab] = useState("details");
   const userName = localStorage.getItem("userName") || "User Name";
 
-  const fetchProjects = async () => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      console.warn("No userId found in localStorage");
-      setLoading(false);
-      return;
+  useEffect(() => {
+    const savedProject = localStorage.getItem("selectedProject");
+    if (savedProject) {
+      const project = JSON.parse(savedProject);
+      setSelectedProject(project);
+      setEditFormData({
+        name: project.name || "",
+        description: project.description || "",
+        type: project.type || "",
+      });
+      fetchTestCases(project.id);
+      fetchTestSuites(project.id);
     }
 
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    const handleProjectChange = (event) => {
+      const newProject = event.detail;
+      setSelectedProject(newProject);
+      setEditFormData({
+        name: newProject.name || "",
+        description: newProject.description || "",
+        type: newProject.type || "",
+      });
+      fetchTestCases(newProject.id);
+      fetchTestSuites(newProject.id);
+      setEditingProject(null);
+    };
 
+    window.addEventListener("projectChanged", handleProjectChange);
+    return () => window.removeEventListener("projectChanged", handleProjectChange);
+  }, []);
+
+  const fetchTestCases = async (projectId) => {
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/testcases/?project_id=${projectId}`
+      );
+      const data = await response.json();
       if (response.ok) {
-        const data = await response.json();
-        setProjects(data);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Failed to fetch project details.");
+        setTestCases(data);
       }
     } catch (err) {
-      setError("An error occurred while fetching project data.");
-      console.error(err);
-    } finally {
-      setLoading(false);
+      console.error("Error fetching test cases:", err);
     }
   };
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  const handleDeleteProject = async (projectId) => {
-    if (!window.confirm("Are you sure you want to delete this project?")) return;
-
+  const fetchTestSuites = async (projectId) => {
     try {
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/projects/${projectId}/`,
+        `https://testerally-be-ylpr.onrender.com/api/testsuites/?project_id=${projectId}`
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setTestSuites(data);
+        console.log("Fetched test suites:", data);
+      }
+    } catch (err) {
+      console.error("Error fetching test suites:", err);
+    }
+  };
+
+  const handleDeleteProject = async (projectId) => {
+    if (!window.confirm("Are you sure you want to delete this project? This will also delete all related test cases and test suites.")) return;
+
+    try {
+      // Delete related test cases
+      const testCaseDeleteResponse = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/testcases/?project_id=${projectId}`,
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
-      if (response.ok) {
-        setProjects((prevProjects) => prevProjects.filter((p) => p.id !== projectId));
-        alert("Project deleted successfully.");
+      
+      // Delete related test suites
+      const testSuiteDeleteResponse = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/testsuites/?project_id=${projectId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (testCaseDeleteResponse.ok && testSuiteDeleteResponse.ok) {
+        // Now delete the project itself
+        const response = await fetch(
+          `https://testerally-be-ylpr.onrender.com/api/projects/${projectId}/`,
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
+        if (response.ok) {
+          localStorage.removeItem("selectedProject");
+          navigate("/");
+          window.dispatchEvent(new CustomEvent("projectChanged", { detail: null }));
+          alert("Project and related test cases and test suites deleted successfully.");
+        } else {
+          const errorData = await response.json();
+          alert(errorData.message || "Failed to delete project.");
+        }
       } else {
-        const errorData = await response.json();
-        alert(errorData.message || "Failed to delete project.");
+        alert("Failed to delete related test cases or test suites.");
       }
     } catch (err) {
       console.error("Error deleting project:", err);
+      alert("An error occurred while deleting the project.");
     }
   };
 
   const handleEditClick = (project) => {
     setEditingProject(project);
     setEditFormData({
-      name: project.name,
-      description: project.description,
+      name: project.name || "",
+      description: project.description || "",
       type: project.type || "",
     });
   };
@@ -103,32 +151,67 @@ const ProjectDetails = () => {
       );
 
       if (response.ok) {
-        alert("Project updated successfully.");
-        fetchProjects();
+        const updatedProject = await response.json();
+        setSelectedProject(updatedProject);
+
+        localStorage.setItem("selectedProject", JSON.stringify(updatedProject));
+        window.dispatchEvent(new CustomEvent("projectChanged", { detail: updatedProject }));
+
         setEditingProject(null);
+        alert("Project updated successfully.");
       } else {
         const errorData = await response.json();
         alert(errorData.message || "Failed to update project.");
       }
     } catch (err) {
       console.error("Error updating project:", err);
+      alert("An error occurred while updating the project.");
     }
   };
+
+  if (!selectedProject) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
+          <div className="p-6">
+            <div className="text-center text-gray-600">
+              Please select a project from the sidebar to view its details.
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
         <div className="p-6">
-          <h2 className="create-test-cases-title mb-6 text-2xl font-semibold text-gray-800">
-            Project Details
-          </h2>
+          <h2 className="mb-6 text-2xl font-semibold text-gray-800">Project Details</h2>
 
-          {loading ? (
-            <div className="text-center text-blue-600">Loading projects...</div>
-          ) : error ? (
-            <div className="text-red-600 text-center">{error}</div>
-          ) : projects.length > 0 ? (
-            <div className="overflow-auto rounded-lg shadow-md">
+          <div className="flex space-x-4 mb-6">
+            <button
+              onClick={() => setActiveTab("details")}
+              className={`px-4 py-2 text-sm font-medium ${activeTab === "details" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"}`}
+            >
+              Project Details
+            </button>
+            <button
+              onClick={() => setActiveTab("test-cases")}
+              className={`px-4 py-2 text-sm font-medium ${activeTab === "test-cases" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"}`}
+            >
+              Test Cases
+            </button>
+            <button
+              onClick={() => setActiveTab("test-suites")}
+              className={`px-4 py-2 text-sm font-medium ${activeTab === "test-suites" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"}`}
+            >
+              Test Suites
+            </button>
+          </div>
+
+          {activeTab === "details" && (
+            <div className="overflow-auto rounded-lg shadow-md mb-6">
               <table className="w-full border-collapse bg-white">
                 <thead>
                   <tr className="bg-gray-200 text-gray-600 text-left text-sm leading-normal">
@@ -140,36 +223,55 @@ const ProjectDetails = () => {
                   </tr>
                 </thead>
                 <tbody className="text-gray-700 text-sm">
-                  {projects.map((project) => (
-                    <tr key={project.id} className="border-b hover:bg-gray-100">
-                      <td className="py-3 px-6">{project.name}</td>
-                      <td className="py-3 px-6">{project.description || "N/A"}</td>
-                      <td className="py-3 px-6">{project.type || "N/A"}</td>
-                      <td className="py-3 px-6">{userName || "N/A"}</td>
-                      <td className="py-3 px-6 flex gap-2">
-                        <button
-                          className="text-blue-600 hover:underline"
-                          onClick={() => handleEditClick(project)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="text-red-600 hover:underline"
-                          onClick={() => handleDeleteProject(project.id)}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  <tr className="border-b hover:bg-gray-100">
+                    <td className="py-3 px-6">{selectedProject.name}</td>
+                    <td className="py-3 px-6">{selectedProject.description || "N/A"}</td>
+                    <td className="py-3 px-6">{selectedProject.type || "N/A"}</td>
+                    <td className="py-3 px-6">{userName}</td>
+                    <td className="py-3 px-6 flex gap-2">
+                      <button className="text-blue-600 hover:underline" onClick={() => handleEditClick(selectedProject)}>
+                        Edit
+                      </button>
+                      <button className="text-red-600 hover:underline" onClick={() => handleDeleteProject(selectedProject.id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-          ) : (
-            <div className="text-gray-600 text-center">No projects available.</div>
           )}
 
-          {/* Edit Form */}
+          {activeTab === "test-cases" && (
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <h3 className="text-lg font-medium">Test Cases</h3>
+              {testCases.length === 0 ? (
+                <p>No test cases available</p>
+              ) : (
+                <ul>
+                  {testCases.map((testCase) => (
+                    <li key={testCase.id} className="py-2">{testCase.name}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+
+          {activeTab === "test-suites" && (
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <h3 className="text-lg font-medium">Test Suites</h3>
+              {testSuites.length === 0 ? (
+                <p>No test suites available</p>
+              ) : (
+                <ul>
+                  {testSuites.map((testSuite) => (
+                    <li key={testSuite.id} className="py-2">{testSuite.title}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+
           {editingProject && (
             <div className="mt-8 bg-gray-100 p-4 rounded shadow-md">
               <h3 className="text-lg font-semibold mb-4">Edit Project</h3>
