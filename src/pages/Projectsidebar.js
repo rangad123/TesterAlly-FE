@@ -9,7 +9,7 @@ import {
   FaFileAlt,
   FaRegFileAlt,
   FaClipboardList,
-  FaPlusCircle,
+  FaPlusCircle
 } from "react-icons/fa";
 
 const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
@@ -28,7 +28,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
         console.warn("No userId found in localStorage");
         return;
       }
-
+  
       try {
         const response = await fetch(
           `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`,
@@ -38,21 +38,32 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
             },
           }
         );
-
+  
         if (response.ok) {
           const data = await response.json();
           setProjects(data);
-
-          const savedProject = getSelectedProjectFromStorage();
-          if (savedProject && data.some((p) => p.id === savedProject.id)) {
-            setSelectedProject(savedProject);
-            window.dispatchEvent(new CustomEvent("projectChanged", { detail: savedProject }));
-          } else if (data.length > 0) {
-            setSelectedProject(data[0]);
-            saveSelectedProjectToStorage(data[0]);
+  
+          const savedProjectKey = `selectedProject_${userId}`;
+          const savedProject = localStorage.getItem(savedProjectKey);
+  
+          if (data.length > 0) {
+            if (savedProject) {
+              const parsedProject = JSON.parse(savedProject);
+              const projectExists = data.some((p) => p.id === parsedProject.id);
+  
+              if (projectExists) {
+                setSelectedProject(parsedProject);
+              } else {
+                setSelectedProject(data[0]);
+                localStorage.setItem(savedProjectKey, JSON.stringify(data[0]));
+              }
+            } else {
+              setSelectedProject(data[0]);
+              localStorage.setItem(savedProjectKey, JSON.stringify(data[0]));
+            }
           } else {
             setSelectedProject(null);
-            localStorage.removeItem(`selectedProject_${userId}`);
+            localStorage.removeItem(savedProjectKey);
           }
         } else {
           console.error("Failed to fetch projects:", await response.json());
@@ -61,63 +72,37 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
         console.error("Error fetching projects:", error);
       }
     };
-
+  
     fetchProjects();
-
+  
     const handleProjectCreated = (event) => {
       const newProject = event.detail;
       setProjects((prevProjects) => [...prevProjects, newProject]);
       setSelectedProject(newProject);
-      saveSelectedProjectToStorage(newProject);
-      window.dispatchEvent(new CustomEvent("projectChanged", { detail: newProject }));
+      localStorage.setItem(`selectedProject_${newProject.user_id}`, JSON.stringify(newProject));
     };
-
-    const handleStorageChange = (e) => {
-      if (e.key && e.key.startsWith("selectedProject_")) {
-        const newSelectedProject = e.newValue ? JSON.parse(e.newValue) : null;
-        setSelectedProject(newSelectedProject);
-      }
-    };
-
+  
     window.addEventListener("projectCreated", handleProjectCreated);
-    window.addEventListener("storage", handleStorageChange);
-
+  
     return () => {
       window.removeEventListener("projectCreated", handleProjectCreated);
-      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-
-  const getSelectedProjectFromStorage = () => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return null;
   
-    const savedProject = localStorage.getItem(`selectedProject_${userId}`);
-    return savedProject ? JSON.parse(savedProject) : null;
-  };
-  
-
-  const saveSelectedProjectToStorage = (project) => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-
-    localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(project));
-  };
 
   const handleProjectSelect = (project) => {
     const userId = localStorage.getItem("userId");
     if (!userId) return;
-  
+
     setSelectedProject(project);
     localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(project));
     setIsDropdownOpen(false);
     setSearchTerm("");
-
     window.dispatchEvent(new CustomEvent("projectChanged", { detail: project }));
   };
 
   const handleCreateProject = () => {
-    navigate("/create-project");
+    navigate("/create-project"); 
   };
 
   const projectSettingsItems = [
@@ -145,9 +130,10 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
       alert("Please select a project first to access this feature.");
       return;
     }
-    setActiveMenuItem(path);
+  
     navigate(path);
   };
+  
 
   const filteredProjects = projects.filter((project) =>
     project.name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -236,15 +222,9 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
               <>
                 <div
                   className={`sub-sidebar-item flex items-center gap-2 p-2 cursor-pointer ${
-                    !selectedProject
-                      ? "text-gray-400"
-                      : activeMenuItem === item.label
-                      ? "bg-[#9ac5e2] text-white"
-                      : "text-gray-700"
+                    !selectedProject ? "text-gray-400" : activeMenuItem === item.label ? "bg-[#9ac5e2] text-white" : "text-gray-700"
                   } hover:bg-blue-100`}
-                  onClick={() =>
-                    selectedProject && setIsProjectSettingsExpanded(!isProjectSettingsExpanded)
-                  }
+                  onClick={() => selectedProject && setIsProjectSettingsExpanded(!isProjectSettingsExpanded)}
                 >
                   <item.icon className="icon" />
                   <span>{item.label}</span>
@@ -269,11 +249,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
                     <div
                       key={subIndex}
                       className={`flex items-center gap-2 pl-8 pr-2 py-1 cursor-pointer ${
-                        !selectedProject
-                          ? "text-gray-400"
-                          : activeMenuItem === subItem.label
-                          ? "bg-blue-100 text-blue-900"
-                          : "text-gray-700"
+                        !selectedProject ? "text-gray-400" : activeMenuItem === subItem.label ? "bg-blue-100 text-blue-900" : "text-gray-700"
                       } hover:bg-blue-50`}
                       onClick={() => {
                         if (selectedProject) {
@@ -284,15 +260,9 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
                         }
                       }}
                     >
-                      <subItem.icon
-                        className="icon"
-                        style={{
-                          color: !selectedProject
-                            ? "#9CA3AF"
-                            : activeMenuItem === subItem.label
-                            ? "#007bff"
-                            : "gray",
-                        }}
+                      <subItem.icon 
+                        className="icon" 
+                        style={{ color: !selectedProject ? "#9CA3AF" : activeMenuItem === subItem.label ? "#007bff" : "gray" }} 
                       />
                       <span>{subItem.label}</span>
                     </div>
@@ -301,11 +271,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
             ) : (
               <div
                 className={`sub-sidebar-item flex items-center gap-2 p-2 cursor-pointer ${
-                  !selectedProject
-                    ? "text-gray-400"
-                    : activeMenuItem === item.label
-                    ? "bg-[#9ac5e2] text-white"
-                    : "text-gray-700"
+                  !selectedProject ? "text-gray-400" : activeMenuItem === item.label ? "bg-[#9ac5e2] text-white" : "text-gray-700"
                 } hover:bg-blue-100`}
                 onClick={() => {
                   if (selectedProject) {
