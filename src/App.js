@@ -358,14 +358,29 @@ const App = () => {
   }, []);
 
   const handleLogout = () => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      localStorage.removeItem(`selectedProject_${userId}`);
+    }
+    localStorage.removeItem("userId");
+  
     setIsLoggedIn(false);
     setName("");
     setEmail("");
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("name");
     localStorage.removeItem("email");
-    sessionStorage.removeItem("sessionActive"); 
+    sessionStorage.removeItem("sessionActive");
+
+    localStorage.clear();
+    
+    window.location.reload();
   };
+
+  console.log("localStorage after logout:", localStorage);
+  console.log("sessionStorage after logout:", sessionStorage);
+
+  
 
 
   return (
@@ -486,7 +501,7 @@ const App = () => {
                 exact
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
-                    <CreateProject />
+                    <CreateProject  />
                   </PrivateRoute>
                 }
               />

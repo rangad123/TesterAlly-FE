@@ -85,23 +85,31 @@ import UserIcon from "../images/user.png";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import './AppNavBar.css';  // Import external CSS file
+import './AppNavBar.css';  
 
 const AppNavBar = (props) => {
   let navigate = useNavigate();
 
   const { isLoggedIn, setIsLoggedIn, name, setName, email, setEmail } = props;
 
-  // Handle Logout
   const handleLogout = () => {
+
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      localStorage.removeItem(`selectedProject_${userId}`);
+    }
+    localStorage.removeItem("userId");
+
     setIsLoggedIn(false);
     setName(null);
     setEmail(null);
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("name");
     localStorage.removeItem("email");
-    navigate("/");
+    window.location.reload();
+    navigate("/dashboard/login");
     toast.success("You are successfully logged out!");
+
   };
 
   useEffect(() => {

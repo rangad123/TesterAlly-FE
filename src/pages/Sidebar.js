@@ -104,13 +104,15 @@ const Sidebar = () => {
   };
 
   const toggleTestCasesSidebar = () => {
-    setIsTestCasesVisible((prevState) => !prevState);
+    setIsTestCasesVisible(true);
     setIsProjectSettingsVisible(false);
     setIsSettingsVisible(false);
     setIsSubSidebarVisible(false);
   };
 
   const currentPath = location.pathname;
+
+  const isAnyOptionActive = currentPath === "/test-cases" || currentPath === "/test-suites" || currentPath === "/project-members"|| currentPath === "/project-details" ;
 
   return (
     <div className="sidebar-container" ref={sidebarRef}>
@@ -119,11 +121,11 @@ const Sidebar = () => {
         <div className="plus-button mt-[40px]"></div>
 
         {/* Create Project Option */}
-    <div
-        className={`sidebar-option ${isSidebarOpen && (isSubSidebarVisible || isProjectSettingsVisible || isTestCasesVisible) ? "active" : ""}`}
-        onClick={toggleSubSidebar}
-      >
-      <BiAddToQueue className="icon project-icon" />
+        <div
+          className={`sidebar-option ${ currentPath === "/create-project"  ? "active" : ""}`}
+          onClick={toggleSubSidebar}
+        >
+      <BiAddToQueue className={`icon project-icon ${ currentPath === "/create-project"  ? "active-icon" : ""}`} />
       <div className="option-name-container">
         <span className="option-name">Create Project</span>
       </div>
@@ -142,10 +144,10 @@ const Sidebar = () => {
 
       {/* Test Development Option */}
     <div
-      className={`sidebar-option ${isSidebarOpen && isTestCasesVisible ? "active" : ""}`}
+      className={`sidebar-option ${isAnyOptionActive ? "active" : ""}`}
       onClick={toggleTestCasesSidebar}
     >
-      <FaCode className="icon project-icon" />
+      <FaCode className={`icon project-icon ${isAnyOptionActive ? "active-icon" : ""}`} />
       <div className="option-name-container">
         <span className="option-name">Test Development</span>
       </div>
@@ -159,10 +161,10 @@ const Sidebar = () => {
 
     {/* Settings Option */}
     <div
-      className={`sidebar-option ${isSidebarOpen && window.location.pathname === "/settings" ? "active" : ""}`}
+      className={`sidebar-option ${ currentPath === "/user-roles" ? "active" : ""}`}
       onClick={toggleSettingsSidebar}
     >
-      <FiSettings className={`icon project-icon ${window.location.pathname === "/settings" ? "active-icon" : ""}`}  />
+      <FiSettings className={`icon project-icon ${window.location.pathname === "/user-roles" ? "active-icon" : ""}`}  />
       <div className="option-name-container">
         <span className="option-name">Settings</span>
       </div>

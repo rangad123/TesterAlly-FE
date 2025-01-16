@@ -32,22 +32,20 @@ const CreateProject = ({ onProjectCreated }) => {
 
   const handleCreateProject = async () => {
     if (!validateFields()) return;
-
-    const userId = localStorage.getItem("userId"); 
-
-  if (!userId) {
-    console.error("User ID not found in localStorage");
-    return;
-  }
-
+  
+    const userId = localStorage.getItem("userId");
+  
+    if (!userId) {
+      console.error("User ID not found in localStorage");
+      return;
+    }
+  
     const projectData = {
-      user_id: parseInt(userId), 
+      user_id: parseInt(userId),
       name: projectName,
       description: description || "No description provided",
-      project_type: projectType, 
+      project_type: projectType,
     };
-  
-    console.log("Payload:", projectData);
   
     try {
       const response = await fetch(
@@ -68,6 +66,11 @@ const CreateProject = ({ onProjectCreated }) => {
       }
   
       const createdProject = await response.json();
+
+      localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(createdProject));
+  
+      window.dispatchEvent(new CustomEvent("projectCreated", { detail: createdProject }));
+  
       alert("Project Created Successfully");
   
       if (onProjectCreated) {
@@ -83,6 +86,7 @@ const CreateProject = ({ onProjectCreated }) => {
       alert("Error creating project. Please try again.");
     }
   };
+  
   
 
   const handleCancel = () => {
