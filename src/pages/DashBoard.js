@@ -120,7 +120,7 @@ export default function Dashboard() {
         <h2 className="section-title">From Our Blog</h2>
         <div className="blog-grid">
           <div className="blog-card">
-            <h4>The Future of AI in Test Automation</h4>
+            <h4>Crowd Intelligence – Its impact on the training of AI</h4>
             <p>
               Explore how AI is transforming the landscape of test automation
               and what it means for the future of software development. Discover
@@ -130,7 +130,7 @@ export default function Dashboard() {
             <button className="btn primary-btn" onClick={() => window.location.href = "https://www.crowd4test.com/blog/artificial-intelligence/crowd-intelligence-its-impact-on-the-training-of-ai/"} >Read More</button>
           </div>
           <div className="blog-card">
-            <h4>Best Practices for Cross-Browser Testing</h4>
+            <h4>Artificial Intelligence AI and Software Testing – The Scope</h4>
             <p>
               Learn essential strategies to ensure your application performs
               flawlessly across all browsers and devices. Learn how AI can help

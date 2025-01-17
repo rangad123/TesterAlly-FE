@@ -10,6 +10,7 @@ const URL = "https://testerally-be-ylpr.onrender.com/api/login/";
 const Login = (props) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
 
   const togglePasswordVisiblity = () => {
     setIsPasswordVisible((prev) => !prev);
@@ -31,7 +32,14 @@ const Login = (props) => {
     }
   }, []);
 
-
+  const validateEmail = (email) => {
+    const domainRegex = /@.+\..+/; 
+    if (!domainRegex.test(email)) {
+      setEmailError("Please include a valid domain name (e.g., example.com).");
+    } else {
+      setEmailError("");
+    }
+  };
 
   const handleLogin = async (ev) => {
   ev.preventDefault();
@@ -166,7 +174,9 @@ const Login = (props) => {
               autoComplete="off"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
               required
+              onChange={(e) => validateEmail(e.target.value)}
             />
+            {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
           </div>
           <div>
             <label htmlFor="password" className="font-medium required">
@@ -217,7 +227,7 @@ const Login = (props) => {
             className="w-full py-3 px-5 text-base font-medium text-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 rounded-lg dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 transition-colors"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Submit"}
+            {loading ? "Logging in..." : "Login"}
           </button>
           <p className="text-center text-sm text-gray-600 dark:text-gray-400">
             Not yet registered?{" "}
