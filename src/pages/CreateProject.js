@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineClose } from "react-icons/ai";
 import "./CreateProject.css";
 
 const CreateProject = ({ onProjectCreated }) => {
@@ -105,11 +104,10 @@ const CreateProject = ({ onProjectCreated }) => {
       <div className="create-project-box">
 
         <div className="create-test-cases-header">
-          <h2 className="create-test-cases-title">Create Project</h2>
+        <h2 className="create-test-cases-title" style={{ fontSize: '28px', fontWeight: 'bold' }}>Create Project</h2>
         
             <div className="create-test-cases-button-group-right">
               <button onClick={handleCancel} className="cancel-btn">
-                <AiOutlineClose className="inline-icon" />
                   Cancel
               </button>
               <button onClick={handleCreateProject} className="create-btn">

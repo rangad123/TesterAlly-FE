@@ -1,11 +1,13 @@
+/* General Styles */
 .create-project-container {
   flex-grow: 1;
   position: relative;
   max-width: 800px;
-  margin: auto;
+  margin: 20px auto; /* Added top and bottom spacing */
   padding: 30px;
   border-radius: 12px;
   overflow: hidden;
+  background-color: #f7f9fc; /* Subtle background for contrast */
 }
 
 .create-project-box {
@@ -19,10 +21,22 @@
 }
 
 .create-project-title {
-  font-size: 1.8rem;
-  text-align: center;
-  animation: slideInDown 1s ease-out;
+  font-size: 2.2rem; /* Increased font size for better visibility */
+  font-weight: 600; /* Slightly lighter weight for better readability */
+  text-align: center; /* Ensures the title is centered */
+  margin-bottom: 20px; /* Adequate spacing below the title */
+  color: #333333; /* Dark color for contrast */
+  animation: slideInDown 1s ease-out; /* Animation for smooth appearance */
+  letter-spacing: 2px; /* Increased letter-spacing for a more open look */
+  line-height: 1.4; /* More spacing between lines */
+  text-transform: uppercase; /* Transforms title to uppercase for a stronger appearance */
 }
+
+/* Optional: Add shadow for emphasis */
+.create-project-title {
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for a more elevated look */
+}
+
 
 .create-project-input-group {
   margin-bottom: 20px;
@@ -32,7 +46,7 @@
   font-weight: 600;
   display: block;
   margin-bottom: 10px;
-  font-size: 1rem;
+  font-size: 1.1rem; /* Slightly larger label font */
   color: rgb(55, 65, 81);
 }
 
@@ -51,7 +65,7 @@
 .create-project-textarea,
 .create-project-select {
   width: 100%;
-  padding: 12px;
+  padding: 14px; /* Increased padding for better spacing */
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 1rem;
@@ -60,7 +74,7 @@
   transition: all 0.3s ease-in-out;
 }
 
-.create-project-textarea{
+.create-project-textarea {
   margin-top: 5px;
 }
 
@@ -88,9 +102,10 @@
   background-color: rgb(126, 58, 242);
   color: #ffffff;
   border: none;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: 2rem;
   font-size: 1rem;
+  font-weight: bold; /* Bold text for button */
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
@@ -105,18 +120,21 @@
   justify-content: space-between;
   align-items: center;
   gap: 15px;
-  margin-bottom: 15px;
+  margin-top: 20px; /* Added spacing above buttons */
 }
 
 .cancel-btn {
   color: rgb(126, 58, 242);
-  padding: 10px 20px;
+  padding: 12px 25px; /* Adjusted padding for better alignment */
   border: 2px solid rgb(126, 58, 242);
   border-radius: 8px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  display: flex; /* Ensures icon and text align properly */
+  align-items: center;
+  justify-content: center;
 }
 
 .cancel-btn:hover {
@@ -129,7 +147,7 @@
 .create-btn {
   background-color: rgb(126, 58, 242);
   color: white;
-  padding: 10px 20px;
+  padding: 12px 25px; /* Adjusted padding */
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -144,6 +162,14 @@
   box-shadow: 0 5px 15px rgba(126, 58, 242, 0.3);
 }
 
+/* Global Box Sizing */
+* {
+  box-sizing: border-box;
+}
+
+/* Responsive Design */
+
+/* For tablets and small screens (max-width: 768px) */
 @media (max-width: 768px) {
   .create-project-container {
     padding: 20px;
@@ -161,8 +187,8 @@
   .create-project-input,
   .create-project-textarea,
   .create-project-select {
-    font-size: 0.9rem;
-    padding: 10px;
+    font-size: 0.95rem;
+    padding: 12px;
   }
 
   .create-project-buttons {
@@ -176,13 +202,16 @@
   }
 }
 
+/* For mobile devices (max-width: 480px) */
 @media (max-width: 480px) {
-  .create-project-container{
-    margin-left: 50px;
+  .create-project-container {
+    margin: auto;
+    padding: 10px;
   }
+
   .create-project-box {
     padding: 15px;
-    max-width: 100%;
+    max-width: 95%;
   }
 
   .create-project-title {
@@ -192,18 +221,24 @@
   .create-project-input,
   .create-project-textarea,
   .create-project-select {
-    font-size: 0.85rem;
-    padding: 8px;
+    font-size: 0.9rem;
+    padding: 10px;
   }
 
   .create-project-toggle-btn {
-    font-size: 0.85rem;
-    padding: 6px 12px;
+    font-size: 0.9rem;
+    padding: 8px 16px;
   }
-}
 
+  .create-project-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
 
-.inline-icon {
-  display: inline;
-  vertical-align: middle; 
+  .cancel-btn,
+  .create-btn {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
 }
