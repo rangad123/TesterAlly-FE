@@ -9,12 +9,27 @@ const TestCases = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const savedProject = localStorage.getItem("selectedProject");
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      setError("User ID not found. Please log in again.");
+      setLoading(false);
+      return;
+    }
+
+    const savedProjectKey = `selectedProject_${userId}`;
+    const savedProject = localStorage.getItem(savedProjectKey);
+    
     if (savedProject) {
-      const project = JSON.parse(savedProject);
-      setSelectedProject(project);
+      try {
+        const project = JSON.parse(savedProject);
+        setSelectedProject(project);
+      } catch (err) {
+        console.error("Error parsing saved project:", err);
+        localStorage.removeItem(savedProjectKey);
+      }
     }
 
     const handleProjectChange = (event) => {
@@ -23,35 +38,50 @@ const TestCases = () => {
     };
 
     window.addEventListener("projectChanged", handleProjectChange);
-
     return () => window.removeEventListener("projectChanged", handleProjectChange);
   }, []);
 
+
   useEffect(() => {
-    if (selectedProject) {
-      setTestCases([]);
+    const fetchTestCases = async () => {
       setLoading(true);
+      setError(null);
+      setTestCases([]);
 
-      const fetchTestCases = async (projectId) => {
-        try {
-          const response = await fetch(
-            `https://testerally-be-ylpr.onrender.com/api/testcases/?project_id=${projectId}`
-          );
-          const data = await response.json();
-          if (response.ok) {
-            setTestCases(data);
-          } else {
-            setTestCases([]);
+      if (!selectedProject?.id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `https://testerally-be-ylpr.onrender.com/api/testcases/?project_id=${selectedProject.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            }
           }
-        } catch (error) {
-          console.error("Error fetching test cases:", error);
-        } finally {
-          setLoading(false);
+        );
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(Array.isArray(errorData) ? errorData[0] : errorData.message || 'Failed to fetch test cases');
         }
-      };
 
-      fetchTestCases(selectedProject.id);
-    }
+        const data = await response.json();
+        setTestCases(data.map(testCase => ({
+          ...testCase,
+          project_name: selectedProject.name
+        })));
+      } catch (error) {
+        console.error("Error fetching test cases:", error);
+        setError(error.message || "Failed to fetch test cases. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestCases();
   }, [selectedProject]);
 
   const filteredTestCases = testCases.filter((testCase) =>
@@ -75,6 +105,7 @@ const TestCases = () => {
               <button
                 onClick={() => navigate("/test-cases/create-testcases")}
                 className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                disabled={!selectedProject}
               >
                 <AiOutlinePlus className="mr-2" />
                 Create
@@ -82,25 +113,37 @@ const TestCases = () => {
             </div>
 
             <div className="p-4 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-              <h2 className="text-lg font-medium text-gray-700">Test Cases</h2>
-              <div className="relative w-full sm:w-64">
-                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
+              <h2 className="text-lg font-medium text-gray-700">
+                {selectedProject ? `Test Cases - ${selectedProject.name}` : 'Select a Project'}
+              </h2>
+              {selectedProject && (
+                <div className="relative w-full sm:w-64">
+                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search test cases..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
           <div className="bg-white rounded-lg shadow overflow-hidden">
             {loading ? (
               <div className="p-4 text-center">Loading test cases...</div>
-            ) : testCases.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">No test cases available</div>
+            ) : error ? (
+              <div className="p-4 text-center text-red-500">{error}</div>
+            ) : !selectedProject ? (
+              <div className="p-4 text-center text-gray-500">
+                Please select a project from the sidebar to view test cases
+              </div>
+            ) : filteredTestCases.length === 0 ? (
+              <div className="p-4 text-center text-gray-500">
+                No test cases found for this project
+              </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -124,12 +167,17 @@ const TestCases = () => {
                           {testCase.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <a href={testCase.url} className="text-blue-600 hover:underline">
+                          <a
+                            href={testCase.url}
+                            className="text-blue-600 hover:underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {testCase.url}
                           </a>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {selectedProject?.name}
+                          {testCase.project_name}
                         </td>
                       </tr>
                     ))}

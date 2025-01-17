@@ -214,46 +214,64 @@ const ProjectDetails = () => {
             </div>
           ) : !selectedProject ? (
             <div className="space-y-6">
-              {allProjects.length === 0 ? (
-                <div className="text-center p-8 bg-white rounded-lg shadow-md">
-                  <p className="text-gray-600 text-lg mb-4">You have no projects yet.</p>
-                  <p className="text-gray-500">Please create a project to get started.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {allProjects.map((project) => (
-                    <div
-                      key={project.id}
-                      className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
-                    >
-                      <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                        {project.name}
-                      </h3>
-                      <p className="text-gray-600 mb-4">
-                        {project.description || "No description available"}
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-500">Type: {project.project_type || "N/A"}</span>
-                        <div className="space-x-2">
-                          <button
-                            onClick={() => handleEditClick(project)}
-                            className="text-blue-600 hover:underline text-sm"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteProject(project.id)}
-                            className="text-red-600 hover:underline text-sm"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+  {allProjects.length === 0 ? (
+    <div className="text-center p-8 bg-white rounded-lg shadow-md">
+      <p className="text-gray-600 text-lg mb-4">You have no projects yet.</p>
+      <p className="text-gray-500">Please create a project to get started.</p>
+    </div>
+  ) : (
+    <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+      <table className="min-w-full table-auto">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Project Name
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Description
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Project Type
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {allProjects.map((project) => (
+            <tr key={project.id}>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                {project.name}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {project.description || "No description available"}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {project.project_type || "N/A"}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <button
+                  onClick={() => handleEditClick(project)}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteProject(project.id)}
+                  className="text-red-600 hover:text-red-800 text-sm font-medium ml-4"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</div>
+
           ) : (
             <div>
               <div className="flex space-x-4 mb-6">
