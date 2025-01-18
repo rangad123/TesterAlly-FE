@@ -15,14 +15,30 @@ const CreateTestSuite = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedProject = localStorage.getItem("selectedProject");
+    // Get current user's ID
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+
+    // Get the selected project for this user
+    const savedProjectKey = `selectedProject_${userId}`;
+    const savedProject = localStorage.getItem(savedProjectKey);
+    
     if (savedProject) {
-      setSelectedProject(JSON.parse(savedProject));
+      try {
+        setSelectedProject(JSON.parse(savedProject));
+      } catch (err) {
+        console.error("Error parsing saved project:", err);
+        localStorage.removeItem(savedProjectKey);
+      }
     }
 
     const handleProjectChange = (event) => {
       const project = event.detail;
       setSelectedProject(project);
+      localStorage.setItem(savedProjectKey, JSON.stringify(project));
     };
 
     window.addEventListener("projectChanged", handleProjectChange);
@@ -30,14 +46,15 @@ const CreateTestSuite = () => {
     return () => {
       window.removeEventListener("projectChanged", handleProjectChange);
     };
-  }, []);
+  }, [navigate]);
 
   const validateForm = () => {
     const newErrors = {};
     if (!title.trim()) {
       newErrors.title = "Title of the test suite is required.";
     }
-    if (!selectedProject) {
+
+    if (!selectedProject?.id) {
       newErrors.project = "A project must be selected to create a test suite.";
     }
     return newErrors;
@@ -49,10 +66,10 @@ const CreateTestSuite = () => {
       setErrors(validationErrors);
       return;
     }
-  
+
     setErrors({});
     setIsLoading(true);
-  
+
     try {
       const response = await fetch("https://testerally-be-ylpr.onrender.com/api/testsuites/", {
         method: "POST",
@@ -63,19 +80,11 @@ const CreateTestSuite = () => {
           title,
           description,
           pre_requisite: preRequisite,
-          labels: labels.split(",").map((label) => label.trim()), // Convert to array
-          project_id: selectedProject?.id,
+          labels: labels.split(",").map((label) => label.trim()).filter(Boolean),
+          project_id: selectedProject.id,
         }),
       });
-  
-      console.log("Request Payload:", {
-        title,
-        description,
-        pre_requisite: preRequisite,
-        labels: labels.split(",").map((label) => label.trim()),
-        project_id: selectedProject?.id,
-      });
-  
+
       if (response.ok) {
         alert("Test Suite Created Successfully");
         setTitle("");
@@ -93,7 +102,6 @@ const CreateTestSuite = () => {
       setIsLoading(false);
     }
   };
-  
 
   const handleCancel = () => {
     navigate("/test-suites");
@@ -106,18 +114,41 @@ const CreateTestSuite = () => {
           <div className="create-test-suite-container">
             <div className="create-test-suite-content">
               <div className="create-test-cases-header">
-                <h2 className="create-test-cases-title">Create Test Suite</h2>
+                <div className="flex flex-col">
+                  <h2 className="create-test-cases-title">Create Test Suite</h2>
+                  {selectedProject ? (
+                    <span className="text-sm text-gray-600 mt-1">
+                      Project: {selectedProject.name}
+                    </span>
+                  ) : (
+                    <span className="text-sm text-red-500 mt-1">
+                      No project selected
+                    </span>
+                  )}
+                </div>
 
                 <div className="create-test-cases-button-group-right">
                   <button onClick={handleCancel} className="cancel-btn">
                     <AiOutlineClose className="inline-icon" />
                     Cancel
                   </button>
-                  <button onClick={handleCreate} className="create-btn" disabled={isLoading}>
-                    {isLoading ? "Creating..." : <> Create</>}
+                  <button 
+                    onClick={handleCreate} 
+                    className={`create-btn ${!selectedProject ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={isLoading || !selectedProject}
+                  >
+                    {isLoading ? "Creating..." : "Create"}
                   </button>
                 </div>
               </div>
+
+              {!selectedProject && (
+                <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-4">
+                  <p className="text-yellow-700">
+                    Please select a project from the sidebar before creating a test suite.
+                  </p>
+                </div>
+              )}
 
               <form className="create-test-suite-form">
                 <div className="create-test-suite-input-group">
@@ -128,9 +159,11 @@ const CreateTestSuite = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Enter test suite title"
                     className={`create-test-suite-input ${errors.title ? "error-border" : ""}`}
+                    disabled={!selectedProject}
                   />
                   {errors.title && <p className="error-message">{errors.title}</p>}
                 </div>
+
                 <div className="create-test-suite-input-group">
                   <label className="create-test-suite-label">Description</label>
                   <textarea
@@ -138,8 +171,10 @@ const CreateTestSuite = () => {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter description"
                     className="create-test-suite-textarea"
+                    disabled={!selectedProject}
                   ></textarea>
                 </div>
+
                 <div className="create-test-suite-input-group">
                   <label className="create-test-suite-label">Pre-Requisite</label>
                   <textarea
@@ -147,8 +182,10 @@ const CreateTestSuite = () => {
                     onChange={(e) => setPreRequisite(e.target.value)}
                     placeholder="Enter pre-requisites"
                     className="create-test-suite-textarea"
+                    disabled={!selectedProject}
                   ></textarea>
                 </div>
+
                 <div className="create-test-suite-input-group">
                   <label className="create-test-suite-label">Labels</label>
                   <input
@@ -157,6 +194,7 @@ const CreateTestSuite = () => {
                     onChange={(e) => setLabels(e.target.value)}
                     placeholder="Enter labels (comma-separated)"
                     className="create-test-suite-input"
+                    disabled={!selectedProject}
                   />
                 </div>
                 {errors.project && <p className="error-message">{errors.project}</p>}

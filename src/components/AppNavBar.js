@@ -101,12 +101,17 @@ const AppNavBar = (props) => {
     localStorage.removeItem("userId");
 
     setIsLoggedIn(false);
-    setName(null);
-    setEmail(null);
+    setName("");
+    setEmail("");
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("name");
     localStorage.removeItem("email");
+    sessionStorage.removeItem("sessionActive");
+
+    localStorage.clear();
+    
     window.location.reload();
+
     navigate("/dashboard/login");
     toast.success("You are successfully logged out!");
 

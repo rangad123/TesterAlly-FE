@@ -12,10 +12,18 @@ const CreateTestCases = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedProject = localStorage.getItem("selectedProject");
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      navigate("/dashboard/login"); 
+      return;
+    }
+    const savedProjectKey = `selectedProject_${userId}`;
+    const savedProject = localStorage.getItem(savedProjectKey);
+    
     if (savedProject) {
-      const project = JSON.parse(savedProject);
-      setSelectedProject(project);
+      setSelectedProject(JSON.parse(savedProject));
+    } else {
+      navigate("/dashboard-user");
     }
 
     const handleProjectChange = (event) => {
@@ -26,7 +34,7 @@ const CreateTestCases = () => {
     window.addEventListener("projectChanged", handleProjectChange);
 
     return () => window.removeEventListener("projectChanged", handleProjectChange);
-  }, []);
+  }, [navigate]);
 
   const validateFields = () => {
     const newErrors = {};
@@ -48,21 +56,20 @@ const CreateTestCases = () => {
 
   const handleCreateTestCase = async () => {
     if (!validateFields()) return;
-  
+
     if (!selectedProject?.id) {
-      alert("No project selected. Please select a project and try again.");
+      navigate("/projects");
       return;
     }
-  
+
     const payload = {
       project_id: selectedProject.id,
       name,
       url,
     };
-  
-    console.log("Request Payload:", payload); 
+
     setIsLoading(true);
-  
+
     try {
       const response = await fetch("https://testerally-be-ylpr.onrender.com/api/testcases/", {
         method: "POST",
@@ -71,25 +78,22 @@ const CreateTestCases = () => {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (response.ok) {
         alert("Test Case Created Successfully");
         setName("");
         setUrl("");
-        navigate("/test-cases"); 
+        navigate("/test-cases");
       } else {
         const errorData = await response.json();
-        console.error("Error Response:", errorData); 
         alert(`Failed to create test case: ${errorData.message || "Unknown error"}`);
       }
     } catch (error) {
-      console.error("Error:", error); 
       alert(`Error: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
   };
-  
 
   const handleCancel = () => navigate("/test-cases");
 
@@ -101,7 +105,14 @@ const CreateTestCases = () => {
             <div className="create-test-cases-wrapper">
               <div className="create-test-cases-container animated-fade-in">
                 <div className="create-test-cases-header">
-                  <h2 className="create-test-cases-title">Create Test Cases</h2>
+                  <div className="flex flex-col">
+                    <h2 className="create-test-cases-title">Create Test Cases</h2>
+                    {selectedProject && (
+                      <span className="text-sm text-gray-600">
+                        Project: {selectedProject.name}
+                      </span>
+                    )}
+                  </div>
                   <div className="create-test-cases-button-group-right">
                     <button onClick={handleCancel} className="cancel-btn">
                       <AiOutlineClose className="inline-icon" />
@@ -110,12 +121,20 @@ const CreateTestCases = () => {
                     <button
                       onClick={handleCreateTestCase}
                       className="create-btn"
-                      disabled={isLoading}
+                      disabled={isLoading || !selectedProject}
                     >
                       {isLoading ? "Creating..." : "Create"}
                     </button>
                   </div>
                 </div>
+
+                {!selectedProject && (
+                  <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-4">
+                    <p className="text-yellow-700">
+                      Please select a project from the sidebar before creating a test case.
+                    </p>
+                  </div>
+                )}
 
                 <div className="create-test-cases-input-container">
                   <label className="create-test-cases-label">
@@ -131,6 +150,7 @@ const CreateTestCases = () => {
                     }}
                     placeholder="Enter test case name"
                     className={`create-test-cases-input ${errors.name ? "error-border" : ""}`}
+                    disabled={!selectedProject}
                   />
                   {errors.name && <span className="error-message">{errors.name}</span>}
                 </div>
@@ -149,6 +169,7 @@ const CreateTestCases = () => {
                     }}
                     placeholder="Enter URL"
                     className={`create-test-cases-input ${errors.url ? "error-border" : ""}`}
+                    disabled={!selectedProject}
                   />
                   {errors.url && <span className="error-message">{errors.url}</span>}
                 </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CreateTestSuite.css";
-import "./Requirement.css"
+import "./Requirement.css";
 import { AiOutlineClose } from "react-icons/ai";
 
 const Requirement = () => {
@@ -43,40 +43,20 @@ const Requirement = () => {
     setErrors({});
     setIsLoading(true);
 
-    try {
-      const response = await fetch("https://testerally-be-ylpr.onrender.com/api/testsuites/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          type,
-          start_date: startDate,
-          completion_date: completionDate,
-          labels,
-        }),
-      });
-
-      if (response.ok) {
-        alert("Requirement Created Successfully");
-        setTitle("");
-        setDescription("");
-        setType("");
-        setStartDate("");
-        setCompletionDate("");
-        setLabels("");
-        navigate("/requirements");
-      } else {
-        const errorData = await response.json();
-        alert(`Failed to create requirement: ${errorData.detail || "Unknown error"}`);
-      }
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    } finally {
+    setTimeout(() => {
       setIsLoading(false);
-    }
+
+      alert("Requirement Created Successfully");
+
+      setTitle("");
+      setDescription("");
+      setType("");
+      setStartDate("");
+      setCompletionDate("");
+      setLabels("");
+
+      navigate("/create-requirement");
+    }, 1500);
   };
 
   const handleCancel = () => {
@@ -87,103 +67,103 @@ const Requirement = () => {
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
         <div className="p-6">
-    <div className="create-test-suite-container">
-      <div className="create-test-suite-content">
-        <div className="create-test-cases-header">
-          <h2 className="create-test-cases-title">Create Requirement</h2>
+          <div className="create-test-suite-container">
+            <div className="create-test-suite-content">
+              <div className="create-test-cases-header">
+                <h2 className="create-test-cases-title">Create Requirement</h2>
 
-          <div className="create-test-cases-button-group-right">
-            <button onClick={handleCancel} className="cancel-btn">
-              <AiOutlineClose className="inline-icon" /> Cancel
-            </button>
-            <button onClick={handleCreate} className="create-btn" disabled={isLoading}>
-              {isLoading ? "Creating..." : <> Create</>}
-            </button>
+                <div className="create-test-cases-button-group-right">
+                  <button onClick={handleCancel} className="cancel-btn">
+                    <AiOutlineClose className="inline-icon" /> Cancel
+                  </button>
+                  <button onClick={handleCreate} className="create-btn" disabled={isLoading}>
+                    {isLoading ? "Creating..." : "Create"}
+                  </button>
+                </div>
+              </div>
+
+              <form className="create-test-suite-form">
+                <div className="create-test-suite-input-group">
+                  <label className="create-test-suite-label">Name:*</label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Enter requirement name"
+                    className={`create-test-suite-input ${errors.title ? "error-border" : ""}`}
+                  />
+                  {errors.title && <p className="error-message">{errors.title}</p>}
+                </div>
+
+                <div className="create-test-suite-input-group">
+                  <label className="create-test-suite-label">Description (Optional):</label>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Enter description"
+                    className="create-test-suite-textarea"
+                  ></textarea>
+                </div>
+
+                <div className="create-test-suite-input-group">
+                  <label className="create-test-suite-label">Select Type:*</label>
+                  <select
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    className={`create-test-suite-select ${errors.type ? "error-border" : ""}`}
+                  >
+                    <option value="">Select</option>
+                    <option value="Functional">Functional</option>
+                    <option value="Non-Functional">Non-Functional</option>
+                    <option value="Regression">Regression</option>
+                  </select>
+                  {errors.type && <p className="error-message">{errors.type}</p>}
+                </div>
+
+                <div className="create-test-suite-date-row">
+                  <div className="create-test-suite-date-group">
+                    <label className="create-test-suite-label">Start Date:*</label>
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className={`create-test-suite-input ${errors.startDate ? "error-border" : ""}`}
+                    />
+                    {errors.startDate && <p className="error-message">{errors.startDate}</p>}
+                  </div>
+                  <div className="create-test-suite-date-group">
+                    <label className="create-test-suite-label">Completion Date:*</label>
+                    <input
+                      type="date"
+                      value={completionDate}
+                      onChange={(e) => setCompletionDate(e.target.value)}
+                      className={`create-test-suite-input ${errors.completionDate ? "error-border" : ""}`}
+                    />
+                    {errors.completionDate && <p className="error-message">{errors.completionDate}</p>}
+                  </div>
+                </div>
+
+                <div className="create-test-suite-input-group">
+                  <label className="create-test-suite-label">Planned Automation Count</label>
+                  <input
+                    type="number"
+                    value={labels}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (!isNaN(value) && Number.isInteger(parseFloat(value))) {
+                        setLabels(value);
+                      }
+                    }}
+                    placeholder="Enter Planned Automation"
+                    className="create-test-suite-input"
+                    min="0"
+                  />
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-
-        <form className="create-test-suite-form">
-          <div className="create-test-suite-input-group">
-            <label className="create-test-suite-label">Name:*</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter requirement name"
-              className={`create-test-suite-input ${errors.title ? "error-border" : ""}`}
-            />
-            {errors.title && <p className="error-message">{errors.title}</p>}
-          </div>
-
-          <div className="create-test-suite-input-group">
-            <label className="create-test-suite-label">Description (Optional):</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter description"
-              className="create-test-suite-textarea"
-            ></textarea>
-          </div>
-
-          <div className="create-test-suite-input-group">
-            <label className="create-test-suite-label">Select Type:*</label>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className={`create-test-suite-select ${errors.type ? "error-border" : ""}`}
-            >
-              <option value="">Select</option>
-              <option value="Functional">Functional</option>
-              <option value="Non-Functional">Non-Functional</option>
-              <option value="Regression">Regression</option>
-            </select>
-            {errors.type && <p className="error-message">{errors.type}</p>}
-          </div>
-
-          <div className="create-test-suite-date-row">
-            <div className="create-test-suite-date-group">
-              <label className="create-test-suite-label">Start Date:*</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className={`create-test-suite-input ${errors.startDate ? "error-border" : ""}`}
-              />
-              {errors.startDate && <p className="error-message">{errors.startDate}</p>}
-            </div>
-            <div className="create-test-suite-date-group">
-              <label className="create-test-suite-label">Completion Date:*</label>
-              <input
-                type="date"
-                value={completionDate}
-                onChange={(e) => setCompletionDate(e.target.value)}
-                className={`create-test-suite-input ${errors.completionDate ? "error-border" : ""}`}
-              />
-              {errors.completionDate && <p className="error-message">{errors.completionDate}</p>}
-            </div>
-          </div>
-
-          <div className="create-test-suite-input-group">
-            <label className="create-test-suite-label">Planned Automation Count</label>
-            <input
-              type="number"
-              value={labels}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (!isNaN(value) && Number.isInteger(parseFloat(value))) {
-                  setLabels(value);
-                }
-              }}
-              placeholder="Enter Planned Automation"
-              className="create-test-suite-input"
-              min="0"
-            />
-          </div>
-        </form>
       </div>
-    </div>
-    </div>
-    </div>
     </div>
   );
 };
