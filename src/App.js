@@ -314,6 +314,7 @@ import Requirement from "./pages/Requirement";
 import RequirementTypes from "./pages/RequirementTypes";
 import TestcasesTypes from "./pages/TestcasesTypes"
 import TestSuites from "./pages/TestSuites";
+import RequirementDetails from "./pages/RequirementDetails";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -610,6 +611,15 @@ const App = () => {
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <TestSuites />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="requirement-details"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <RequirementDetails />
                   </PrivateRoute>
                 }
               />

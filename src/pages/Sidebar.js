@@ -34,7 +34,6 @@ const Sidebar = () => {
         if (window.innerWidth < 640) {
           setIsTestCasesVisible(false);
         }
-        
       }
     };
 
@@ -83,6 +82,7 @@ const Sidebar = () => {
     setIsSubSidebarVisible(false);
     setIsTestCasesVisible(false);
     setIsProjectSettingsVisible(false);
+    setIsSettingsVisible(false);
   };
 
   const handleNavigateToDashboard = () => {
@@ -90,6 +90,7 @@ const Sidebar = () => {
     setIsSubSidebarVisible(false);
     setIsTestCasesVisible(false);
     setIsProjectSettingsVisible(false);
+    setIsSettingsVisible(false);
   };
 
   const handleNavigateToUserRoles = () => {
@@ -112,23 +113,6 @@ const Sidebar = () => {
     setIsSettingsVisible(false);
     setIsSubSidebarVisible(false);
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) {
-        setIsTestCasesVisible(false); 
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    handleResize();
-  
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-  
 
   const currentPath = location.pathname;
 

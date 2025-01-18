@@ -103,7 +103,7 @@ const CreateProject = ({ onProjectCreated }) => {
     <div className="create-project-container">
       <div className="create-project-box">
 
-        <div className="create-test-cases-header">
+        <div className="create-test-cases-header sm:block">
         <h2 className="create-test-cases-title" style={{ fontSize: '28px', fontWeight: 'bold' }}>Create Project</h2>
         
             <div className="create-test-cases-button-group-right">

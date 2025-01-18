@@ -115,7 +115,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
 
   const menuItems = [
     { icon: FaFileAlt, label: "Test Cases", path: "/test-cases" },
-    { icon: FaRegFileAlt, label: "Requirements", path: "/create-requirement" },
+    { icon: FaRegFileAlt, label: "Requirements", path: "/requirement-details" },
     { icon: FaClipboardList, label: "Test Suites", path: "/test-suites" },
     {
       icon: FaCog,
