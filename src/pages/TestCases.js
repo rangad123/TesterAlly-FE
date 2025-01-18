@@ -90,7 +90,7 @@ const TestCases = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex-1 ml-[300px] transition-all duration-300 max-w-[calc(100%-300px)]">
+      <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
         <div className="p-6">
           <div className="bg-white rounded-lg shadow mb-6">
             <div className="flex flex-col sm:flex-row justify-between items-center p-4 border-b">

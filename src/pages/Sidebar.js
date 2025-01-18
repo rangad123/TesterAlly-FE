@@ -30,7 +30,10 @@ const Sidebar = () => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setIsSubSidebarVisible(false);
         setIsSettingsVisible(false);
-
+        
+        if (window.innerWidth < 640) {
+          setIsTestCasesVisible(false);
+        }
         
       }
     };
@@ -109,6 +112,23 @@ const Sidebar = () => {
     setIsSettingsVisible(false);
     setIsSubSidebarVisible(false);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setIsTestCasesVisible(false); 
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+  
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  
 
   const currentPath = location.pathname;
 

@@ -1,4 +1,3 @@
-// tailwind.config.js
 
 /** @type {import('tailwindcss').Config} */
 export const content = [
@@ -8,5 +7,11 @@ export const content = [
 ];
 export const theme = {
   extend: {},
+  screens: {
+    sm: '350px',
+    md: '768px', 
+    lg: '1024px',
+    xl: '1280px',
+  },
 };
 export const plugins = [require("@tailwindcss/forms"), require("flowbite/plugin")];

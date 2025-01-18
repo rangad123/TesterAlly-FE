@@ -101,7 +101,7 @@ const Login = (props) => {
 
   return (
     <div className="w-full flex flex-col lg:flex-row justify-center items-center min-h-screen -mt-10 px-6 py-8 gap-8">
-      <div className="hidden lg:block w-2/5 p-6 rounded-lg" style={{ marginTop: "50px" }}>
+      <div className="hidden lg:block w-2/5 p-6 rounded-lg mt-[50px]">
         <img
           src="/logo1.webp"
           alt="TesterAlly Login"
