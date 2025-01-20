@@ -138,7 +138,7 @@ const Requirement = () => {
   };
 
   const handleCancel = () => {
-    navigate("/requirement-type");
+    navigate("/requirement-details");
   };
 
   const handleInputChange = (e) => {
@@ -153,24 +153,25 @@ const Requirement = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
-        <div className="p-6">
+        <div className="lg:p-6 sm:p-0">
           <div className="create-test-suite-container">
             <div className="create-test-suite-content">
               <div className="create-test-cases-header">
+              <div className="flex flex-col">
                 <h2 className="create-test-cases-title">Create Requirement</h2>
 
                 {/* Display Selected Project */}
-                <div className="flex flex-col">
+
                   {selectedProject ? (
-                    <span className="text-sm text-gray-600 mt-1">
+                    <span className="project-name text-sm text-gray-600 mt-1">
                       Project: {selectedProject.name}
                     </span>
                   ) : (
-                    <span className="text-sm text-red-500 mt-1">
+                    <span className="project-name text-sm text-red-500 mt-1">
                       No project selected
                     </span>
                   )}
-                </div>
+              </div>
 
                 <div className="create-test-cases-button-group-right">
                   <button onClick={handleCancel} className="cancel-btn">

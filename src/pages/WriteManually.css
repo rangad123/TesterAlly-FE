@@ -1,19 +1,18 @@
 .write-manually-page {
+  flex-grow: 1;
   position: relative;
-  display: flex;
-  justify-content: center;
-  padding: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 12px;
+  overflow: hidden;
 }
 .write-manually-page-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  height: 80vh;
+  max-width: 800px;
+  width: 100%;
+  border-radius: 12px;
+  padding: 25px;
   position: relative;
-  margin-top: 0;
-  overflow-y: auto;
 }
 .create-test-cases-button-top-right {
   position: absolute;
@@ -99,6 +98,10 @@
   color: #333;
   border-top: 1px solid #eee;
   padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .wm-review p {
@@ -106,11 +109,21 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  word-wrap: break-word;
+  word-break: break-word;
+  gap: 10px; 
+  overflow-wrap: break-word;
 }
 
 .wm-review span {
   font-weight: bold;
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 70%; 
+  display: inline-block;
 }
+
 
 .wm-edit-btn {
   background: transparent;
@@ -120,6 +133,7 @@
   border-radius: 4px;
   font-size: 12px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .wm-edit-btn:hover {
@@ -152,6 +166,24 @@
   background-color: #6a3ac8;
 }
 
+.wm-input {
+  width: 100%;
+  font-size: 14px;
+}
+
+.wm-next-btn,
+.wm-save-btn {
+  padding: 10px;
+  font-size: 14px;
+}
+
+.cancel-btn {
+  padding: 8px 15px;
+  font-size: 14px;
+}
+
+
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -160,5 +192,54 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+
+
+@media (max-width: 480px) {
+
+  .write-manually-page-wrapper{
+    padding: 15px;
+    max-width: 100%;
+  }
+  .write-manually-page{
+    margin: auto;
+    padding: 10px;
+    width: 320px;
+  }
+
+  .create-test-cases-title{
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  .project-name{
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .wm-review p {
+    flex-direction: column; /* Stack text and button vertically */
+    align-items: flex-start;
+  }
+
+  .wm-review span {
+    max-width: 100%; /* Allow full-width for small screens */
+  }
+
+  .wm-edit-btn {
+    margin-top: 5px; /* Add margin for better spacing */
+  }
+}
+
+@media (max-width: 480px) {
+  .wm-container {
+    padding: 20px;
+    max-width: 95%; /* Adjust container width */
+  }
+
+  .write-manually-page {
+    padding: 10px;
   }
 }

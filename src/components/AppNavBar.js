@@ -108,10 +108,6 @@ const AppNavBar = (props) => {
     localStorage.removeItem("email");
     sessionStorage.removeItem("sessionActive");
 
-    localStorage.clear();
-    
-    window.location.reload();
-
     navigate("/dashboard/login");
     toast.success("You are successfully logged out!");
 

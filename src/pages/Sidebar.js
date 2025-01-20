@@ -22,8 +22,25 @@ const Sidebar = () => {
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); 
   const [isProjectSettingsVisible, setIsProjectSettingsVisible] = useState(false);
   const [isTestCasesVisible, setIsTestCasesVisible] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
 
   const sidebarRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 480);
+    };
+
+    // Initial check
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -41,7 +58,7 @@ const Sidebar = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isMobileView]);
 
 
   const toggleSubSidebar = () => {
@@ -68,13 +85,13 @@ const Sidebar = () => {
   const handleNavigateToCreateTestCases = () => {
     navigate("test-cases/create-testcases");
     setIsSubSidebarVisible(false);
-    setIsTestCasesVisible(true);
+    setIsTestCasesVisible(false);
   };
 
   const handleNavigateToTestSuite = () => {
     navigate("test-suites/create-testsuite");
     setIsSubSidebarVisible(false);
-    setIsTestCasesVisible(true);
+    setIsTestCasesVisible(false);
   };
 
   const handleNavigateToProfile = () => {
@@ -108,7 +125,7 @@ const Sidebar = () => {
   };
 
   const toggleTestCasesSidebar = () => {
-    setIsTestCasesVisible(true);
+    setIsTestCasesVisible((prevState) => !prevState);
     setIsProjectSettingsVisible(false);
     setIsSettingsVisible(false);
     setIsSubSidebarVisible(false);
@@ -116,7 +133,11 @@ const Sidebar = () => {
 
   const currentPath = location.pathname;
 
-  const isAnyOptionActive = currentPath === "/test-cases" || currentPath === "/test-suites" || currentPath === "/project-members"|| currentPath === "/project-details" ;
+  const isAnyOptionActive = currentPath === "/test-suites" || currentPath === "/test-cases"
+  || currentPath === "/create-requirement"
+  || currentPath === "/project-members"|| currentPath === "/project-details" 
+  || currentPath === "/requirement-details"|| currentPath === "/requirement-type" ;
+
 
   return (
     <div className="sidebar-container" ref={sidebarRef}>
@@ -126,10 +147,10 @@ const Sidebar = () => {
 
         {/* Create Project Option */}
         <div
-          className={`sidebar-option ${ currentPath === "/create-project"  ? "active" : ""}`}
+          className={`sidebar-option ${ currentPath === "/create-project" || currentPath === "/test-cases/create-testcases" || currentPath === "/test-suites/create-testsuite"  ? "active" : ""}`}
           onClick={toggleSubSidebar}
         >
-      <BiAddToQueue className={`icon project-icon ${ currentPath === "/create-project"  ? "active-icon" : ""}`} />
+      <BiAddToQueue className={`icon project-icon ${ currentPath === "/create-project" || currentPath === "/test-cases/create-testcases" || currentPath === "/test-suites/create-testsuite"  ? "active-icon" : ""}`} />
       <div className="option-name-container">
         <span className="option-name">Create Project</span>
       </div>
@@ -161,6 +182,12 @@ const Sidebar = () => {
       isVisible={isProjectSettingsVisible || isTestCasesVisible} 
       isProjectSettings={isProjectSettingsVisible}
       isL1Expanded={isSidebarOpen}
+      isMobileView={isMobileView}
+      onOptionSelect={() => {
+        if (isMobileView) {
+          setIsTestCasesVisible(false);
+        }
+      }}
     />
 
     {/* Settings Option */}

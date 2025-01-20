@@ -373,9 +373,6 @@ const App = () => {
     localStorage.removeItem("email");
     sessionStorage.removeItem("sessionActive");
 
-    localStorage.clear();
-    
-    window.location.reload();
   };
 
   console.log("localStorage after logout:", localStorage);

@@ -48,7 +48,19 @@ const CreateTestCases = () => {
     if (!url.trim()) {
       newErrors.url = "URL is required!";
       isValid = false;
-    }
+    } else {
+      try {
+
+        const normalizedUrl = url.startsWith("http://") || url.startsWith("https://")
+          ? url
+          : `https://${url}`;
+        new URL(normalizedUrl); 
+      } catch (error) {
+        newErrors.url = "Invalid URL format!";
+        isValid = false;
+      }
+    }    
+
 
     setErrors(newErrors);
     return isValid;
@@ -62,11 +74,15 @@ const CreateTestCases = () => {
       return;
     }
 
-    const payload = {
-      project_id: selectedProject.id,
-      name,
-      url,
-    };
+    const normalizedUrl = url.startsWith("http://") || url.startsWith("https://")
+    ? url
+    : `https://${url}`;
+
+  const payload = {
+    project_id: selectedProject.id,
+    name,
+    url: normalizedUrl, 
+  };
 
     setIsLoading(true);
 
@@ -97,21 +113,33 @@ const CreateTestCases = () => {
 
   const handleCancel = () => navigate("/test-cases");
 
+  const handleTestSuite = () => {
+    navigate("/test-suites");
+  };
+
+  const handleWriteTestManually = () => {
+    navigate("/write-manually");
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
-        <div className="p-6">
+        <div className="lg:p-6 sm:p-0">
           <div className="create-test-cases-page-container">
             <div className="create-test-cases-wrapper">
               <div className="create-test-cases-container animated-fade-in">
                 <div className="create-test-cases-header">
                   <div className="flex flex-col">
                     <h2 className="create-test-cases-title">Create Test Cases</h2>
-                    {selectedProject && (
-                      <span className="text-sm text-gray-600">
-                        Project: {selectedProject.name}
-                      </span>
-                    )}
+                    {selectedProject ? (
+                    <span className="project-name text-sm text-gray-600 mt-1">
+                      Project: {selectedProject.name}
+                    </span>
+                  ) : (
+                    <span className="project-name text-sm text-red-500 mt-1">
+                      No project selected
+                    </span>
+                  )}
                   </div>
                   <div className="create-test-cases-button-group-right">
                     <button onClick={handleCancel} className="cancel-btn">
@@ -173,6 +201,15 @@ const CreateTestCases = () => {
                   />
                   {errors.url && <span className="error-message">{errors.url}</span>}
                 </div>
+                <div className="create-test-cases-button-group">
+            <button onClick={handleWriteTestManually} className="create-test-cases-btn-manual">
+              Write Test Manually
+            </button>
+
+            <button onClick={handleTestSuite} className="create-test-cases-test-suite-btn">
+              Test Suite
+            </button>
+          </div>
               </div>
             </div>
           </div>

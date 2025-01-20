@@ -200,11 +200,16 @@
   .create-project-container {
     margin: auto;
     padding: 10px;
+    width: 320px;
   }
 
   .create-project-box {
     padding: 15px;
     max-width: 95%;
+  }
+
+  .create-test-cases-header{
+    display: block !important;
   }
 
   .create-project-title {

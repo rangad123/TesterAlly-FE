@@ -127,12 +127,12 @@ const HeroSection = () => {
           </motion.div>
 
           <motion.div 
-            className="relative h-[500px]"
+            className="relative lg:h-[500px] sm:h-[300px]"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <img src='/hero.svg' className='mt-[30px]' alt='TeaterAlly' />
+            <img src='/hero.svg' className='lg:mt-[30px] sm:mt-[50px]' alt='TeaterAlly' />
           </motion.div>
         </div>
       </div>

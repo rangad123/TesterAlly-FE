@@ -55,3 +55,8 @@
     outline: none;
   }
   
+@media (max-width: 480px){
+  .create-test-suite-date-row{
+    display: block;
+  }
+}

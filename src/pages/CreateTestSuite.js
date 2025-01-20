@@ -110,14 +110,14 @@ const CreateTestSuite = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
-        <div className="p-6">
+        <div className="lg:p-6 sm:p-0">
           <div className="create-test-suite-container">
             <div className="create-test-suite-content">
               <div className="create-test-cases-header">
                 <div className="flex flex-col">
                   <h2 className="create-test-cases-title">Create Test Suite</h2>
                   {selectedProject ? (
-                    <span className="text-sm text-gray-600 mt-1">
+                    <span className="project-name text-sm text-gray-600 mt-1">
                       Project: {selectedProject.name}
                     </span>
                   ) : (

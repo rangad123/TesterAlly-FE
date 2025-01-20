@@ -93,7 +93,7 @@ const TestCases = () => {
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
         <div className="p-6">
           <div className="bg-white rounded-lg shadow mb-6">
-            <div className="flex flex-col sm:flex-row justify-between items-center p-4 border-b">
+            <div className="flex flex-col lg:flex-row justify-between items-center p-4 border-b">
               <div className="flex space-x-4 mb-4 sm:mb-0">
                 <button className="px-4 py-2 text-purple-600 font-medium border-b-2 border-purple-600">
                   Test Cases
@@ -104,7 +104,7 @@ const TestCases = () => {
               </div>
               <button
                 onClick={() => navigate("/test-cases/create-testcases")}
-                className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 lg:mt-0 sm:mt-3"
                 disabled={!selectedProject}
               >
                 <AiOutlinePlus className="mr-2" />
@@ -112,7 +112,7 @@ const TestCases = () => {
               </button>
             </div>
 
-            <div className="p-4 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <div className="p-4 flex flex-col lg:flex-row justify-between items-center space-y-4 sm:space-y-0">
               <h2 className="text-lg font-medium text-gray-700">
                 {selectedProject ? `Test Cases - ${selectedProject.name}` : 'Select a Project'}
               </h2>

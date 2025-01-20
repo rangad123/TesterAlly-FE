@@ -12,7 +12,7 @@ import {
   FaPlusCircle
 } from "react-icons/fa";
 
-const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
+const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect }) => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -98,6 +98,9 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
     localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(project));
     setIsDropdownOpen(false);
     setSearchTerm("");
+    if (isMobileView) {
+      onOptionSelect(); 
+    }
     window.dispatchEvent(new CustomEvent("projectChanged", { detail: project }));
   };
 
@@ -132,6 +135,10 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
     }
   
     navigate(path);
+
+    if (isMobileView) {
+      onOptionSelect(); 
+    }
   };
   
 
@@ -145,7 +152,9 @@ const ProjectSidebar = ({ isL1Expanded, isVisible }) => {
     <div
       className={`fixed ${
         isL1Expanded ? "left-60" : "left-16"
-      } h-[calc(100%-4rem)] w-60 bg-white border-l border-gray-200 transition-all duration-300 ease-in-out md:block`}
+      } h-[calc(100%-4rem)] w-60 bg-white border-l border-gray-200 transition-all duration-300 ease-in-out ${
+        isMobileView ? 'md:hidden' : 'md:block'
+      }`}
     >
       {/* Project Dropdown or No Projects Message */}
       <div className="px-4 mt-[18px]">

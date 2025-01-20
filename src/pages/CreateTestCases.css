@@ -1,20 +1,19 @@
 .create-test-cases-page-container {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
+  flex-grow: 1;
+  position: relative;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .create-test-cases-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  height: 80vh;
+  max-width: 800px;
+  width: 100%;
+  border-radius: 12px;
+  padding: 25px;
   position: relative;
-  margin-top: 0;
-  margin-bottom: 15px;
-  overflow-y: auto;
 }
 
 .create-test-cases-top-right {
@@ -149,6 +148,25 @@
 }
 
 @media (max-width: 480px) {
+
+  .create-test-cases-wrapper{
+    padding: 15px;
+    max-width: 100%;
+  }
+  .create-test-cases-page-container{
+    margin: auto;
+    padding: 10px;
+    width: 320px;
+  }
+
+  .create-test-cases-title{
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  .project-name{
+    text-align: center;
+  }
+
   .create-test-cases-button-group {
     flex-direction: column;
     gap: 10px;
@@ -195,10 +213,6 @@
   margin-bottom: 20px;
 }
 
-.create-test-cases-title {
-  font-size: 1.8rem;
-  margin: 0;
-}
 
 .create-test-cases-button-group-right {
   display: flex;

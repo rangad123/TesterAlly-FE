@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./WriteManually.css";
 import { AiOutlineClose } from "react-icons/ai";
@@ -9,11 +9,44 @@ const WriteTestManually = ({ setShowWriteTestManually }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [selectedProject, setSelectedProject] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      navigate("/dashboard/login");
+      return;
+    }
+
+    const savedProjectKey = `selectedProject_${userId}`;
+    const savedProject = localStorage.getItem(savedProjectKey);
+
+    if (savedProject) {
+      setSelectedProject(JSON.parse(savedProject));
+    } else {
+      navigate("/dashboard-user");
+    }
+
+    const handleProjectChange = (event) => {
+      const newProject = event.detail;
+      setSelectedProject(newProject);
+    };
+
+    window.addEventListener("projectChanged", handleProjectChange);
+
+    return () =>
+      window.removeEventListener("projectChanged", handleProjectChange);
+  }, [navigate]);
 
   const handleSave = () => {
     if (!url.trim() || !username.trim() || !password.trim()) {
       setError("All fields are required!");
+      return;
+    }
+
+    if (!selectedProject?.id) {
+      alert("Please select a project before saving.");
       return;
     }
 
@@ -24,141 +57,163 @@ const WriteTestManually = ({ setShowWriteTestManually }) => {
       `4. Click on Login.`,
     ];
 
-    const confirmed = window.alert(
-      `Test steps saved successfully!\n\n${steps.join("\n")}`
+    alert(
+      `Test steps saved successfully for project: ${selectedProject.name}!\n\n${steps.join(
+        "\n"
+      )}`
     );
 
-    if (confirmed !== undefined) {
-      setShowWriteTestManually(false);
-    }
+    setShowWriteTestManually(false);
   };
 
   const handleCancel = () => {
-    navigate("/dashboard-user");
+    navigate("/test-cases");
   };
+
+  
 
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
-        <div className="p-6">
-    <div className="write-manually-page">
-      <div className="write-manually-page-wrapper">
+        <div className="lg:p-6 sm:p-0">
+          <div className="write-manually-page">
+            <div className="write-manually-page-wrapper">
+              <div className="wm-container">
+                <div className="create-test-cases-header">
+                  <div className="flex flex-col">
+                    <h2 className="create-test-cases-title">Write Test Manually</h2>
+                    {selectedProject ? (
+                      <span className="project-name text-sm text-gray-600 mt-1">
+                        Project: {selectedProject.name}
+                      </span>
+                    ) : (
+                      <span className="project-name text-sm text-red-500 mt-1">
+                        No project selected
+                      </span>
+                    )}
+                  </div>
+                  <div className="create-test-cases-button-group-right">
+                    <button onClick={handleCancel} className="cancel-btn">
+                      <AiOutlineClose className="inline-icon" />
+                      Cancel
+                    </button>
+                  </div>
+                </div>
 
-      <div className="wm-container">
-        <div className="create-test-cases-header">
-          <h2 className="create-test-cases-title">Write Test Manually</h2>
-                      
-          <div className="create-test-cases-button-group-right">
-            <button onClick={handleCancel} className="cancel-btn">
-              <AiOutlineClose className="inline-icon" />
-              Cancel
-            </button>
+                {error && <div className="wm-error">{error}</div>}
+
+                {step === 1 && (
+                  <div className="wm-step">
+                    <label className="wm-label">
+                      Step 1: Open the URL <span className="wm-required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="wm-input"
+                      value={url}
+                      onChange={(e) => {
+                        setUrl(e.target.value);
+                        setError("");
+                      }}
+                      placeholder="Enter the URL"
+                    />
+                    <button
+                      className="wm-next-btn"
+                      onClick={() => setStep(2)}
+                      disabled={!url.trim()}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+
+                {step === 2 && (
+                  <div className="wm-step">
+                    <label className="wm-label">
+                      Step 2: Enter the Username{" "}
+                      <span className="wm-required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="wm-input"
+                      value={username}
+                      onChange={(e) => {
+                        setUsername(e.target.value);
+                        setError("");
+                      }}
+                      placeholder="Enter the Username"
+                    />
+                    <div className="wm-review">
+                      <p>
+                        <span>Entered URL:</span> {url}
+                        <button
+                          className="wm-edit-btn"
+                          onClick={() => setStep(1)}
+                        >
+                          Edit
+                        </button>
+                      </p>
+                    </div>
+                    <button
+                      className="wm-next-btn"
+                      onClick={() => setStep(3)}
+                      disabled={!username.trim()}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+
+                {step === 3 && (
+                  <div className="wm-step">
+                    <label className="wm-label">
+                      Step 3: Enter the Password{" "}
+                      <span className="wm-required">*</span>
+                    </label>
+                    <input
+                      type="password"
+                      className="wm-input"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setError("");
+                      }}
+                      placeholder="Enter the Password"
+                    />
+                    <div className="wm-review">
+                      <p>
+                        <span>Entered URL:</span> {url}
+                        <button
+                          className="wm-edit-btn"
+                          onClick={() => setStep(1)}
+                        >
+                          Edit
+                        </button>
+                      </p>
+                      <p>
+                        <span>Entered Username:</span> {username}
+                        <button
+                          className="wm-edit-btn"
+                          onClick={() => setStep(2)}
+                        >
+                          Edit
+                        </button>
+                      </p>
+                    </div>
+                    <button
+                      className="wm-save-btn"
+                      onClick={handleSave}
+                      disabled={!password.trim()}
+                    >
+                      Save
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-
-        {error && <div className="wm-error">{error}</div>}
-
-        {step === 1 && (
-          <div className="wm-step">
-            <label className="wm-label">
-              Step 1: Open the URL <span className="wm-required">*</span>
-            </label>
-            <input
-              type="text"
-              className="wm-input"
-              value={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-                setError("");
-              }}
-              placeholder="Enter the URL"
-            />
-            <button
-              className="wm-next-btn"
-              onClick={() => setStep(2)}
-              disabled={!url.trim()}
-            >
-              Next
-            </button>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="wm-step">
-            <label className="wm-label">
-              Step 2: Enter the Username <span className="wm-required">*</span>
-            </label>
-            <input
-              type="text"
-              className="wm-input"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-                setError("");
-              }}
-              placeholder="Enter the Username"
-            />
-            <div className="wm-review">
-              <p>
-                <span>Entered URL:</span> {url}
-                <button className="wm-edit-btn" onClick={() => setStep(1)}>
-                  Edit
-                </button>
-              </p>
-            </div>
-            <button
-              className="wm-next-btn"
-              onClick={() => setStep(3)}
-              disabled={!username.trim()}
-            >
-              Next
-            </button>
-          </div>
-        )}
-
-        {step === 3 && (
-          <div className="wm-step">
-            <label className="wm-label">
-              Step 3: Enter the Password <span className="wm-required">*</span>
-            </label>
-            <input
-              type="password"
-              className="wm-input"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setError("");
-              }}
-              placeholder="Enter the Password"
-            />
-            <div className="wm-review">
-              <p>
-                <span>Entered URL:</span> {url}
-                <button className="wm-edit-btn" onClick={() => setStep(1)}>
-                  Edit
-                </button>
-              </p>
-              <p>
-                <span>Entered Username:</span> {username}
-                <button className="wm-edit-btn" onClick={() => setStep(2)}>
-                  Edit
-                </button>
-              </p>
-            </div>
-            <button
-              className="wm-save-btn"
-              onClick={handleSave}
-              disabled={!password.trim()}
-            >
-              Save
-            </button>
-          </div>
-        )}
       </div>
-      </div>
-    </div>
-    </div>
-    </div>
     </div>
   );
 };
