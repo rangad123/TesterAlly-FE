@@ -28,7 +28,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
         console.warn("No userId found in localStorage");
         return;
       }
-  
+    
       try {
         const response = await fetch(
           `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`,
@@ -38,22 +38,23 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
             },
           }
         );
-  
+    
         if (response.ok) {
           const data = await response.json();
           setProjects(data);
-  
+    
           const savedProjectKey = `selectedProject_${userId}`;
           const savedProject = localStorage.getItem(savedProjectKey);
-  
+    
           if (data.length > 0) {
             if (savedProject) {
               const parsedProject = JSON.parse(savedProject);
               const projectExists = data.some((p) => p.id === parsedProject.id);
-  
+    
               if (projectExists) {
                 setSelectedProject(parsedProject);
               } else {
+                // If saved project doesn't exist anymore, select first available
                 setSelectedProject(data[0]);
                 localStorage.setItem(savedProjectKey, JSON.stringify(data[0]));
               }
@@ -82,12 +83,55 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
       localStorage.setItem(`selectedProject_${newProject.user_id}`, JSON.stringify(newProject));
     };
   
+    const handleProjectDeleted = (event) => {
+      const { projectId } = event.detail;
+      setProjects((prevProjects) => {
+        const updatedProjects = prevProjects.filter((project) => project.id !== projectId);
+        
+        // If the deleted project was selected, clear selection and storage
+        if (selectedProject && selectedProject.id === projectId) {
+          setSelectedProject(null);
+          const userId = localStorage.getItem("userId");
+          if (userId) {
+            localStorage.removeItem(`selectedProject_${userId}`);
+          }
+          
+          // If there are other projects, select the first one
+          if (updatedProjects.length > 0) {
+            setSelectedProject(updatedProjects[0]);
+            localStorage.setItem(
+              `selectedProject_${userId}`, 
+              JSON.stringify(updatedProjects[0])
+            );
+          }
+        }
+        
+        return updatedProjects;
+      });
+    };
+  
+    const handleProjectChanged = (event) => {
+      const changedProject = event.detail;
+      if (changedProject) {
+        setSelectedProject(changedProject);
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+          localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(changedProject));
+        }
+      }
+    };
+  
     window.addEventListener("projectCreated", handleProjectCreated);
+    window.addEventListener("projectDeleted", handleProjectDeleted);
+    window.addEventListener("projectChanged", handleProjectChanged);
   
     return () => {
       window.removeEventListener("projectCreated", handleProjectCreated);
+      window.removeEventListener("projectDeleted", handleProjectDeleted);
+      window.removeEventListener("projectChanged", handleProjectChanged);
     };
-  }, []);
+  }, [selectedProject]); 
+  
   
 
   const handleProjectSelect = (project) => {

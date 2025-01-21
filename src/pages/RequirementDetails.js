@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
+import { Save, X, Edit2, Trash2 } from 'lucide-react';
 
 const RequirementDetails = () => {
   const navigate = useNavigate();
@@ -9,6 +10,9 @@ const RequirementDetails = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedDescription, setEditedDescription] = useState("");
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -72,6 +76,79 @@ const RequirementDetails = () => {
 
     fetchRequirements();
   }, [selectedProject]);
+
+  const handleEdit = (id, title, description) => {
+    setEditingId(id);
+    setEditedTitle(title);
+    setEditedDescription(description);
+  };
+
+  const handleSave = async () => {
+    if (!editedTitle || !editedDescription) return;
+
+    const updatedRequirement = {
+      title: editedTitle,
+      description: editedDescription,
+    };
+
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/requirements/${editingId}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedRequirement),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update requirement");
+      }
+
+      const updatedData = await response.json();
+      setRequirements((prevRequirements) =>
+        prevRequirements.map((req) =>
+          req.id === updatedData.id ? updatedData : req
+        )
+      );
+      setEditingId(null);
+      setEditedTitle("");
+      setEditedDescription("");
+    } catch (error) {
+      console.error("Error saving requirement:", error);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setEditedTitle("");
+    setEditedDescription("");
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this requirement?")) {
+      try {
+        const response = await fetch(
+          `https://testerally-be-ylpr.onrender.com/api/requirements/${id}/`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to delete requirement");
+        }
+
+        setRequirements((prevRequirements) =>
+          prevRequirements.filter((req) => req.id !== id)
+        );
+      } catch (error) {
+        console.error("Error deleting requirement:", error);
+      }
+    }
+  };
 
   const filteredRequirements = requirements.filter((requirement) =>
     requirement.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -146,22 +223,84 @@ const RequirementDetails = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Completion Date
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredRequirements.map((requirement) => (
                       <tr key={requirement.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {requirement.title}
+                          {editingId === requirement.id ? (
+                            <input
+                              type="text"
+                              value={editedTitle}
+                              onChange={(e) => setEditedTitle(e.target.value)}
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            requirement.title
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {requirement.description}
+                          {editingId === requirement.id ? (
+                            <input
+                              type="text"
+                              value={editedDescription}
+                              onChange={(e) =>
+                                setEditedDescription(e.target.value)
+                              }
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            requirement.description
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {requirement.start_date}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {requirement.completion_date}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {editingId === requirement.id ? (
+                            <>
+                              <button
+                                onClick={handleSave}
+                                className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+                                >
+                                <Save className="w-4 h-4 mr-1" />
+                                Save
+                              </button>
+                              <button
+                                onClick={handleCancel}
+                                className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200  ml-2"
+                                >
+                                <X className="w-4 h-4 mr-1" />
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() =>
+                                  handleEdit(requirement.id, requirement.title, requirement.description)
+                                }
+                                className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
+                                >
+                                <Edit2 className="w-4 h-4 mr-1" />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(requirement.id)}
+                                className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 ml-2"
+                                >
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Delete
+                              </button>
+                            </>
+                          )}
                         </td>
                       </tr>
                     ))}

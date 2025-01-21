@@ -1,56 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Save, X, Edit2, Trash2, ChevronDown } from 'lucide-react';
 
 const ProjectDetails = () => {
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState(null);
-  const [allProjects, setAllProjects] = useState([]); 
-  const [editingProject, setEditingProject] = useState(null);
-  const [editFormData, setEditFormData] = useState({ name: "", description: "", type: "" });
-  const [testCases, setTestCases] = useState([]);
-  const [testSuites, setTestSuites] = useState([]);
+  const [allProjects, setAllProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("details");
+  const [testCases, setTestCases] = useState([]);
+  const [testSuites, setTestSuites] = useState([]);
   const userName = localStorage.getItem("userName") || "User Name";
   const userId = localStorage.getItem("userId");
-
+  const projectTypes = ["Web Development", "Mobile Application", "API Development", "Data Analysis"];
 
   useEffect(() => {
     const fetchAllProjects = async () => {
       setLoading(true);
-
       try {
         const response = await fetch(
           `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`
         );
         const data = await response.json();
+
+        console.log("Projects",data)
+
         if (response.ok) {
-          console.log("Fetched data:", data);
-          setAllProjects(data); 
+          setAllProjects(data);
         }
       } catch (err) {
         console.error("Error fetching projects:", err);
-      }finally {
-        setLoading(false); 
+      } finally {
+        setLoading(false);
       }
     };
-  
+
     if (userId) {
       fetchAllProjects();
     }
   }, [userId]);
-  
 
   useEffect(() => {
     const savedProject = localStorage.getItem("selectedProject");
     if (savedProject) {
       const project = JSON.parse(savedProject);
       setSelectedProject(project);
-      setEditFormData({
-        name: project.name || "",
-        description: project.description || "",
-        type: project.type || "",
-      });
       fetchTestCases(project.id);
       fetchTestSuites(project.id);
     }
@@ -59,15 +53,9 @@ const ProjectDetails = () => {
       const newProject = event.detail;
       setSelectedProject(newProject);
       if (newProject) {
-        setEditFormData({
-          name: newProject.name || "",
-          description: newProject.description || "",
-          type: newProject.type || "",
-        });
         fetchTestCases(newProject.id);
         fetchTestSuites(newProject.id);
       }
-      setEditingProject(null);
     };
 
     window.addEventListener("projectChanged", handleProjectChange);
@@ -82,6 +70,8 @@ const ProjectDetails = () => {
       const data = await response.json();
       if (response.ok) {
         setTestCases(data);
+
+        console.log("Test cases",data)
       }
     } catch (err) {
       console.error("Error fetching test cases:", err);
@@ -96,6 +86,8 @@ const ProjectDetails = () => {
       const data = await response.json();
       if (response.ok) {
         setTestSuites(data);
+
+        console.log("Test suites",data)
       }
     } catch (err) {
       console.error("Error fetching test suites:", err);
@@ -103,104 +95,222 @@ const ProjectDetails = () => {
   };
 
   const handleDeleteProject = async (projectId) => {
-    if (!window.confirm("Are you sure you want to delete this project? This will also delete all related test cases and test suites.")) return;
-
+    if (!window.confirm("Are you sure you want to delete this project?")) return;
+  
     try {
-      const testCaseDeleteResponse = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testcases/?project_id=${projectId}`,
-        {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      
-      const testSuiteDeleteResponse = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testsuites/?project_id=${projectId}`,
-        {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (testCaseDeleteResponse.ok && testSuiteDeleteResponse.ok) {
-        const response = await fetch(
-          `https://testerally-be-ylpr.onrender.com/api/projects/${projectId}/`,
-          {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-
-        if (response.ok) {
-          localStorage.removeItem("selectedProject");
-          const projectsResponse = await fetch(
-            `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`
-          );
-          const projectsData = await projectsResponse.json();
-          if (projectsResponse.ok) {
-            setAllProjects(projectsData);
-          }
-          navigate("/");
-          window.dispatchEvent(new CustomEvent("projectChanged", { detail: null }));
-          alert("Project and related test cases and test suites deleted successfully.");
-        } else {
-          const errorData = await response.json();
-          alert(errorData.message || "Failed to delete project.");
-        }
-      } else {
-        alert("Failed to delete related test cases or test suites.");
+      if (!projectId || !userId) {
+        alert(!projectId ? "Invalid project ID." : "Invalid user ID.");
+        return;
       }
-    } catch (err) {
-      console.error("Error deleting project:", err);
-      alert("An error occurred while deleting the project.");
+  
+      const deleteResponse = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/projects/${projectId}/?user_id=${userId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+  
+      if (deleteResponse.ok) {
+        
+        const currentUser = localStorage.getItem("userId");
+        localStorage.removeItem(`selectedProject_${currentUser}`);
+        localStorage.removeItem("selectedProject"); 
+  
+        window.dispatchEvent(new CustomEvent("projectDeleted", { 
+          detail: { projectId }
+        }));
+  
+        alert("Project deleted successfully.");
+        setSelectedProject(null);
+        navigate("/dashboard-user");
+      } else {
+        const errorData = await deleteResponse.json();
+        console.error("Delete failed:", errorData);
+        alert(errorData.message || "Failed to delete project.");
+      }
+    } catch (error) {
+      console.error("Error during deletion:", error);
+      alert("An error occurred while deleting the project. Please try again.");
+    }
+  };
+  
+  
+
+  const handleEditClick = (project) => {
+    if (selectedProject && project.id === selectedProject.id) {
+      setSelectedProject({ ...selectedProject, isEditing: true });
+    } else {
+      const updatedProjects = allProjects.map((p) => ({
+        ...p,
+        isEditing: p.id === project.id
+      }));
+      setAllProjects(updatedProjects);
     }
   };
 
-  const handleEditClick = (project) => {
-    setEditingProject(project);
-    setEditFormData({
-      name: project.name || "",
-      description: project.description || "",
-      type: project.project_type || "",
-    });
+  const handleCancelEdit = (projectId) => {
+    if (selectedProject && projectId === selectedProject.id) {
+      setSelectedProject({ ...selectedProject, isEditing: false });
+    } else {
+      const updatedProjects = allProjects.map((project) => ({
+        ...project,
+        isEditing: false
+      }));
+      setAllProjects(updatedProjects);
+    }
   };
 
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSave = async (projectId, updatedData) => {
     try {
+
+      if (!projectId || !userId) {
+        alert(!projectId ? "Invalid project ID." : "Invalid user ID.");
+        return;
+      }
+      
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/projects/${editingProject.id}/`,
+        `https://testerally-be-ylpr.onrender.com/api/projects/${projectId}/?user_id=${userId}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(editFormData),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedData),
         }
       );
 
       if (response.ok) {
         const updatedProject = await response.json();
-        setSelectedProject(updatedProject);
-        localStorage.setItem("selectedProject", JSON.stringify(updatedProject));
-        window.dispatchEvent(new CustomEvent("projectChanged", { detail: updatedProject }));
-        setEditingProject(null);
+        if (selectedProject && projectId === selectedProject.id) {
+          setSelectedProject({ ...updatedProject, isEditing: false });
+          localStorage.setItem("selectedProject", JSON.stringify(updatedProject));
+        } else {
+          const updatedProjects = allProjects.map((project) =>
+            project.id === projectId ? { ...updatedProject, isEditing: false } : project
+          );
+          setAllProjects(updatedProjects);
+        }
         alert("Project updated successfully.");
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message || "Failed to update project.");
       }
     } catch (err) {
       console.error("Error updating project:", err);
       alert("An error occurred while updating the project.");
     }
   };
+
+  const handleChange = (projectId, field, value) => {
+    if (selectedProject && projectId === selectedProject.id) {
+      setSelectedProject({ ...selectedProject, [field]: value });
+    } else {
+      const updatedProjects = allProjects.map((project) => {
+        if (project.id === projectId) {
+          return { ...project, [field]: value };
+        }
+        return project;
+      });
+      setAllProjects(updatedProjects);
+    }
+  };
+
+  const renderProjectRow = (project, isSelected = false) => {
+    const isEditing = project.isEditing;
+  
+    return (
+      <tr
+        key={project.id} 
+        className="group hover:bg-gray-50 transition-colors duration-200 border-b"
+      >
+        <td className="px-6 py-4 text-sm text-gray-900">
+          {isEditing ? (
+            <input
+              type="text"
+              value={project.name}
+              onChange={(e) => handleChange(project.id, "name", e.target.value)}
+              className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+            />
+          ) : (
+            <span className="font-medium">{project.name}</span>
+          )}
+        </td>
+        <td className="px-6 py-4 text-sm text-gray-500">
+          {isEditing ? (
+            <input
+              type="text"
+              value={project.description}
+              onChange={(e) => handleChange(project.id, "description", e.target.value)}
+              className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+            />
+          ) : (
+            project.description || "N/A"
+          )}
+        </td>
+        <td className="px-6 py-4 text-sm text-gray-500">
+          {isEditing ? (
+            <div className="relative">
+              <select
+                value={project.project_type}
+                onChange={(e) => handleChange(project.id, "project_type", e.target.value)}
+                className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 appearance-none transition-all duration-200 pr-8"
+              >
+                {projectTypes.map((type, index) => (
+                  <option key={index} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+          ) : (
+            project.project_type || "N/A"
+          )}
+        </td>
+        {isSelected && (
+          <td className="px-6 py-4 text-sm text-gray-500">{userName}</td>
+        )}
+        <td className="px-6 py-4 text-sm font-medium">
+          {isEditing ? (
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => handleSave(project.id, {
+                  name: project.name,
+                  description: project.description,
+                  project_type: project.project_type,
+                })}
+                className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+              >
+                <Save className="w-4 h-4 mr-1" />
+                Save
+              </button>
+              <button
+                onClick={() => handleCancelEdit(project.id)}
+                className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
+              >
+                <X className="w-4 h-4 mr-1" />
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2 transition-opacity duration-200">
+              <button
+                onClick={() => handleEditClick(project)}
+                className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
+              >
+                <Edit2 className="w-4 h-4 mr-1" />
+                Edit
+              </button>
+              <button
+                onClick={() => handleDeleteProject(project.id)}
+                className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200"
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                Delete
+              </button>
+            </div>
+          )}
+        </td>
+      </tr>
+    );
+  };
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -214,64 +324,37 @@ const ProjectDetails = () => {
             </div>
           ) : !selectedProject ? (
             <div className="space-y-6">
-  {allProjects.length === 0 ? (
-    <div className="text-center p-8 bg-white rounded-lg shadow-md">
-      <p className="text-gray-600 text-lg mb-4">You have no projects yet.</p>
-      <p className="text-gray-500">Please create a project to get started.</p>
-    </div>
-  ) : (
-    <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-      <table className="min-w-full table-auto">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Project Name
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Description
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Project Type
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {allProjects.map((project) => (
-            <tr key={project.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {project.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {project.description || "No description available"}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {project.project_type || "N/A"}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button
-                  onClick={() => handleEditClick(project)}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteProject(project.id)}
-                  className="text-red-600 hover:text-red-800 text-sm font-medium ml-4"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )}
-</div>
-
+              {allProjects.length === 0 ? (
+                <div className="text-center p-8 bg-white rounded-lg shadow-md">
+                  <p className="text-gray-600 text-lg mb-4">You have no projects yet.</p>
+                  <p className="text-gray-500">Please create a project to get started.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+                  <table className="min-w-full table-auto">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Project Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Description
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Project Type
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {allProjects.map((project) => renderProjectRow(project))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           ) : (
             <div>
               <div className="flex space-x-4 mb-6">
@@ -308,127 +391,129 @@ const ProjectDetails = () => {
               </div>
 
               {activeTab === "details" && (
-                <div className="overflow-auto rounded-lg shadow-md mb-6">
-                  <table className="w-full border-collapse bg-white">
-                    <thead>
-                      <tr className="bg-gray-200 text-gray-600 text-left text-sm leading-normal">
-                        <th className="py-3 px-6">Project Name</th>
-                        <th className="py-3 px-6">Description</th>
-                        <th className="py-3 px-6">Project Type</th>
-                        <th className="py-3 px-6">Created By</th>
-                        <th className="py-3 px-6">Actions</th>
+                <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+                  <table className="min-w-full table-auto">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Project Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Description
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Project Type
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Created By
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
                       </tr>
                     </thead>
-                    <tbody className="text-gray-700 text-sm">
-                      <tr className="border-b hover:bg-gray-100">
-                        <td className="py-3 px-6">{selectedProject.name}</td>
-                        <td className="py-3 px-6">{selectedProject.description || "N/A"}</td>
-                        <td className="py-3 px-6">{selectedProject.project_type || "N/A"}</td>
-                        <td className="py-3 px-6">{userName}</td>
-                        <td className="py-3 px-6 flex gap-2">
-                          <button
-                            className="text-blue-600 hover:underline"
-                            onClick={() => handleEditClick(selectedProject)}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="text-red-600 hover:underline"
-                            onClick={() => handleDeleteProject(selectedProject.id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {renderProjectRow(selectedProject, true)}
                     </tbody>
                   </table>
                 </div>
               )}
 
               {activeTab === "test-cases" && (
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                  <h3 className="text-lg font-medium">Test Cases</h3>
-                  {testCases.length === 0 ? (
-                    <p>No test cases available</p>
-                  ) : (
-                    <ul>
-                      {testCases.map((testCase) => (
-                        <li key={testCase.id} className="py-2">
-                          {testCase.name}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                <div className="bg-white rounded-lg shadow-md">
+                  <div className="p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-medium text-gray-900">Test Cases</h3>
+                    </div>
+                    {testCases.length === 0 ? (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500 text-sm">No test cases available</p>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Test Case Name
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Description
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            {testCases.map((testCase) => (
+                              <tr key={testCase.id} className="hover:bg-gray-50">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                  {testCase.name}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-500">
+                                  {testCase.url || "N/A"}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  {testCase.status || "Not Started"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
               {activeTab === "test-suites" && (
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                  <h3 className="text-lg font-medium">Test Suites</h3>
-                  {testSuites.length === 0 ? (
-                    <p>No test suites available</p>
-                  ) : (
-                    <ul>
-                      {testSuites.map((testSuite) => (
-                        <li key={testSuite.id} className="py-2">
-                          {testSuite.title}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                <div className="bg-white rounded-lg shadow-md">
+                  <div className="p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-medium text-gray-900">Test Suites</h3>
+                    </div>
+                    {testSuites.length === 0 ? (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500 text-sm">No test suites available</p>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Suite Name
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Description
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Test Cases Count
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            {testSuites.map((suite) => (
+                              <tr key={suite.id} className="hover:bg-gray-50">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                  {suite.title}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-500">
+                                  {suite.description || "N/A"}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  {suite.test_cases_count || 0}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
-            </div>
-          )}
-
-          {editingProject && (
-            <div className="mt-8 bg-gray-100 p-4 rounded shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Edit Project</h3>
-              <form onSubmit={handleEditSubmit}>
-                <label className="block mb-2">
-                  Project Name:
-                  <input
-                    type="text"
-                    name="name"
-                    value={editFormData.name}
-                    onChange={handleEditChange}
-                    className="block w-full p-2 border rounded mt-1"
-                  />
-                </label>
-                <label className="block mb-2">
-                  Description:
-                  <input
-                    type="text"
-                    name="description"
-                    value={editFormData.description}
-                    onChange={handleEditChange}
-                    className="block w-full p-2 border rounded mt-1"
-                  />
-                </label>
-                <label className="block mb-2">
-                  Project Type:
-                  <input
-                    type="text"
-                    name="type"
-                    value={editFormData.project_type}
-                    onChange={handleEditChange}
-                    className="block w-full p-2 border rounded mt-1"
-                  />
-                </label>
-                <button
-                  type="submit"
-                  className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
-                >
-                  Save Changes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditingProject(null)}
-                  className="bg-gray-400 text-white py-2 px-4 rounded mt-4 ml-2"
-                >
-                  Cancel
-                </button>
-              </form>
             </div>
           )}
         </div>

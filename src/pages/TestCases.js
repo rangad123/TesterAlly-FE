@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
+import { Save, X, Edit2, Trash2 } from 'lucide-react';
 
 const TestCases = () => {
   const navigate = useNavigate();
@@ -9,6 +10,9 @@ const TestCases = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editedName, setEditedName] = useState("");
+  const [editedUrl, setEditedUrl] = useState("");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -21,7 +25,7 @@ const TestCases = () => {
 
     const savedProjectKey = `selectedProject_${userId}`;
     const savedProject = localStorage.getItem(savedProjectKey);
-    
+
     if (savedProject) {
       try {
         const project = JSON.parse(savedProject);
@@ -40,7 +44,6 @@ const TestCases = () => {
     window.addEventListener("projectChanged", handleProjectChange);
     return () => window.removeEventListener("projectChanged", handleProjectChange);
   }, []);
-
 
   useEffect(() => {
     const fetchTestCases = async () => {
@@ -62,7 +65,7 @@ const TestCases = () => {
             }
           }
         );
-        
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(Array.isArray(errorData) ? errorData[0] : errorData.message || 'Failed to fetch test cases');
@@ -87,6 +90,80 @@ const TestCases = () => {
   const filteredTestCases = testCases.filter((testCase) =>
     testCase.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleEdit = (testCaseId, name, url) => {
+    setEditingId(testCaseId);
+    setEditedName(name);
+    setEditedUrl(url);
+  };
+
+  const handleSave = async (testCaseId) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/testcases/${testCaseId}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: editedName,
+            url: editedUrl,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update test case");
+      }
+
+      const updatedTestCases = testCases.map((testCase) =>
+        testCase.id === testCaseId
+          ? { ...testCase, name: editedName, url: editedUrl }
+          : testCase
+      );
+
+      setTestCases(updatedTestCases);
+      setEditingId(null);
+    } catch (error) {
+      console.error("Error saving test case:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (testCaseId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this test case?");
+    if (!confirmDelete) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/testcases/${testCaseId}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete test case");
+      }
+
+      setTestCases((prevTestCases) => prevTestCases.filter((testCase) => testCase.id !== testCaseId));
+    } catch (error) {
+      console.error("Error deleting test case:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -158,26 +235,77 @@ const TestCases = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Project
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredTestCases.map((testCase) => (
                       <tr key={testCase.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {testCase.name}
+                          {editingId === testCase.id ? (
+                            <input
+                              type="text"
+                              value={editedName}
+                              onChange={(e) => setEditedName(e.target.value)}
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            testCase.name
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <a
-                            href={testCase.url}
-                            className="text-blue-600 hover:underline"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {testCase.url}
-                          </a>
+                          {editingId === testCase.id ? (
+                            <input
+                              type="text"
+                              value={editedUrl}
+                              onChange={(e) => setEditedUrl(e.target.value)}
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            testCase.url
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {testCase.project_name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {editingId === testCase.id ? (
+                            <>
+                              <button
+                                onClick={() => handleSave(testCase.id)}
+                                className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+                              >
+                                <Save className="w-4 h-4 mr-1" />
+                                Save
+                              </button>
+                              <button
+                                onClick={handleCancel}
+                                className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200  ml-2"
+                              >
+                                <X className="w-4 h-4 mr-1" />
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => handleEdit(testCase.id, testCase.name, testCase.url)}
+                                className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
+                              >
+                                <Edit2 className="w-4 h-4 mr-1" />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(testCase.id)}
+                                className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 ml-2"
+                              >
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Delete
+                              </button>
+                            </>
+                          )}
                         </td>
                       </tr>
                     ))}

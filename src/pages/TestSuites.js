@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
+import { Save, X, Edit2, Trash2 } from 'lucide-react';
 
 const TestSuites = () => {
   const navigate = useNavigate();
@@ -9,6 +10,9 @@ const TestSuites = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedDescription, setEditedDescription] = useState("");
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -77,6 +81,80 @@ const TestSuites = () => {
     testSuite.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleDelete = async (testSuiteId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this test suite?");
+    if (!confirmDelete) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/testsuites/${testSuiteId}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete test suite");
+      }
+
+      setTestSuites((prevTestSuites) => prevTestSuites.filter((testSuite) => testSuite.id !== testSuiteId));
+    } catch (error) {
+      console.error("Error deleting test suite:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (testSuiteId, title, description) => {
+    setEditingId(testSuiteId);
+    setEditedTitle(title);
+    setEditedDescription(description);
+  };
+
+  const handleSave = async (testSuiteId) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/testsuites/${testSuiteId}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: editedTitle,
+            description: editedDescription,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update test suite");
+      }
+
+      const updatedTestSuites = testSuites.map((testSuite) =>
+        testSuite.id === testSuiteId
+          ? { ...testSuite, title: editedTitle, description: editedDescription }
+          : testSuite
+      );
+
+      setTestSuites(updatedTestSuites);
+      setEditingId(null);
+    } catch (error) {
+      console.error("Error saving test suite:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
@@ -144,19 +222,77 @@ const TestSuites = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Project
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredTestSuites.map((testSuite) => (
                       <tr key={testSuite.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {testSuite.title}
+                          {editingId === testSuite.id ? (
+                            <input
+                              type="text"
+                              value={editedTitle}
+                              onChange={(e) => setEditedTitle(e.target.value)}
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            testSuite.title
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {testSuite.description}
+                          {editingId === testSuite.id ? (
+                            <input
+                              type="text"
+                              value={editedDescription}
+                              onChange={(e) => setEditedDescription(e.target.value)}
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            testSuite.description
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {selectedProject?.name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {editingId === testSuite.id ? (
+                            <>
+                              <button
+                                onClick={() => handleSave(testSuite.id)}
+                                className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+                              >
+                                <Save className="w-4 h-4 mr-1" />
+                                Save
+                              </button>
+                              <button
+                                onClick={handleCancel}
+                                className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200  ml-2"
+                              >
+                                <X className="w-4 h-4 mr-1" />
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => handleEdit(testSuite.id, testSuite.title, testSuite.description)}
+                                className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
+                              >
+                                <Edit2 className="w-4 h-4 mr-1" />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(testSuite.id)}
+                                className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 ml-2"
+                              >
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Delete
+                              </button>
+                            </>
+                          )}
                         </td>
                       </tr>
                     ))}

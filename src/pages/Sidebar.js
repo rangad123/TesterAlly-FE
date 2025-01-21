@@ -85,13 +85,13 @@ const Sidebar = () => {
   const handleNavigateToCreateTestCases = () => {
     navigate("test-cases/create-testcases");
     setIsSubSidebarVisible(false);
-    setIsTestCasesVisible(false);
+    setIsTestCasesVisible(true);
   };
 
   const handleNavigateToTestSuite = () => {
     navigate("test-suites/create-testsuite");
     setIsSubSidebarVisible(false);
-    setIsTestCasesVisible(false);
+    setIsTestCasesVisible(true);
   };
 
   const handleNavigateToProfile = () => {
