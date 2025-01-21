@@ -13,6 +13,8 @@ const TestSuites = () => {
   const [editingId, setEditingId] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
+  const [editedLabels, setEditedLabels] = useState([]);
+  const [editedPreRequisite, setEditedPreRequisite] = useState("");
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -88,7 +90,7 @@ const TestSuites = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testsuites/${testSuiteId}/`,
+        `https://testerally-be-ylpr.onrender.com/api/testsuites/${testSuiteId}/?project_id=${selectedProject.id}`,
         {
           method: "DELETE",
           headers: {
@@ -109,17 +111,34 @@ const TestSuites = () => {
     }
   };
 
-  const handleEdit = (testSuiteId, title, description) => {
+  const handleEdit = (testSuiteId, title, description, labels, pre_requisite ) => {
     setEditingId(testSuiteId);
     setEditedTitle(title);
     setEditedDescription(description);
+    setEditedLabels(labels || []);
+    setEditedPreRequisite(pre_requisite || "");
   };
 
   const handleSave = async (testSuiteId) => {
+    console.log('Saving test suite with ID:', testSuiteId);
+    console.log('Edited data:', {
+      title: editedTitle,
+      description: editedDescription,
+      labels: editedLabels,
+      pre_requisite: editedPreRequisite,
+    });
+
+    const formattedLabels = Array.isArray(editedLabels) ? editedLabels : editedLabels.split(',').map(label => label.trim());
+  
+    if (!editedTitle || !editedDescription || !formattedLabels || !editedPreRequisite) {
+      alert('All fields are required');
+      return;
+    }
+  
     setLoading(true);
     try {
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testsuites/${testSuiteId}/`,
+        `https://testerally-be-ylpr.onrender.com/api/testsuites/${testSuiteId}/?project_id=${selectedProject.id}`,
         {
           method: "PUT",
           headers: {
@@ -128,20 +147,22 @@ const TestSuites = () => {
           body: JSON.stringify({
             title: editedTitle,
             description: editedDescription,
+            labels: formattedLabels, 
+            pre_requisite: editedPreRequisite,
           }),
         }
       );
-
+  
       if (!response.ok) {
-        throw new Error("Failed to update test suite");
+        throw new Error(`Failed to update test suite, Status: ${response.status}`);
       }
-
+  
       const updatedTestSuites = testSuites.map((testSuite) =>
         testSuite.id === testSuiteId
-          ? { ...testSuite, title: editedTitle, description: editedDescription }
+          ? { ...testSuite, title: editedTitle, description: editedDescription, labels: editedLabels, pre_requisite: editedPreRequisite }
           : testSuite
       );
-
+  
       setTestSuites(updatedTestSuites);
       setEditingId(null);
     } catch (error) {
@@ -150,6 +171,7 @@ const TestSuites = () => {
       setLoading(false);
     }
   };
+  
 
   const handleCancel = () => {
     setEditingId(null);
@@ -220,6 +242,12 @@ const TestSuites = () => {
                         Description
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Pre-Requisite
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Labels
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Project
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -255,11 +283,35 @@ const TestSuites = () => {
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {selectedProject?.name}
+                          {editingId === testSuite.id ? (
+                            <input
+                              type="text"
+                              value={editedPreRequisite}
+                              onChange={(e) => setEditedPreRequisite(e.target.value)}
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            testSuite.pre_requisite
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {editingId === testSuite.id ? (
+                            <input
+                              type="text"
+                              value={editedLabels.join(", ")}
+                              onChange={(e) => setEditedLabels(e.target.value.split(",").map(label => label.trim()))}
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            testSuite.labels.join(", ")
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {selectedProject?.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           {editingId === testSuite.id ? (
-                            <>
+                            <div className="flex items-center space-x-2">
                               <button
                                 onClick={() => handleSave(testSuite.id)}
                                 className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
@@ -274,24 +326,24 @@ const TestSuites = () => {
                                 <X className="w-4 h-4 mr-1" />
                                 Cancel
                               </button>
-                            </>
+                            </div>
                           ) : (
-                            <>
+                            <div className="flex items-center space-x-2">
                               <button
-                                onClick={() => handleEdit(testSuite.id, testSuite.title, testSuite.description)}
+                                onClick={() => handleEdit(testSuite.id, testSuite.title, testSuite.description, testSuite.labels, testSuite.pre_requisite)}
                                 className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
-                              >
+                                >
                                 <Edit2 className="w-4 h-4 mr-1" />
                                 Edit
                               </button>
                               <button
                                 onClick={() => handleDelete(testSuite.id)}
                                 className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 ml-2"
-                              >
+                                >
                                 <Trash2 className="w-4 h-4 mr-1" />
                                 Delete
                               </button>
-                            </>
+                            </div>
                           )}
                         </td>
                       </tr>

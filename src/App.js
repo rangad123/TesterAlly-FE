@@ -315,6 +315,13 @@ import RequirementTypes from "./pages/RequirementTypes";
 import TestcasesTypes from "./pages/TestcasesTypes"
 import TestSuites from "./pages/TestSuites";
 import RequirementDetails from "./pages/RequirementDetails";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+import AdminProjects from "./pages/AdminProjects";
+import AdminTestCases from "./pages/AdminTestCases";
+import AdminRequirements from "./pages/AdminRequirements";
+import AdminTestSuite from "./pages/AdminTestSuite";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -430,6 +437,55 @@ const App = () => {
                 exact
                 element={
                   <Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                }
+              />
+              <Route
+                path="/adminlogin"
+                exact
+                element={
+                  <AdminLogin isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                }
+              />
+              <Route
+                path="/admin-dashboard"
+                exact
+                element={
+                  <AdminDashboard isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                }
+              />
+              <Route
+                path="/admin-users"
+                exact
+                element={
+                  <AdminUsers isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                }
+              />
+              <Route
+                path="/admin-projects"
+                exact
+                element={
+                  <AdminProjects isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                }
+              />
+              <Route
+                path="/admin-testcases"
+                exact
+                element={
+                  <AdminTestCases isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                }
+              />
+              <Route
+                path="/admin-requirements"
+                exact
+                element={
+                  <AdminRequirements isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                }
+              />
+              <Route
+                path="/admin-testsuites"
+                exact
+                element={
+                  <AdminTestSuite isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
                 }
               />
               <Route

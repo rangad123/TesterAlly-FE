@@ -13,6 +13,9 @@ const RequirementDetails = () => {
   const [editingId, setEditingId] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
+  const [editedLabels, setEditedLabels] = useState(""); 
+  const [editedStartDate, setEditedStartDate] = useState(""); 
+  const [editedEndDate, setEditedEndDate] = useState("");
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -77,10 +80,13 @@ const RequirementDetails = () => {
     fetchRequirements();
   }, [selectedProject]);
 
-  const handleEdit = (id, title, description) => {
+  const handleEdit = (id, title, description, labels, start_date, completion_date) => {
     setEditingId(id);
     setEditedTitle(title);
     setEditedDescription(description);
+    setEditedLabels(labels); 
+    setEditedStartDate(start_date); 
+    setEditedEndDate(completion_date);
   };
 
   const handleSave = async () => {
@@ -89,11 +95,14 @@ const RequirementDetails = () => {
     const updatedRequirement = {
       title: editedTitle,
       description: editedDescription,
+      labels: editedLabels, 
+      start_date: editedStartDate, 
+      completion_date: editedEndDate,
     };
 
     try {
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/requirements/${editingId}/`,
+        `https://testerally-be-ylpr.onrender.com/api/requirements/${editingId}/?project_id=${selectedProject.id}`,
         {
           method: "PUT",
           headers: {
@@ -116,6 +125,9 @@ const RequirementDetails = () => {
       setEditingId(null);
       setEditedTitle("");
       setEditedDescription("");
+      setEditedLabels("");
+      setEditedStartDate("");
+      setEditedEndDate("");
     } catch (error) {
       console.error("Error saving requirement:", error);
     }
@@ -125,13 +137,19 @@ const RequirementDetails = () => {
     setEditingId(null);
     setEditedTitle("");
     setEditedDescription("");
+    setEditedLabels("");
+    setEditedStartDate("");
+    setEditedEndDate("");
   };
 
   const handleDelete = async (id) => {
+    console.log("id:",id)
+    console.log("project_id:",selectedProject.id)
+
     if (window.confirm("Are you sure you want to delete this requirement?")) {
       try {
         const response = await fetch(
-          `https://testerally-be-ylpr.onrender.com/api/requirements/${id}/`,
+          `https://testerally-be-ylpr.onrender.com/api/requirements/${id}/?project_id=${selectedProject.id}`,
           {
             method: "DELETE",
           }
@@ -218,6 +236,9 @@ const RequirementDetails = () => {
                         Description
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Labels (Count)
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Start Date
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -258,10 +279,42 @@ const RequirementDetails = () => {
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {requirement.start_date}
+                          {editingId === requirement.id ? (
+                            <input
+                              type="text"
+                              value={editedLabels}
+                              onChange={(e) =>
+                                setEditedLabels(e.target.value)
+                              }
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            `Count: ${requirement.labels}` 
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {requirement.completion_date}
+                          {editingId === requirement.id ? (
+                            <input
+                              type="date"
+                              value={editedStartDate}
+                              onChange={(e) => setEditedStartDate(e.target.value)}
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            requirement.start_date
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {editingId === requirement.id ? (
+                            <input
+                              type="date"
+                              value={editedEndDate}
+                              onChange={(e) => setEditedEndDate(e.target.value)}
+                              className="w-full px-2 py-1 border rounded-md"
+                            />
+                          ) : (
+                            requirement.completion_date
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           {editingId === requirement.id ? (
@@ -285,7 +338,9 @@ const RequirementDetails = () => {
                             <>
                               <button
                                 onClick={() =>
-                                  handleEdit(requirement.id, requirement.title, requirement.description)
+                                  handleEdit(requirement.id, requirement.title, requirement.description,requirement.labels,
+                                    requirement.start_date,
+                                    requirement.completion_date)
                                 }
                                 className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
                                 >

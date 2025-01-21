@@ -57,6 +57,11 @@ const CreateTestSuite = () => {
     if (!selectedProject?.id) {
       newErrors.project = "A project must be selected to create a test suite.";
     }
+
+    if (!labels.trim()) {
+      newErrors.labels = "Labels are required.";
+    }
+    
     return newErrors;
   };
 
@@ -196,7 +201,9 @@ const CreateTestSuite = () => {
                     className="create-test-suite-input"
                     disabled={!selectedProject}
                   />
+                  {errors.labels && <p className="error-message">{errors.labels}</p>}
                 </div>
+
                 {errors.project && <p className="error-message">{errors.project}</p>}
               </form>
             </div>

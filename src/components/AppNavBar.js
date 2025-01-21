@@ -83,12 +83,13 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import UserIcon from "../images/user.png";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import './AppNavBar.css';  
 
 const AppNavBar = (props) => {
   let navigate = useNavigate();
+  let location = useLocation();
 
   const { isLoggedIn, setIsLoggedIn, name, setName, email, setEmail } = props;
 
@@ -135,6 +136,8 @@ const AppNavBar = (props) => {
     }
   };
 
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   return (
     <div className="py-2">
       <Navbar fluid>
@@ -150,39 +153,66 @@ const AppNavBar = (props) => {
           </span>
         </Navbar.Brand>
 
-        {isLoggedIn ? (
-          <div className="flex items-center space-x-4">
-            <Dropdown
-              arrowIcon={false}
-              inline
-              label={
-                <Avatar
-                  alt="User settings"
-                  img={UserIcon}
-                  className="h-10 w-10"
-                  rounded
-                />
-              }
-            >
-              <Dropdown.Header>
-                <span className="block text-sm">{name}</span>
-                <span className="block truncate text-sm font-medium">
-                  {currentEmail}
-                </span>
-              </Dropdown.Header>
-
-              <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
-            </Dropdown>
-          </div>
+        {isAdminRoute ? (
+          isLoggedIn ? (
+            <div className="flex items-center space-x-4">
+              <Dropdown
+                arrowIcon={false}
+                inline
+                label={
+                  <Avatar
+                    alt="Admin settings"
+                    img={UserIcon}
+                    className="h-10 w-10"
+                    rounded
+                  />
+                }
+              >
+                <Dropdown.Header>
+                  <span className="block text-sm">Admin</span>
+                  <span className="block truncate text-sm font-medium">
+                    {currentEmail}
+                  </span>
+                </Dropdown.Header>
+                <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
+              </Dropdown>
+            </div>
+          ) : null
         ) : (
-          <div className="text-sm/6 font-semibold text-gray-900 auth-buttons">
-            <button
-              onClick={() => navigate("/dashboard/login")}
-              className="login-button"
-            >
-              Login<span aria-hidden="true">&rarr;</span>
-            </button>
-          </div>
+          
+          isLoggedIn ? (
+            <div className="flex items-center space-x-4">
+              <Dropdown
+                arrowIcon={false}
+                inline
+                label={
+                  <Avatar
+                    alt="User settings"
+                    img={UserIcon}
+                    className="h-10 w-10"
+                    rounded
+                  />
+                }
+              >
+                <Dropdown.Header>
+                  <span className="block text-sm">{name}</span>
+                  <span className="block truncate text-sm font-medium">
+                    {currentEmail}
+                  </span>
+                </Dropdown.Header>
+                <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
+              </Dropdown>
+            </div>
+          ) : (
+            <div className="text-sm/6 font-semibold text-gray-900 auth-buttons">
+              <button
+                onClick={() => navigate("/dashboard/login")}
+                className="login-button"
+              >
+                Login<span aria-hidden="true">&rarr;</span>
+              </button>
+            </div>
+          )
         )}
       </Navbar>
     </div>
@@ -190,4 +220,3 @@ const AppNavBar = (props) => {
 };
 
 export default AppNavBar;
-

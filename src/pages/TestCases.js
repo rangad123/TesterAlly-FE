@@ -101,7 +101,7 @@ const TestCases = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testcases/${testCaseId}/`,
+        `https://testerally-be-ylpr.onrender.com/api/testcases/${testCaseId}/?project_id=${selectedProject.id}`,
         {
           method: "PUT",
           headers: {
@@ -140,7 +140,7 @@ const TestCases = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testcases/${testCaseId}/`,
+        `https://testerally-be-ylpr.onrender.com/api/testcases/${testCaseId}/?project_id=${selectedProject.id}`,
         {
           method: "DELETE",
           headers: {

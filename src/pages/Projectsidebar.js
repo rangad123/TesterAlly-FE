@@ -54,7 +54,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
               if (projectExists) {
                 setSelectedProject(parsedProject);
               } else {
-                // If saved project doesn't exist anymore, select first available
+
                 setSelectedProject(data[0]);
                 localStorage.setItem(savedProjectKey, JSON.stringify(data[0]));
               }
@@ -87,8 +87,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
       const { projectId } = event.detail;
       setProjects((prevProjects) => {
         const updatedProjects = prevProjects.filter((project) => project.id !== projectId);
-        
-        // If the deleted project was selected, clear selection and storage
+
         if (selectedProject && selectedProject.id === projectId) {
           setSelectedProject(null);
           const userId = localStorage.getItem("userId");
@@ -96,7 +95,6 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
             localStorage.removeItem(`selectedProject_${userId}`);
           }
           
-          // If there are other projects, select the first one
           if (updatedProjects.length > 0) {
             setSelectedProject(updatedProjects[0]);
             localStorage.setItem(
