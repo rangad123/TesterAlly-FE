@@ -35,7 +35,6 @@ const TestcasesTypes = () => {
       }
     }
 
-    // Listen for project changes
     const handleProjectChange = (event) => {
       const newProject = event.detail;
       setSelectedProject(newProject);

@@ -17,6 +17,35 @@ const RequirementDetails = () => {
   const [editedLabels, setEditedLabels] = useState(""); 
   const [editedStartDate, setEditedStartDate] = useState(""); 
   const [editedEndDate, setEditedEndDate] = useState("");
+  const [requirementTypes, setRequirementTypes] = useState([]);
+
+
+  useEffect(() => {
+    const fetchRequirementTypes = async () => {
+      try {
+        const response = await fetch(
+          "https://testerally-be-ylpr.onrender.com/api/requirement-types/",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch requirement types");
+        }
+
+        const types = await response.json();
+        setRequirementTypes(types);
+        console.log(types)
+      } catch (error) {
+        console.error("Error fetching requirement types:", error);
+      }
+    };
+
+    fetchRequirementTypes();
+  }, []);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -297,22 +326,24 @@ const RequirementDetails = () => {
                             requirement.description
                           )}
                         </td>
-                        <td className="px-6 py-4 text-sm">
-                        {editingId === requirement.id ? (
-                          <select
-                            value={editedType}
-                            onChange={(e) => setEditedType(e.target.value)}
-                            className="w-full border rounded-md px-2 py-1"
-                          >
-                            <option value="">Select</option>
-                            <option value="Functional">Functional</option>
-                            <option value="Non-Functional">Non-Functional</option>
-                            <option value="Regression">Regression</option>
-                          </select>
-                        ) : (
-                          requirement.type
-                        )}
-                      </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {editingId === requirement.id ? (
+                  <select
+                    value={editedType}
+                    onChange={(e) => setEditedType(e.target.value)}
+                    className="w-full px-2 py-1 border rounded-md"
+                  >
+                    <option value="">Select Type</option>
+                    {requirementTypes.map((type) => (
+                      <option key={type.id} value={type.type_name}>
+                        {type.type_name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  requirement.type
+                )}
+              </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {editingId === requirement.id ? (
                             <input
