@@ -167,6 +167,7 @@ const CreateTestSuite = () => {
       if (isSelected) {
         return prev.filter(tc => tc.id !== testCase.id);
       } else {
+        
         return [...prev, testCase];
       }
     });
