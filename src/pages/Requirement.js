@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CreateTestSuite.css";
 import "./Requirement.css";
-import { AiOutlineClose } from "react-icons/ai";
 
 const Requirement = () => {
   const [formData, setFormData] = useState({
@@ -175,7 +174,7 @@ const Requirement = () => {
 
                 <div className="create-test-cases-button-group-right">
                   <button onClick={handleCancel} className="cancel-btn">
-                    <AiOutlineClose className="inline-icon" /> Cancel
+                   Cancel
                   </button>
                   <button
                     onClick={handleCreate}
