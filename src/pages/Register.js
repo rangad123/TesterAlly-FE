@@ -115,6 +115,7 @@ const Register = (props) => {
         password: password,
         country: country,
         phone: phone,
+        roleid:3
       };
       try {
         const res = await axios.post(URL, formData, {
