@@ -16,6 +16,7 @@ const Requirement = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [requirementTypes, setRequirementTypes] = useState([]);
 
   const navigate = useNavigate();
 
@@ -30,7 +31,9 @@ const Requirement = () => {
 
     if (savedProject) {
       try {
-        setSelectedProject(JSON.parse(savedProject));
+        const project = JSON.parse(savedProject);
+        setSelectedProject(project);
+        fetchRequirementTypes(project.id);
       } catch (err) {
         console.error("Error parsing saved project:", err);
         localStorage.removeItem(savedProjectKey);
@@ -40,6 +43,9 @@ const Requirement = () => {
     const handleProjectChange = (event) => {
       const project = event.detail;
       setSelectedProject(project);
+      if (project?.id) {
+        fetchRequirementTypes(project.id);
+      }
       localStorage.setItem(savedProjectKey, JSON.stringify(project));
     };
 
@@ -48,7 +54,24 @@ const Requirement = () => {
     return () => {
       window.removeEventListener("projectChanged", handleProjectChange);
     };
-  }, [navigate]);
+  }, []);
+
+  const fetchRequirementTypes = async (projectId) => {
+    if (!projectId) return;
+    
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/requirement-types/?project_id=${projectId}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch requirement types");
+      const data = await response.json();
+      setRequirementTypes(data);
+
+    } catch (error) {
+      console.error("Error fetching requirement types:", error);
+      setRequirementTypes([]);
+    }
+  };
 
   const validateForm = () => {
     const { title, type, startDate, completionDate, labels } = formData;
@@ -60,7 +83,6 @@ const Requirement = () => {
     if (!completionDate) newErrors.completionDate = "Completion date is required.";
     if (!selectedProject?.id) newErrors.project = "A project must be selected to create a requirement.";
     
-
     if (labels.trim()) {
       const labelValue = parseInt(labels.trim(), 10);
       if (isNaN(labelValue) || labelValue < 0) {
@@ -77,25 +99,25 @@ const Requirement = () => {
       setErrors(validationErrors);
       return;
     }
-
+  
     setErrors({});
     setIsLoading(true);
-
+  
     try {
-      const labelValue = parseInt(formData.labels) || 0; 
-      
+      const labelValue = parseInt(formData.labels) || 0;
+  
       const payload = {
         title: formData.title.trim(),
         description: formData.description.trim(),
         type: formData.type,
         start_date: formData.startDate,
         completion_date: formData.completionDate,
-        labels: labelValue, 
+        labels: labelValue,
         project_id: selectedProject.id,
       };
-
-      console.log("Payload being sent:", payload);
-
+  
+      console.log("Payload:", payload);
+  
       const response = await fetch(
         "https://testerally-be-ylpr.onrender.com/api/requirements/",
         {
@@ -106,11 +128,10 @@ const Requirement = () => {
           body: JSON.stringify(payload),
         }
       );
-
+  
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Backend error:", errorData);
-        
+        console.error("Server Error Response:", errorData);
         if (errorData.labels) {
           setErrors({ labels: errorData.labels });
         } else {
@@ -118,7 +139,10 @@ const Requirement = () => {
         }
         return;
       }
-
+  
+      const responseData = await response.json(); 
+      console.log("Response:", responseData);
+  
       alert("Requirement Created Successfully");
       setFormData({
         title: "",
@@ -136,6 +160,7 @@ const Requirement = () => {
       setIsLoading(false);
     }
   };
+  
 
   const handleCancel = () => {
     navigate("/requirement-details");
@@ -157,11 +182,8 @@ const Requirement = () => {
           <div className="create-test-suite-container">
             <div className="create-test-suite-content">
               <div className="create-test-cases-header">
-              <div className="flex flex-col">
-                <h2 className="create-test-cases-title">Create Requirement</h2>
-
-                {/* Display Selected Project */}
-
+                <div className="flex flex-col">
+                  <h2 className="create-test-cases-title">Create Requirement</h2>
                   {selectedProject ? (
                     <span className="project-name text-sm text-gray-600 mt-1">
                       Project: {selectedProject.name}
@@ -171,7 +193,7 @@ const Requirement = () => {
                       No project selected
                     </span>
                   )}
-              </div>
+                </div>
 
                 <div className="create-test-cases-button-group-right">
                   <button onClick={handleCancel} className="cancel-btn">
@@ -236,9 +258,11 @@ const Requirement = () => {
                     disabled={!selectedProject}
                   >
                     <option value="">Select</option>
-                    <option value="Functional">Functional</option>
-                    <option value="Non-Functional">Non-Functional</option>
-                    <option value="Regression">Regression</option>
+                    {requirementTypes.map((type) => (
+                      <option key={type.id} value={type.type_name}>
+                        {type.type_name}
+                      </option>
+                    ))}
                   </select>
                   {errors.type && <p className="error-message">{errors.type}</p>}
                 </div>

@@ -371,14 +371,16 @@ const App = () => {
       localStorage.removeItem(`selectedProject_${userId}`);
     }
     localStorage.removeItem("userId");
-  
-    setIsLoggedIn(false);
-    setName("");
-    setEmail("");
+
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("name");
     localStorage.removeItem("email");
     sessionStorage.removeItem("sessionActive");
+    localStorage.removeItem("projects");
+
+    setIsLoggedIn(false);
+    setName("");
+    setEmail("");
 
   };
 

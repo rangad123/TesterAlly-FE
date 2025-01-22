@@ -13,6 +13,7 @@ const RequirementDetails = () => {
   const [editingId, setEditingId] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
+  const [editedType, setEditedType] = useState("");
   const [editedLabels, setEditedLabels] = useState(""); 
   const [editedStartDate, setEditedStartDate] = useState(""); 
   const [editedEndDate, setEditedEndDate] = useState("");
@@ -70,6 +71,9 @@ const RequirementDetails = () => {
 
         const data = await response.json();
         setRequirements(data);
+
+        console.log("Requirment",data)
+        
       } catch (error) {
         console.error("Error fetching requirements:", error);
       } finally {
@@ -80,29 +84,33 @@ const RequirementDetails = () => {
     fetchRequirements();
   }, [selectedProject]);
 
-  const handleEdit = (id, title, description, labels, start_date, completion_date) => {
+  const handleEdit = (id, title, description, type, labels, start_date, completion_date) => {
     setEditingId(id);
     setEditedTitle(title);
     setEditedDescription(description);
+    setEditedType(type);
     setEditedLabels(labels); 
     setEditedStartDate(start_date); 
     setEditedEndDate(completion_date);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (id) => {
     if (!editedTitle || !editedDescription) return;
-
+  
     const updatedRequirement = {
       title: editedTitle,
       description: editedDescription,
+      type: editedType,
       labels: editedLabels, 
       start_date: editedStartDate, 
       completion_date: editedEndDate,
     };
-
+  
+    console.log("Updated Requirement:", updatedRequirement);
+  
     try {
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/requirements/${editingId}/?project_id=${selectedProject.id}`,
+        `https://testerally-be-ylpr.onrender.com/api/requirements/${id}/?project_id=${selectedProject.id}`,
         {
           method: "PUT",
           headers: {
@@ -111,20 +119,26 @@ const RequirementDetails = () => {
           body: JSON.stringify(updatedRequirement),
         }
       );
-
+  
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error response from server:", errorData);
         throw new Error("Failed to update requirement");
       }
-
+  
       const updatedData = await response.json();
+      console.log("Updated Requirement Response:", updatedData);
+  
       setRequirements((prevRequirements) =>
         prevRequirements.map((req) =>
           req.id === updatedData.id ? updatedData : req
         )
       );
+  
       setEditingId(null);
       setEditedTitle("");
       setEditedDescription("");
+      setEditedType("");
       setEditedLabels("");
       setEditedStartDate("");
       setEditedEndDate("");
@@ -132,11 +146,13 @@ const RequirementDetails = () => {
       console.error("Error saving requirement:", error);
     }
   };
+  
 
   const handleCancel = () => {
     setEditingId(null);
     setEditedTitle("");
     setEditedDescription("");
+    setEditedType("");
     setEditedLabels("");
     setEditedStartDate("");
     setEditedEndDate("");
@@ -235,6 +251,9 @@ const RequirementDetails = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Description
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Type
+                      </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Labels (Count)
                       </th>
@@ -278,6 +297,22 @@ const RequirementDetails = () => {
                             requirement.description
                           )}
                         </td>
+                        <td className="px-6 py-4 text-sm">
+                        {editingId === requirement.id ? (
+                          <select
+                            value={editedType}
+                            onChange={(e) => setEditedType(e.target.value)}
+                            className="w-full border rounded-md px-2 py-1"
+                          >
+                            <option value="">Select</option>
+                            <option value="Functional">Functional</option>
+                            <option value="Non-Functional">Non-Functional</option>
+                            <option value="Regression">Regression</option>
+                          </select>
+                        ) : (
+                          requirement.type
+                        )}
+                      </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {editingId === requirement.id ? (
                             <input
@@ -320,7 +355,7 @@ const RequirementDetails = () => {
                           {editingId === requirement.id ? (
                             <>
                               <button
-                                onClick={handleSave}
+                                onClick={() => handleSave(requirement.id)}
                                 className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
                                 >
                                 <Save className="w-4 h-4 mr-1" />
@@ -338,7 +373,7 @@ const RequirementDetails = () => {
                             <>
                               <button
                                 onClick={() =>
-                                  handleEdit(requirement.id, requirement.title, requirement.description,requirement.labels,
+                                  handleEdit(requirement.id, requirement.title, requirement.description, requirement.type,requirement.labels,
                                     requirement.start_date,
                                     requirement.completion_date)
                                 }

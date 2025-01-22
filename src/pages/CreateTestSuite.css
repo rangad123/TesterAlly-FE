@@ -152,3 +152,50 @@ h1 {
   font-size: 0.9em;
   margin-top: 4px;
 }
+
+.create-test-suite-container {
+  max-width: 100%;
+  padding: 20px;
+}
+
+.create-test-suite-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-test-suite-form input, .create-test-suite-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+.add-test-case-btn {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.add-test-case-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.test-cases-list {
+  margin-top: 20px;
+}
+
+.test-case-item {
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .create-test-suite-container {
+    padding: 10px;
+  }
+}
+
