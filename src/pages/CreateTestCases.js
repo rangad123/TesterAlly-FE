@@ -131,6 +131,9 @@ const CreateTestCases = () => {
       setIsLoading(false);
     }
   };
+  const handleCancel = () => {
+    navigate("/dashboard-user");
+  };
 
   const handleTestSuite = () => {
     navigate("/test-suites");
