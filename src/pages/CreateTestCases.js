@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineClose } from "react-icons/ai";
 import "./CreateTestCases.css";
 
 const CreateTestCases = () => {
@@ -158,8 +157,7 @@ const CreateTestCases = () => {
                     )}
                   </div>
                   <div className="create-test-cases-button-group-right">
-                    <button onClick={() => navigate("/test-cases")} className="cancel-btn">
-                      <AiOutlineClose className="inline-block mr-1" />
+                    <button onClick={handleCancel} className="cancel-btn">
                       Cancel
                     </button>
                     <button
