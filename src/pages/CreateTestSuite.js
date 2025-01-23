@@ -50,6 +50,15 @@ const CreateTestSuite = () => {
     };
   }, [navigate]);
 
+  useEffect(() => {
+    if (selectedProject) {
+      
+      setTestCases([]);
+      setSelectedTestCases([]);
+      setIsAddingTestCase(false);
+    }
+  }, [selectedProject]);
+  
   const validateForm = () => {
     const newErrors = {};
     if (!title.trim()) {

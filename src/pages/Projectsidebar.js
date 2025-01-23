@@ -75,6 +75,10 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
     };
   
     fetchProjects();
+
+  }, []); 
+
+  useEffect(() => {
   
     const handleProjectCreated = (event) => {
       const newProject = event.detail;

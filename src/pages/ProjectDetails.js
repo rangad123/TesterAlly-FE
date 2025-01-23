@@ -10,7 +10,7 @@ const ProjectDetails = () => {
   const [activeTab, setActiveTab] = useState("details");
   const [testCases, setTestCases] = useState([]);
   const [testSuites, setTestSuites] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const userName = localStorage.getItem("userName") || "User Name";
   const userId = localStorage.getItem("userId");
   const projectTypes = ["Web Development", "Mobile Application", "API Development", "Data Analysis"];
@@ -133,19 +133,19 @@ const ProjectDetails = () => {
   
 
   const handleEditClick = (project) => {
-    setIsEditing(true);
     setSelectedProject({ ...project, isEditing: true });
+    setIsEditModalOpen(true);
   };
 
   const handleCancelEdit = () => {
-    setIsEditing(false);
+    setIsEditModalOpen(false);
     setSelectedProject(prev => ({ ...prev, isEditing: false }));
   };
 
   const handleChange = (field, value) => {
     setSelectedProject(prev => ({ ...prev, [field]: value }));
   };
-
+  
   const handleSave = async () => {
     try {
       const response = await fetch(
@@ -165,7 +165,7 @@ const ProjectDetails = () => {
         const updatedProject = await response.json();
         setSelectedProject(updatedProject);
         localStorage.setItem("selectedProject", JSON.stringify(updatedProject));
-        setIsEditing(false);
+        setIsEditModalOpen(false);
         alert("Project updated successfully.");
       }
     } catch (err) {
@@ -214,68 +214,81 @@ const ProjectDetails = () => {
     );
   };
 
-  const renderEditForm = () => {
-    if (!isEditing) return null;
+  const renderEditModal = () => {
+    if (!isEditModalOpen) return null;
 
     return (
-      <div className="bg-white shadow-md rounded-lg p-6 mt-4">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">Edit Project</h3>
-        <div className="grid gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
-            <input
-              type="text"
-              value={selectedProject.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-              className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <textarea
-              value={selectedProject.description || ''}
-              onChange={(e) => handleChange('description', e.target.value)}
-              className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
-              rows={3}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Project Type</label>
-            <div className="relative">
-              <select
-                value={selectedProject.project_type || ''}
-                onChange={(e) => handleChange('project_type', e.target.value)}
-                className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 appearance-none transition-all duration-200 pr-8"
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div className="bg-white shadow-xl rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Edit Project</h3>
+              <button 
+                onClick={handleCancelEdit}
+                className="text-gray-500 hover:text-gray-700"
               >
-                {projectTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <X className="w-6 h-6" />
+              </button>
             </div>
-          </div>
-          <div className="flex space-x-2">
-            <button
-              onClick={handleSave}
-              className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
-            >
-              <Save className="w-4 h-4 mr-1" />
-              Save
-            </button>
-            <button
-              onClick={handleCancelEdit}
-              className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
-            >
-              <X className="w-4 h-4 mr-1" />
-              Cancel
-            </button>
+            <div className="grid gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+                <input
+                  type="text"
+                  value={selectedProject.name}
+                  onChange={(e) => handleChange('name', e.target.value)}
+                  className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <textarea
+                  value={selectedProject.description || ''}
+                  onChange={(e) => handleChange('description', e.target.value)}
+                  className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Project Type</label>
+                <div className="relative">
+                  <select
+                    value={selectedProject.project_type || ''}
+                    onChange={(e) => handleChange('project_type', e.target.value)}
+                    className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 appearance-none transition-all duration-200 pr-8"
+                  >
+                    {projectTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleSave}
+                  className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+                >
+                  <Save className="w-4 h-4 mr-1" />
+                  Save
+                </button>
+                <button
+                  onClick={handleCancelEdit}
+                  className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                >
+                  <X className="w-4 h-4 mr-1" />
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     );
   };
+
 
   const handleAddClick = () => {
     navigate("/projects-list")
@@ -361,7 +374,7 @@ const ProjectDetails = () => {
                     </tbody>
                   </table>
                   </div>
-                  {renderEditForm()}
+                  {renderEditModal()}
                 </div>
               )}
 
