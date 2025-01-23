@@ -217,6 +217,97 @@ const RequirementDetails = () => {
     requirement.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const renderEditForm = () => {
+    if (!editingId) return null;
+
+    const editingRequirement = requirements.find(req => req.id === editingId);
+    if (!editingRequirement) return null;
+
+    return (
+      <div className="bg-white rounded-lg shadow mt-4 p-6">
+        <h3 className="text-lg font-semibold mb-4 text-gray-800">Edit Requirement</h3>
+        <div className="grid gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+            <input
+              type="text"
+              value={editedTitle}
+              onChange={(e) => setEditedTitle(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <input
+              type="text"
+              value={editedDescription}
+              onChange={(e) => setEditedDescription(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+            <select
+              value={editedType}
+              onChange={(e) => setEditedType(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="">Select Type</option>
+              {requirementTypes.map((type) => (
+                <option key={type.id} value={type.type_name}>
+                  {type.type_name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Labels</label>
+            <input
+              type="text"
+              value={editedLabels}
+              onChange={(e) => setEditedLabels(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+            <input
+              type="date"
+              value={editedStartDate}
+              onChange={(e) => setEditedStartDate(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Completion Date</label>
+            <input
+              type="date"
+              value={editedEndDate}
+              onChange={(e) => setEditedEndDate(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => handleSave(editingId)}
+              className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+            >
+              <Save className="w-4 h-4 mr-1" />
+              Save
+            </button>
+            <button
+              onClick={handleCancel}
+              className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
+            >
+              <X className="w-4 h-4 mr-1" />
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
@@ -301,135 +392,57 @@ const RequirementDetails = () => {
                     {filteredRequirements.map((requirement) => (
                       <tr key={requirement.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {editingId === requirement.id ? (
-                            <input
-                              type="text"
-                              value={editedTitle}
-                              onChange={(e) => setEditedTitle(e.target.value)}
-                              className="w-full px-2 py-1 border rounded-md"
-                            />
-                          ) : (
-                            requirement.title
-                          )}
+                          {requirement.title}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {editingId === requirement.id ? (
-                            <input
-                              type="text"
-                              value={editedDescription}
-                              onChange={(e) =>
-                                setEditedDescription(e.target.value)
-                              }
-                              className="w-full px-2 py-1 border rounded-md"
-                            />
-                          ) : (
-                            requirement.description
-                          )}
+                          {requirement.description}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {editingId === requirement.id ? (
-                  <select
-                    value={editedType}
-                    onChange={(e) => setEditedType(e.target.value)}
-                    className="w-full px-2 py-1 border rounded-md"
-                  >
-                    <option value="">Select Type</option>
-                    {requirementTypes.map((type) => (
-                      <option key={type.id} value={type.type_name}>
-                        {type.type_name}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  requirement.type
-                )}
-              </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {editingId === requirement.id ? (
-                            <input
-                              type="text"
-                              value={editedLabels}
-                              onChange={(e) =>
-                                setEditedLabels(e.target.value)
-                              }
-                              className="w-full px-2 py-1 border rounded-md"
-                            />
-                          ) : (
-                            `Count: ${requirement.labels}` 
-                          )}
+                          {requirement.type}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {editingId === requirement.id ? (
-                            <input
-                              type="date"
-                              value={editedStartDate}
-                              onChange={(e) => setEditedStartDate(e.target.value)}
-                              className="w-full px-2 py-1 border rounded-md"
-                            />
-                          ) : (
-                            requirement.start_date
-                          )}
+                          {`Count: ${requirement.labels}`}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {editingId === requirement.id ? (
-                            <input
-                              type="date"
-                              value={editedEndDate}
-                              onChange={(e) => setEditedEndDate(e.target.value)}
-                              className="w-full px-2 py-1 border rounded-md"
-                            />
-                          ) : (
-                            requirement.completion_date
-                          )}
+                          {requirement.start_date}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {requirement.completion_date}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          {editingId === requirement.id ? (
-                            <>
-                              <button
-                                onClick={() => handleSave(requirement.id)}
-                                className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
-                                >
-                                <Save className="w-4 h-4 mr-1" />
-                                Save
-                              </button>
-                              <button
-                                onClick={handleCancel}
-                                className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200  ml-2"
-                                >
-                                <X className="w-4 h-4 mr-1" />
-                                Cancel
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button
-                                onClick={() =>
-                                  handleEdit(requirement.id, requirement.title, requirement.description, requirement.type,requirement.labels,
-                                    requirement.start_date,
-                                    requirement.completion_date)
-                                }
-                                className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
-                                >
-                                <Edit2 className="w-4 h-4 mr-1" />
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleDelete(requirement.id)}
-                                className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 ml-2"
-                                >
-                                <Trash2 className="w-4 h-4 mr-1" />
-                                Delete
-                              </button>
-                            </>
-                          )}
+                          <button
+                            onClick={() =>
+                              handleEdit(
+                                requirement.id, 
+                                requirement.title, 
+                                requirement.description, 
+                                requirement.type,
+                                requirement.labels,
+                                requirement.start_date,
+                                requirement.completion_date
+                              )
+                            }
+                            className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
+                          >
+                            <Edit2 className="w-4 h-4 mr-1" />
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(requirement.id)}
+                            className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 ml-2"
+                          >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
-                  </tbody>
+                  </tbody>                
                 </table>
               </div>
             )}
           </div>
+          {renderEditForm()}
         </div>
       </div>
     </div>

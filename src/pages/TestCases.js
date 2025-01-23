@@ -10,10 +10,12 @@ const TestCases = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [editingId, setEditingId] = useState(null);
-  const [editedName, setEditedName] = useState("");
-  const [editedUrl, setEditedUrl] = useState("");
+  const [editingTestCase, setEditingTestCase] = useState(null);
   const [error, setError] = useState(null);
+
+  // New state for types and priorities
+  const [testCaseTypes, setTestCaseTypes] = useState([]);
+  const [testCasePriorities, setTestCasePriorities] = useState([]);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -46,6 +48,34 @@ const TestCases = () => {
   }, []);
 
   useEffect(() => {
+    const fetchTestCaseMetadata = async () => {
+      if (!selectedProject?.id) return;
+
+      try {
+
+        const typesResponse = await fetch(
+          `https://testerally-be-ylpr.onrender.com/api/testcase-types/?project_id=${selectedProject.id}`,
+          { headers: { "Content-Type": "application/json" } }
+        );
+        const typesData = await typesResponse.json();
+        setTestCaseTypes(typesData);
+
+        const prioritiesResponse = await fetch(
+          `https://testerally-be-ylpr.onrender.com/api/testcase-priorities/?project_id=${selectedProject.id}`,
+          { headers: { "Content-Type": "application/json" } }
+        );
+        const prioritiesData = await prioritiesResponse.json();
+        setTestCasePriorities(prioritiesData);
+      } catch (error) {
+        console.error("Error fetching test case metadata:", error);
+        setError("Failed to fetch test case metadata");
+      }
+    };
+
+    fetchTestCaseMetadata();
+  }, [selectedProject]);
+
+  useEffect(() => {
     const fetchTestCases = async () => {
       setLoading(true);
       setError(null);
@@ -72,6 +102,8 @@ const TestCases = () => {
         }
 
         const data = await response.json();
+
+        console.log("testcases",data)
         setTestCases(data.map(testCase => ({
           ...testCase,
           project_name: selectedProject.name
@@ -91,25 +123,29 @@ const TestCases = () => {
     testCase.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (testCaseId, name, url) => {
-    setEditingId(testCaseId);
-    setEditedName(name);
-    setEditedUrl(url);
+  const handleEdit = (testCase) => {
+    setEditingTestCase({
+      id: testCase.id,
+      name: testCase.name,
+      type: testCase.type,
+      priority: testCase.priority
+    });
   };
 
-  const handleSave = async (testCaseId) => {
+  const handleSave = async () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testcases/${testCaseId}/?project_id=${selectedProject.id}`,
+        `https://testerally-be-ylpr.onrender.com/api/testcases/${editingTestCase.id}/?project_id=${selectedProject.id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: editedName,
-            url: editedUrl,
+            name: editingTestCase.name,
+            type: editingTestCase.type,
+            priority: editingTestCase.priority
           }),
         }
       );
@@ -119,15 +155,16 @@ const TestCases = () => {
       }
 
       const updatedTestCases = testCases.map((testCase) =>
-        testCase.id === testCaseId
-          ? { ...testCase, name: editedName, url: editedUrl }
+        testCase.id === editingTestCase.id
+          ? { ...testCase, ...editingTestCase }
           : testCase
       );
 
       setTestCases(updatedTestCases);
-      setEditingId(null);
+      setEditingTestCase(null);
     } catch (error) {
       console.error("Error saving test case:", error);
+      setError("Failed to update test case");
     } finally {
       setLoading(false);
     }
@@ -156,13 +193,14 @@ const TestCases = () => {
       setTestCases((prevTestCases) => prevTestCases.filter((testCase) => testCase.id !== testCaseId));
     } catch (error) {
       console.error("Error deleting test case:", error);
+      setError("Failed to delete test case");
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancel = () => {
-    setEditingId(null);
+    setEditingTestCase(null);
   };
 
   return (
@@ -208,7 +246,7 @@ const TestCases = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
             {loading ? (
               <div className="p-4 text-center">Loading test cases...</div>
             ) : error ? (
@@ -230,7 +268,10 @@ const TestCases = () => {
                         Title
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        URL
+                        Type
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Priority
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Project
@@ -244,68 +285,32 @@ const TestCases = () => {
                     {filteredTestCases.map((testCase) => (
                       <tr key={testCase.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {editingId === testCase.id ? (
-                            <input
-                              type="text"
-                              value={editedName}
-                              onChange={(e) => setEditedName(e.target.value)}
-                              className="w-full px-2 py-1 border rounded-md"
-                            />
-                          ) : (
-                            testCase.name
-                          )}
+                          {testCase.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {editingId === testCase.id ? (
-                            <input
-                              type="text"
-                              value={editedUrl}
-                              onChange={(e) => setEditedUrl(e.target.value)}
-                              className="w-full px-2 py-1 border rounded-md"
-                            />
-                          ) : (
-                            testCase.url
-                          )}
+                          {testCase.testcase_type}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {testCase.testcase_priority}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {testCase.project_name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          {editingId === testCase.id ? (
-                            <>
-                              <button
-                                onClick={() => handleSave(testCase.id)}
-                                className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
-                              >
-                                <Save className="w-4 h-4 mr-1" />
-                                Save
-                              </button>
-                              <button
-                                onClick={handleCancel}
-                                className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200  ml-2"
-                              >
-                                <X className="w-4 h-4 mr-1" />
-                                Cancel
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button
-                                onClick={() => handleEdit(testCase.id, testCase.name, testCase.url)}
-                                className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
-                              >
-                                <Edit2 className="w-4 h-4 mr-1" />
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleDelete(testCase.id)}
-                                className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 ml-2"
-                              >
-                                <Trash2 className="w-4 h-4 mr-1" />
-                                Delete
-                              </button>
-                            </>
-                          )}
+                          <button
+                            onClick={() => handleEdit(testCase)}
+                            className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
+                          >
+                            <Edit2 className="w-4 h-4 mr-1" />
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(testCase.id)}
+                            className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 ml-2"
+                          >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -314,6 +319,75 @@ const TestCases = () => {
               </div>
             )}
           </div>
+
+          {editingTestCase && (
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-medium mb-4">Edit Test Case</h3>
+              <div className="grid gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Name<span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={editingTestCase.name}
+                    onChange={(e) => setEditingTestCase(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Test Case Type<span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={editingTestCase.type}
+                    onChange={(e) => setEditingTestCase(prev => ({ ...prev, type: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="">Select Type</option>
+                    {testCaseTypes.map((type) => (
+                      <option key={type.id} value={type.name}>
+                        {type.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Test Case Priority<span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={editingTestCase.priority}
+                    onChange={(e) => setEditingTestCase(prev => ({ ...prev, priority: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="">Select Priority</option>
+                    {testCasePriorities.map((priority) => (
+                      <option key={priority.id} value={priority.priority_level}>
+                        {priority.priority_level}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={handleSave}
+                    className="inline-flex items-center px-4 py-2 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+                  >
+                    <Save className="w-4 h-4 mr-1" />
+                    Save
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

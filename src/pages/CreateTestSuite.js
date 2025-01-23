@@ -106,6 +106,8 @@ const CreateTestSuite = () => {
     setErrors({});
     setIsLoading(true);
 
+    console.log("Selected Test Cases:", selectedTestCases);
+
     try {
 
       const payload = {
@@ -114,11 +116,10 @@ const CreateTestSuite = () => {
         pre_requisite: preRequisite,
         labels: labels.split(",").map((label) => label.trim()).filter(Boolean),
         project_id: selectedProject.id,
+        testcases: selectedTestCases.map(tc => tc.id),
       };
 
-      if (selectedTestCases.length > 0) {
-        payload.test_cases = selectedTestCases.map(tc => tc.id);
-      }
+      console.log("Payload:", payload);
 
       const response = await fetch("https://testerally-be-ylpr.onrender.com/api/testsuites/", {
         method: "POST",
@@ -127,6 +128,9 @@ const CreateTestSuite = () => {
         },
         body: JSON.stringify(payload),
       });
+
+      const responseData = await response.json();
+      console.log("API Response:", responseData);
 
       if (response.ok) {
         alert("Test Suite Created Successfully");
@@ -161,16 +165,16 @@ const CreateTestSuite = () => {
   };
 
   const handleTestCaseSelection = (testCase) => {
-    setSelectedTestCases(prev => {
-      const isSelected = prev.some(tc => tc.id === testCase.id);
-      if (isSelected) {
-        return prev.filter(tc => tc.id !== testCase.id);
-      } else {
-        
-        return [...prev, testCase];
-      }
+    setSelectedTestCases((prev) => {
+      const updated = prev.some((tc) => tc.id === testCase.id)
+        ? prev.filter((tc) => tc.id !== testCase.id)
+        : [...prev, testCase];
+  
+      return Array.from(new Set(updated.map((tc) => tc.id))).map((id) =>
+        updated.find((tc) => tc.id === id)
+      );
     });
-  };
+  };  
 
   return (
     <div className="flex flex-col min-h-screen">

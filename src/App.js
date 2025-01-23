@@ -322,6 +322,8 @@ import AdminProjects from "./pages/AdminProjects";
 import AdminTestCases from "./pages/AdminTestCases";
 import AdminRequirements from "./pages/AdminRequirements";
 import AdminTestSuite from "./pages/AdminTestSuite";
+import ProjectList from "./pages/ProjectList";
+import TestData from "./pages/TestData";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -589,6 +591,15 @@ const App = () => {
                 }
               />
               <Route
+                path="test-data"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <TestData />
+                  </PrivateRoute>
+                }
+              />
+              <Route
                 path="/test-suites/create-testsuite"
                 exact
                 element={
@@ -603,6 +614,15 @@ const App = () => {
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <ProjectDetails />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="projects-list"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <ProjectList />
                   </PrivateRoute>
                 }
               />

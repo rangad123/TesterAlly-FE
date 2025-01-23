@@ -153,6 +153,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
   const projectSettingsItems = [
     { icon: FaInfoCircle, label: "Project Details", path: "/project-details" },
     { icon: FaUsers, label: "Project Members", path: "/project-members" },
+    { icon: FaFileAlt, label: "Test Data", path: "/test-data" },
     { icon: FaList, label: "Requirement Types", path: "/requirement-type" },
     { icon: FaCog, label: "Test Case Types", path: "/testcases-type" },
     { icon: FaFlag, label: "Test Case Priorities", path: "/testcase-Priorities" },

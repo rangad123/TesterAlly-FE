@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Save, X, Edit2, Trash2, ChevronDown } from 'lucide-react';
@@ -5,54 +6,46 @@ import { Save, X, Edit2, Trash2, ChevronDown } from 'lucide-react';
 const ProjectDetails = () => {
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState(null);
-  const [allProjects, setAllProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("details");
   const [testCases, setTestCases] = useState([]);
   const [testSuites, setTestSuites] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
   const userName = localStorage.getItem("userName") || "User Name";
   const userId = localStorage.getItem("userId");
   const projectTypes = ["Web Development", "Mobile Application", "API Development", "Data Analysis"];
 
   useEffect(() => {
-    const fetchAllProjects = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`
-        );
-        const data = await response.json();
-
-        console.log("Projects",data)
-
-        if (response.ok) {
-          setAllProjects(data);
-        }
-      } catch (err) {
-        console.error("Error fetching projects:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (userId) {
-      fetchAllProjects();
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      return;
     }
-  }, [userId]);
 
-  useEffect(() => {
-    const savedProject = localStorage.getItem("selectedProject");
+    const savedProjectKey = `selectedProject_${userId}`;
+    const savedProject = localStorage.getItem(savedProjectKey);
+
+    console.log("selected project",savedProject)
+    
     if (savedProject) {
-      const project = JSON.parse(savedProject);
-      setSelectedProject(project);
-      fetchTestCases(project.id);
-      fetchTestSuites(project.id);
-    }
+      try {
+        const project = JSON.parse(savedProject);
+        setSelectedProject(project);
+        fetchTestCases(project.id);
+        fetchTestSuites(project.id);
+      } catch (error) {
+        console.error("Error parsing saved project:", error);
+        navigate("/dashboard-user");
+      }
+    } 
+
+    setLoading(false);
 
     const handleProjectChange = (event) => {
       const newProject = event.detail;
-      setSelectedProject(newProject);
+      
       if (newProject) {
+        setSelectedProject(newProject);
+        localStorage.setItem("selectedProject", JSON.stringify(newProject));
         fetchTestCases(newProject.id);
         fetchTestSuites(newProject.id);
       }
@@ -60,7 +53,9 @@ const ProjectDetails = () => {
 
     window.addEventListener("projectChanged", handleProjectChange);
     return () => window.removeEventListener("projectChanged", handleProjectChange);
-  }, []);
+  }, [navigate]);
+
+
 
   const fetchTestCases = async (projectId) => {
     try {
@@ -138,57 +133,39 @@ const ProjectDetails = () => {
   
 
   const handleEditClick = (project) => {
-    if (selectedProject && project.id === selectedProject.id) {
-      setSelectedProject({ ...selectedProject, isEditing: true });
-    } else {
-      const updatedProjects = allProjects.map((p) => ({
-        ...p,
-        isEditing: p.id === project.id
-      }));
-      setAllProjects(updatedProjects);
-    }
+    setIsEditing(true);
+    setSelectedProject({ ...project, isEditing: true });
   };
 
-  const handleCancelEdit = (projectId) => {
-    if (selectedProject && projectId === selectedProject.id) {
-      setSelectedProject({ ...selectedProject, isEditing: false });
-    } else {
-      const updatedProjects = allProjects.map((project) => ({
-        ...project,
-        isEditing: false
-      }));
-      setAllProjects(updatedProjects);
-    }
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setSelectedProject(prev => ({ ...prev, isEditing: false }));
   };
 
-  const handleSave = async (projectId, updatedData) => {
+  const handleChange = (field, value) => {
+    setSelectedProject(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = async () => {
     try {
-
-      if (!projectId || !userId) {
-        alert(!projectId ? "Invalid project ID." : "Invalid user ID.");
-        return;
-      }
-      
       const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/projects/${projectId}/?user_id=${userId}`,
+        `https://testerally-be-ylpr.onrender.com/api/projects/${selectedProject.id}/?user_id=${userId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedData),
+          body: JSON.stringify({
+            name: selectedProject.name,
+            description: selectedProject.description,
+            project_type: selectedProject.project_type,
+          }),
         }
       );
 
       if (response.ok) {
         const updatedProject = await response.json();
-        if (selectedProject && projectId === selectedProject.id) {
-          setSelectedProject({ ...updatedProject, isEditing: false });
-          localStorage.setItem("selectedProject", JSON.stringify(updatedProject));
-        } else {
-          const updatedProjects = allProjects.map((project) =>
-            project.id === projectId ? { ...updatedProject, isEditing: false } : project
-          );
-          setAllProjects(updatedProjects);
-        }
+        setSelectedProject(updatedProject);
+        localStorage.setItem("selectedProject", JSON.stringify(updatedProject));
+        setIsEditing(false);
         alert("Project updated successfully.");
       }
     } catch (err) {
@@ -197,120 +174,112 @@ const ProjectDetails = () => {
     }
   };
 
-  const handleChange = (projectId, field, value) => {
-    if (selectedProject && projectId === selectedProject.id) {
-      setSelectedProject({ ...selectedProject, [field]: value });
-    } else {
-      const updatedProjects = allProjects.map((project) => {
-        if (project.id === projectId) {
-          return { ...project, [field]: value };
-        }
-        return project;
-      });
-      setAllProjects(updatedProjects);
-    }
-  };
-
   const renderProjectRow = (project, isSelected = false) => {
-    const isEditing = project.isEditing;
-  
     return (
       <tr
         key={project.id} 
         className="group hover:bg-gray-50 transition-colors duration-200 border-b"
       >
         <td className="px-6 py-4 text-sm text-gray-900">
-          {isEditing ? (
-            <input
-              type="text"
-              value={project.name}
-              onChange={(e) => handleChange(project.id, "name", e.target.value)}
-              className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
-            />
-          ) : (
-            <span className="font-medium">{project.name}</span>
-          )}
+          <span className="font-medium">{project.name}</span>
         </td>
         <td className="px-6 py-4 text-sm text-gray-500">
-          {isEditing ? (
-            <input
-              type="text"
-              value={project.description}
-              onChange={(e) => handleChange(project.id, "description", e.target.value)}
-              className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
-            />
-          ) : (
-            project.description || "N/A"
-          )}
+          {project.description || "N/A"}
         </td>
         <td className="px-6 py-4 text-sm text-gray-500">
-          {isEditing ? (
+          {project.project_type || "N/A"}
+        </td>
+        {isSelected && (
+          <td className="px-6 py-4 text-sm text-gray-500">{userName}</td>
+        )}
+        <td className="px-6 py-4 text-sm font-medium">
+          <div className="flex items-center space-x-2 transition-opacity duration-200">
+            <button
+              onClick={() => handleEditClick(project)}
+              className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
+            >
+              <Edit2 className="w-4 h-4 mr-1" />
+              Edit
+            </button>
+            <button
+              onClick={() => handleDeleteProject(project.id)}
+              className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200"
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  };
+
+  const renderEditForm = () => {
+    if (!isEditing) return null;
+
+    return (
+      <div className="bg-white shadow-md rounded-lg p-6 mt-4">
+        <h3 className="text-lg font-semibold mb-4 text-gray-800">Edit Project</h3>
+        <div className="grid gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+            <input
+              type="text"
+              value={selectedProject.name}
+              onChange={(e) => handleChange('name', e.target.value)}
+              className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <textarea
+              value={selectedProject.description || ''}
+              onChange={(e) => handleChange('description', e.target.value)}
+              className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+              rows={3}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Project Type</label>
             <div className="relative">
               <select
-                value={project.project_type}
-                onChange={(e) => handleChange(project.id, "project_type", e.target.value)}
+                value={selectedProject.project_type || ''}
+                onChange={(e) => handleChange('project_type', e.target.value)}
                 className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 appearance-none transition-all duration-200 pr-8"
               >
-                {projectTypes.map((type, index) => (
-                  <option key={index} value={type}>
+                {projectTypes.map((type) => (
+                  <option key={type} value={type}>
                     {type}
                   </option>
                 ))}
               </select>
               <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             </div>
-          ) : (
-            project.project_type || "N/A"
-          )}
-        </td>
-        {isSelected && (
-          <td className="px-6 py-4 text-sm text-gray-500">{userName}</td>
-        )}
-        <td className="px-6 py-4 text-sm font-medium">
-          {isEditing ? (
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => handleSave(project.id, {
-                  name: project.name,
-                  description: project.description,
-                  project_type: project.project_type,
-                })}
-                className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
-              >
-                <Save className="w-4 h-4 mr-1" />
-                Save
-              </button>
-              <button
-                onClick={() => handleCancelEdit(project.id)}
-                className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
-              >
-                <X className="w-4 h-4 mr-1" />
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center space-x-2 transition-opacity duration-200">
-              <button
-                onClick={() => handleEditClick(project)}
-                className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
-              >
-                <Edit2 className="w-4 h-4 mr-1" />
-                Edit
-              </button>
-              <button
-                onClick={() => handleDeleteProject(project.id)}
-                className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200"
-              >
-                <Trash2 className="w-4 h-4 mr-1" />
-                Delete
-              </button>
-            </div>
-          )}
-        </td>
-      </tr>
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={handleSave}
+              className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+            >
+              <Save className="w-4 h-4 mr-1" />
+              Save
+            </button>
+            <button
+              onClick={handleCancelEdit}
+              className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
+            >
+              <X className="w-4 h-4 mr-1" />
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
     );
   };
-  
+
+  const handleAddClick = () => {
+    navigate("/projects-list")
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -318,44 +287,18 @@ const ProjectDetails = () => {
         <div className="p-6">
           <h2 className="mb-6 text-2xl font-semibold text-gray-800">Project Details</h2>
 
+                <button
+                  onClick={handleAddClick}
+                  className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                >
+                  All Projects
+                </button>
+
           {loading ? (
             <div className="text-center p-8 bg-white rounded-lg shadow-md">
               <p className="text-gray-600 text-lg mb-4">Loading projects...</p>
             </div>
-          ) : !selectedProject ? (
-            <div className="space-y-6">
-              {allProjects.length === 0 ? (
-                <div className="text-center p-8 bg-white rounded-lg shadow-md">
-                  <p className="text-gray-600 text-lg mb-4">You have no projects yet.</p>
-                  <p className="text-gray-500">Please create a project to get started.</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-                  <table className="min-w-full table-auto">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Project Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Description
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Project Type
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {allProjects.map((project) => renderProjectRow(project))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          ) : (
+          ) : selectedProject ? (
             <div>
               <div className="flex space-x-4 mb-6">
                 <button
@@ -391,6 +334,7 @@ const ProjectDetails = () => {
               </div>
 
               {activeTab === "details" && (
+                <div>
                 <div className="overflow-x-auto bg-white shadow-md rounded-lg">
                   <table className="min-w-full table-auto">
                     <thead className="bg-gray-50">
@@ -416,6 +360,8 @@ const ProjectDetails = () => {
                       {renderProjectRow(selectedProject, true)}
                     </tbody>
                   </table>
+                  </div>
+                  {renderEditForm()}
                 </div>
               )}
 
@@ -514,6 +460,16 @@ const ProjectDetails = () => {
                   </div>
                 </div>
               )}
+            </div>
+          ) : (
+            <div className="text-center p-8 bg-white rounded-lg shadow-md">
+              <p className="text-gray-600 text-lg mb-4">No project selected</p>
+              <button 
+                onClick={() => navigate("/dashboard-user")}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Back to Dashboard
+              </button>
             </div>
           )}
         </div>

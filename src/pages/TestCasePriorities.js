@@ -9,10 +9,8 @@ const TestCasePriorities = () => {
   const [addingField, setAddingField] = useState(false);
   const [editingId, setEditingId] = useState(null);
   
-  // State for new priority
   const [newPriority, setNewPriority] = useState({ priority_level: "", description: "" });
   
-  // State for editing
   const [editValues, setEditValues] = useState({ priority_level: "", description: "" });
 
   useEffect(() => {

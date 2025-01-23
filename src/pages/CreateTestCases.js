@@ -4,15 +4,14 @@ import "./CreateTestCases.css";
 
 const CreateTestCases = () => {
   const [name, setName] = useState("");
-  const [url, setUrl] = useState("");
   const [testCaseType, setTestCaseType] = useState("");
   const [testCasePriority, setTestCasePriority] = useState("");
-  const [previousUrls, setPreviousUrls] = useState([]);
-  const [selectedUrlOption, setSelectedUrlOption] = useState("new");
   const [errors, setErrors] = useState({ name: "", url: "", type: "", priority: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const [isDropdownLoading, setIsDropdownLoading] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [testCaseTypes, settestCaseTypes] = useState([]);
+  const [priorities, setPriorities] = useState([]);
+  const [, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +25,6 @@ const CreateTestCases = () => {
 
     if (savedProject) {
       setSelectedProject(JSON.parse(savedProject));
-      fetchPreviousUrls(JSON.parse(savedProject).id);
     } else {
       navigate("/dashboard-user");
     }
@@ -34,31 +32,12 @@ const CreateTestCases = () => {
     const handleProjectChange = (event) => {
       const newProject = event.detail;
       setSelectedProject(newProject);
-      fetchPreviousUrls(newProject.id);
     };
 
     window.addEventListener("projectChanged", handleProjectChange);
     return () => window.removeEventListener("projectChanged", handleProjectChange);
   }, [navigate]);
 
-  const fetchPreviousUrls = async (projectId) => {
-    setIsDropdownLoading(true);
-    try {
-      const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testcases/?project_id=${projectId}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-
-        const uniqueUrls = [...new Set(data.map((testCase) => testCase.url))].sort();
-        setPreviousUrls(uniqueUrls);
-      }
-    } catch (error) {
-      console.error("Error fetching previous URLs:", error);
-    } finally {
-      setIsDropdownLoading(false);
-    }
-  };
 
   const validateFields = () => {
     const newErrors = {};
@@ -67,18 +46,6 @@ const CreateTestCases = () => {
     if (!name.trim()) {
       newErrors.name = "Test Case Name is required!";
       isValid = false;
-    }
-
-    if (selectedUrlOption === "new" && !url.trim()) {
-      newErrors.url = "URL is required!";
-      isValid = false;
-    } else if (selectedUrlOption === "new") {
-      try {
-        new URL(url.startsWith("http") ? url : `https://${url}`);
-      } catch (error) {
-        newErrors.url = "Invalid URL format!";
-        isValid = false;
-      }
     }
 
     if (!testCaseType.trim()) {
@@ -98,14 +65,9 @@ const CreateTestCases = () => {
   const handleCreateTestCase = async () => {
     if (!validateFields()) return;
 
-    const finalUrl = selectedUrlOption === "new" 
-      ? (url.startsWith("http") ? url : `https://${url}`)
-      : selectedUrlOption;
-
     const payload = {
       project_id: selectedProject.id,
       name,
-      url: finalUrl,
       type: testCaseType,
       priority: testCasePriority,
     };
@@ -142,6 +104,71 @@ const CreateTestCases = () => {
   const handleWriteTestManually = () => {
     navigate("/write-manually");
   };
+
+  useEffect(() => {
+    const fetchTestCaseTypes = async () => {
+      if (!selectedProject?.id) {
+        return;
+      }
+      setError(null);
+  
+      try {
+        const response = await fetch(
+          `https://testerally-be-ylpr.onrender.com/api/testcase-types/?project_id=${selectedProject.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to fetch test case types");
+        }
+  
+        const data = await response.json();
+        settestCaseTypes(data); 
+      } catch (error) {
+        setError(error.message || "Failed to fetch test case types");
+      }
+    };
+  
+    fetchTestCaseTypes();
+  }, [selectedProject]);
+  
+  useEffect(() => {
+    const fetchPriorities = async () => {
+      if (!selectedProject?.id) {
+        return;
+      }
+      setError(null);
+  
+      try {
+        const response = await fetch(
+          `https://testerally-be-ylpr.onrender.com/api/testcase-priorities/?project_id=${selectedProject.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to fetch test case priorities");
+        }
+  
+        const data = await response.json();
+        setPriorities(data); 
+      } catch (error) {
+        setError(error.message || "Failed to fetch test case priorities");
+      }
+    };
+  
+    fetchPriorities();
+  }, [selectedProject]);
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -194,104 +221,61 @@ const CreateTestCases = () => {
                     <span className="text-red-500 text-sm mt-1">{errors.name}</span>
                   )}
                 </div>
-
+  
                 <div className="create-test-cases-input-container">
-                  <label className="block text-sm font-medium mb-2">
-                    URL<span className="text-red-500">*</span>
-                  </label>
-                  <div className="space-y-3">
-                    <select
-                      value={selectedUrlOption}
-                      onChange={(e) => {
-                        setSelectedUrlOption(e.target.value);
-                        setErrors((prev) => ({ ...prev, url: "" }));
-                      }}
-                      className="create-project-input"
-                      disabled={isDropdownLoading}
-                    >
-                      <option value="new">Enter New URL</option>
-                      {previousUrls.length > 0 && (
-                        <optgroup label="Previously Used URLs" className="p-group">
-                          {previousUrls.map((prevUrl, index) => (
-                            <option key={index} value={prevUrl}>
-                              {prevUrl}
-                            </option>
-                          ))}
-                        </optgroup>
-                      )}
-                      </select>
-                      {selectedUrlOption === "new" && (
-                        <input
-                          type="text"
-                          value={url}
-                          onChange={(e) => {
-                            setUrl(e.target.value);
-                            setErrors((prev) => ({ ...prev, url: "" }));
-                          }}
-                          placeholder="Enter URL"
-                          className={`create-project-input ${
-                            errors.url ? "border-red-500" : "border-gray-300"
-                          } focus:outline-none focus:ring-2 focus:ring-purple-500`}
-                          disabled={!selectedProject}
-                        />
-                      )}
-                      {errors.url && (
-                        <span className="text-red-500 text-sm mt-1">{errors.url}</span>
-                      )}
-                    </div>
-                  </div>
-  
-                  <div className="create-test-cases-input-container">
-                    <label className="block text-sm font-medium mb-2">
-                      Test Case Type<span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={testCaseType}
-                      onChange={(e) => {
-                        setTestCaseType(e.target.value);
-                        setErrors((prev) => ({ ...prev, type: "" }));
-                      }}
-                      className={`create-project-input ${
-                        errors.type ? "border-red-500" : "border-gray-300"
-                      } focus:outline-none focus:ring-2 focus:ring-purple-500`}
-                      disabled={!selectedProject}
-                    >
-                      <option value="">Select Type</option>
-                      <option value="Functional">Functional</option>
-                      <option value="Non-Functional">Non-Functional</option>
-                      <option value="Regression">Regression</option>
-                      <option value="Performance">Performance</option>
-                      <option value="Security">Security</option>
-                    </select>
-                    {errors.type && (
-                      <span className="text-red-500 text-sm mt-1">{errors.type}</span>
-                    )}
-                  </div>
-  
-                  <div className="create-test-cases-input-container">
-                    <label className="block text-sm font-medium mb-2">
-                      Test Case Priority<span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={testCasePriority}
-                      onChange={(e) => {
-                        setTestCasePriority(e.target.value);
-                        setErrors((prev) => ({ ...prev, priority: "" }));
-                      }}
-                      className={`create-project-input ${
-                        errors.priority ? "border-red-500" : "border-gray-300"
-                      } focus:outline-none focus:ring-2 focus:ring-purple-500`}
-                      disabled={!selectedProject}
-                    >
-                      <option value="">Select Priority</option>
-                      <option value="High">High</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Low">Low</option>
-                    </select>
-                    {errors.priority && (
-                      <span className="text-red-500 text-sm mt-1">{errors.priority}</span>
-                    )}
-                  </div>
+  <label className="block text-sm font-medium mb-2">
+    Test Case Type<span className="text-red-500">*</span>
+  </label>
+  <select
+    value={testCaseType}
+    onChange={(e) => {
+      setTestCaseType(e.target.value);
+      setErrors((prev) => ({ ...prev, type: "" }));
+    }}
+    className={`create-project-input ${
+      errors.type ? "border-red-500" : "border-gray-300"
+    } focus:outline-none focus:ring-2 focus:ring-purple-500`}
+    disabled={!selectedProject}
+  >
+    <option value="">Select Type</option>
+    {testCaseTypes.map((type) => (
+      <option key={type.id} value={type.name}>
+        {type.name}
+      </option>
+    ))}
+  </select>
+  {errors.type && (
+    <span className="text-red-500 text-sm mt-1">{errors.type}</span>
+  )}
+</div>
+
+<div className="create-test-cases-input-container">
+  <label className="block text-sm font-medium mb-2">
+    Test Case Priority<span className="text-red-500">*</span>
+  </label>
+  <select
+    value={testCasePriority}
+    onChange={(e) => {
+      setTestCasePriority(e.target.value);
+      setErrors((prev) => ({ ...prev, priority: "" }));
+    }}
+    className={`create-project-input ${
+      errors.priority ? "border-red-500" : "border-gray-300"
+    } focus:outline-none focus:ring-2 focus:ring-purple-500`}
+    disabled={!selectedProject}
+  >
+    <option value="">Select Priority</option>
+    {priorities.map((priority) => (
+      <option key={priority.id} value={priority.priority_level}>
+        {priority.priority_level}
+      </option>
+    ))}
+  </select>
+  {errors.priority && (
+    <span className="text-red-500 text-sm mt-1">{errors.priority}</span>
+  )}
+</div>
+
   
                   <div className="create-test-cases-button-group">
                     <button onClick={handleWriteTestManually} className="create-test-cases-btn-manual">

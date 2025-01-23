@@ -81,6 +81,7 @@
 // export default AppNavBar;
 
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
+import { FaDotCircle } from "react-icons/fa";
 import UserIcon from "../images/user.png";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -138,6 +139,10 @@ const AppNavBar = (props) => {
     }
   };
 
+  const handleRecordClick = () => {
+    navigate("/record"); 
+  };
+
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
@@ -184,6 +189,11 @@ const AppNavBar = (props) => {
           
           isLoggedIn ? (
             <div className="flex items-center space-x-4">
+              <FaDotCircle
+                className="h-8 w-8 cursor-pointer text-gray-900 rounded-full"
+                onClick={handleRecordClick}
+              />
+
               <Dropdown
                 arrowIcon={false}
                 inline

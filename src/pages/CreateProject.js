@@ -78,22 +78,22 @@ const CreateProject = ({ onProjectCreated }) => {
 
   const handleCreateProject = async () => {
     if (!validateFields()) return;
-
+  
     const userId = localStorage.getItem("userId");
     if (!userId) {
       console.warn("No userId found in localStorage");
       return;
     }
-
+  
     const projectData = {
       user_id: parseInt(userId),
       name: projectName,
       description: description || "No description provided",
       project_type: projectType,
     };
-
+  
     setIsLoading(true);
-
+  
     try {
       const response = await fetch(
         "https://testerally-be-ylpr.onrender.com/api/projects/",
@@ -105,23 +105,24 @@ const CreateProject = ({ onProjectCreated }) => {
           body: JSON.stringify(projectData),
         }
       );
-
+  
       if (!response.ok) {
         const errorResponse = await response.json();
         console.error("Backend Error Response:", errorResponse);
         throw new Error(errorResponse.message || "Failed to create project");
       }
-
+  
       const createdProject = await response.json();
-
       setUserProjects((prevProjects) => [...prevProjects, createdProject]);
-
+  
       alert("Project Created Successfully");
-
+  
+      navigate("/projects-list");
+  
       if (onProjectCreated) {
         onProjectCreated(createdProject.name);
       }
-
+  
       setProjectName("");
       setDescription("");
       setProjectType("");
@@ -129,11 +130,10 @@ const CreateProject = ({ onProjectCreated }) => {
     } catch (error) {
       console.error("Error creating project:", error);
       alert("Error creating project. Please try again.");
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
-  };
+  };  
 
   const handleCancel = () => {
     navigate("/dashboard-user");
