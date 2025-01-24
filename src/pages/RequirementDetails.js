@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
-import { Save, X, Edit2, Trash2 } from 'lucide-react';
+import { Save, X, Edit2, Trash2, ChevronDown } from 'lucide-react';
 
 const RequirementDetails = () => {
   const navigate = useNavigate();
@@ -219,89 +219,104 @@ const RequirementDetails = () => {
 
   const renderEditForm = () => {
     if (!editingId) return null;
-
+  
     const editingRequirement = requirements.find(req => req.id === editingId);
     if (!editingRequirement) return null;
-
+  
     return (
-      <div className="bg-white rounded-lg shadow mt-4 p-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">Edit Requirement</h3>
-        <div className="grid gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-            <input
-              type="text"
-              value={editedTitle}
-              onChange={(e) => setEditedTitle(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <input
-              type="text"
-              value={editedDescription}
-              onChange={(e) => setEditedDescription(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-            <select
-              value={editedType}
-              onChange={(e) => setEditedType(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="">Select Type</option>
-              {requirementTypes.map((type) => (
-                <option key={type.id} value={type.type_name}>
-                  {type.type_name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Labels</label>
-            <input
-              type="text"
-              value={editedLabels}
-              onChange={(e) => setEditedLabels(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
-            <input
-              type="date"
-              value={editedStartDate}
-              onChange={(e) => setEditedStartDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Completion Date</label>
-            <input
-              type="date"
-              value={editedEndDate}
-              onChange={(e) => setEditedEndDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div className="flex space-x-2">
-            <button
-              onClick={() => handleSave(editingId)}
-              className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
-            >
-              <Save className="w-4 h-4 mr-1" />
-              Save
-            </button>
-            <button
-              onClick={handleCancel}
-              className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
-            >
-              <X className="w-4 h-4 mr-1" />
-              Cancel
-            </button>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div className="bg-white shadow-xl rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Edit Requirement</h3>
+              <button 
+                onClick={handleCancel}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="grid gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                <input
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <textarea
+                  value={editedDescription}
+                  onChange={(e) => setEditedDescription(e.target.value)}
+                  className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                <div className="relative">
+                  <select
+                    value={editedType}
+                    onChange={(e) => setEditedType(e.target.value)}
+                    className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 appearance-none transition-all duration-200 pr-8"
+                  >
+                    <option value="">Select Type</option>
+                    {requirementTypes.map((type) => (
+                      <option key={type.id} value={type.type_name}>
+                        {type.type_name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Labels</label>
+                <input
+                  type="text"
+                  value={editedLabels}
+                  onChange={(e) => setEditedLabels(e.target.value)}
+                  className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                <input
+                  type="date"
+                  value={editedStartDate}
+                  onChange={(e) => setEditedStartDate(e.target.value)}
+                  className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Completion Date</label>
+                <input
+                  type="date"
+                  value={editedEndDate}
+                  onChange={(e) => setEditedEndDate(e.target.value)}
+                  className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+                />
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => handleSave(editingId)}
+                  className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+                >
+                  <Save className="w-4 h-4 mr-1" />
+                  Save
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                >
+                  <X className="w-4 h-4 mr-1" />
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -331,7 +346,7 @@ const RequirementDetails = () => {
             <div className="p-4 flex flex-col lg:flex-row justify-between items-center space-y-4 sm:space-y-0">
               <h2 className="text-lg font-medium text-gray-700">
                 {selectedProject
-                  ? `Requirements - ${selectedProject.name}`
+                  ? `Requirements  ${/* Commented out selectedProject.name */ ''}`
                   : "Select a Project"}
               </h2>
               {selectedProject && (

@@ -140,7 +140,7 @@ const AppNavBar = (props) => {
   };
 
   const handleRecordClick = () => {
-    navigate("/record"); 
+    navigate("/dashboard-user"); 
   };
 
   const isAdminRoute = location.pathname.startsWith("/admin");

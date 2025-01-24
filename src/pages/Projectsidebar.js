@@ -144,6 +144,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
     localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(project));
     setIsDropdownOpen(false);
     setSearchTerm("");
+    
     if (isMobileView) {
       onOptionSelect(); 
     }
