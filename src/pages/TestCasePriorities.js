@@ -193,7 +193,7 @@ const TestCasePriorities = () => {
           <div className="bg-white rounded-lg shadow mb-6">
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-xl font-semibold text-gray-800">
-                {selectedProject ? `Test Case Priorities - ${selectedProject.name}` : 'Select a Project'}
+                {selectedProject ? `Test Case Priorities  ${/* Commented out selectedProject.name */ ''}` : 'Select a Project'}
               </h2>
               {selectedProject && (
                 <button

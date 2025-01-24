@@ -84,7 +84,7 @@ const WriteTestManually = ({ setShowWriteTestManually }) => {
                     <h2 className="create-test-cases-title">Write Test Manually</h2>
                     {selectedProject ? (
                       <span className="project-name text-sm text-gray-600 mt-1">
-                        Project: {selectedProject.name}
+                        {/* Project: {selectedProject.name} */}
                       </span>
                     ) : (
                       <span className="project-name text-sm text-red-500 mt-1">

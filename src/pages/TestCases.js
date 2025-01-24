@@ -13,7 +13,6 @@ const TestCases = () => {
   const [editingTestCase, setEditingTestCase] = useState(null);
   const [error, setError] = useState(null);
 
-  // New state for types and priorities
   const [testCaseTypes, setTestCaseTypes] = useState([]);
   const [testCasePriorities, setTestCasePriorities] = useState([]);
 
@@ -127,12 +126,17 @@ const TestCases = () => {
     setEditingTestCase({
       id: testCase.id,
       name: testCase.name,
-      type: testCase.type,
-      priority: testCase.priority
+      type: testCase.testcase_type || "",
+      priority: testCase.testcase_priority || "",
     });
   };
 
   const handleSave = async () => {
+    if (!editingTestCase.name || !editingTestCase.type || !editingTestCase.priority) {
+      setError("All fields are required");
+      return;
+    }
+  
     setLoading(true);
     try {
       const response = await fetch(
@@ -144,31 +148,42 @@ const TestCases = () => {
           },
           body: JSON.stringify({
             name: editingTestCase.name,
-            type: editingTestCase.type,
-            priority: editingTestCase.priority
+            testcase_type: editingTestCase.type,
+            testcase_priority: editingTestCase.priority
           }),
         }
       );
-
+  
       if (!response.ok) {
-        throw new Error("Failed to update test case");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update test case");
       }
-
-      const updatedTestCases = testCases.map((testCase) =>
-        testCase.id === editingTestCase.id
-          ? { ...testCase, ...editingTestCase }
-          : testCase
+  
+      const result = await response.json();
+  
+      setTestCases(prevTestCases => 
+        prevTestCases.map(testCase => 
+          testCase.id === editingTestCase.id 
+            ? { 
+                ...testCase, 
+                name: result.name, 
+                testcase_type: result.testcase_type, 
+                testcase_priority: result.testcase_priority 
+              } 
+            : testCase
+        )
       );
-
-      setTestCases(updatedTestCases);
+  
       setEditingTestCase(null);
+      setError(null);
     } catch (error) {
       console.error("Error saving test case:", error);
-      setError("Failed to update test case");
+      setError(error.message || "Failed to update test case");
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleDelete = async (testCaseId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this test case?");
@@ -229,7 +244,7 @@ const TestCases = () => {
 
             <div className="p-4 flex flex-col lg:flex-row justify-between items-center space-y-4 sm:space-y-0">
               <h2 className="text-lg font-medium text-gray-700">
-                {selectedProject ? `Test Cases - ${selectedProject.name}` : 'Select a Project'}
+                {selectedProject ? `Test Cases  ${/* Commented out selectedProject.name */ ''}` : 'Select a Project'}
               </h2>
               {selectedProject && (
                 <div className="relative w-full sm:w-64">
@@ -321,73 +336,91 @@ const TestCases = () => {
           </div>
 
           {editingTestCase && (
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium mb-4">Edit Test Case</h3>
-              <div className="grid gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Name<span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={editingTestCase.name}
-                    onChange={(e) => setEditingTestCase(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Test Case Type<span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={editingTestCase.type}
-                    onChange={(e) => setEditingTestCase(prev => ({ ...prev, type: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="">Select Type</option>
-                    {testCaseTypes.map((type) => (
-                      <option key={type.id} value={type.name}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Test Case Priority<span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={editingTestCase.priority}
-                    onChange={(e) => setEditingTestCase(prev => ({ ...prev, priority: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="">Select Priority</option>
-                    {testCasePriorities.map((priority) => (
-                      <option key={priority.id} value={priority.priority_level}>
-                        {priority.priority_level}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={handleSave}
-                    className="inline-flex items-center px-4 py-2 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
-                  >
-                    <Save className="w-4 h-4 mr-1" />
-                    Save
-                  </button>
-                  <button
-                    onClick={handleCancel}
-                    className="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
-                  >
-                    <X className="w-4 h-4 mr-1" />
-                    Cancel
-                  </button>
-                </div>
-              </div>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+    <div className="bg-white shadow-xl rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-800">Edit Test Case</h3>
+          <button 
+            onClick={handleCancel}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="grid gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Name<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={editingTestCase.name}
+              onChange={(e) => setEditingTestCase(prev => ({ ...prev, name: e.target.value }))}
+              className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Test Case Type<span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <select
+                value={editingTestCase.type}
+                onChange={(e) => setEditingTestCase(prev => ({ ...prev, type: e.target.value }))}
+                className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 appearance-none transition-all duration-200 pr-8"
+              >
+                <option value="">Select Type</option>
+                {testCaseTypes.map((type) => (
+                  <option key={type.id} value={type.name}>
+                    {type.name}
+                  </option>
+                ))}
+              </select>
+              
             </div>
-          )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Test Case Priority<span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <select
+                value={editingTestCase.priority}
+                onChange={(e) => setEditingTestCase(prev => ({ ...prev, priority: e.target.value }))}
+                className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 appearance-none transition-all duration-200 pr-8"
+              >
+                <option value="">Select Priority</option>
+                {testCasePriorities.map((priority) => (
+                  <option key={priority.id} value={priority.priority_level}>
+                    {priority.priority_level}
+                  </option>
+                ))}
+              </select>
+              
+            </div>
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={handleSave}
+              className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+            >
+              <Save className="w-4 h-4 mr-1" />
+              Save
+            </button>
+            <button
+              onClick={handleCancel}
+              className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
+            >
+              <X className="w-4 h-4 mr-1" />
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
         </div>
       </div>
     </div>

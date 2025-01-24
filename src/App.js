@@ -324,6 +324,7 @@ import AdminRequirements from "./pages/AdminRequirements";
 import AdminTestSuite from "./pages/AdminTestSuite";
 import ProjectList from "./pages/ProjectList";
 import TestData from "./pages/TestData";
+import MemberRegister from "./pages/MemberRegister";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -497,6 +498,18 @@ const App = () => {
                 exact
                 element={
                   <Register
+                    isLoggedIn={isLoggedIn}
+                    setIsLoggedIn={setIsLoggedIn}
+                    setName={setName}
+                    setEmail={setEmail}
+                  />
+                }
+              />
+              <Route
+                path="member-register"
+                exact
+                element={
+                  <MemberRegister
                     isLoggedIn={isLoggedIn}
                     setIsLoggedIn={setIsLoggedIn}
                     setName={setName}

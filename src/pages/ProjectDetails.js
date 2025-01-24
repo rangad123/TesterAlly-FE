@@ -163,8 +163,13 @@ const ProjectDetails = () => {
 
       if (response.ok) {
         const updatedProject = await response.json();
+
         setSelectedProject(updatedProject);
-        localStorage.setItem("selectedProject", JSON.stringify(updatedProject));
+
+        const savedProjectKey = `selectedProject_${userId}`;
+      localStorage.setItem(savedProjectKey, JSON.stringify(updatedProject));
+      localStorage.setItem("selectedProject", JSON.stringify(updatedProject));
+
         setIsEditModalOpen(false);
         alert("Project updated successfully.");
       }

@@ -195,7 +195,7 @@ const RequirementTypes = () => {
           <div className="bg-white rounded-lg shadow mb-6">
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-xl font-semibold text-gray-800">
-                {selectedProject ? `Requirement Types - ${selectedProject.name}` : 'Select a Project'}
+                {selectedProject ? `Requirement Types  ${/* Commented out selectedProject.name */ ''}` : 'Select a Project'}
               </h2>
               {selectedProject && (
                 <button

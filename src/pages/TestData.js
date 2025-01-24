@@ -99,10 +99,10 @@ const TestData = () => {
               <div className="create-test-cases-container">
                 <div className="create-test-cases-header">
                   <div className="flex flex-col">
-                    <h2 className="create-test-cases-title">Test Cases URL</h2>
+                    <h2 className="create-test-cases-title">Test Data</h2>
                     {selectedProject && (
                       <span className="project-name text-sm text-gray-600 mt-1">
-                        Project: {selectedProject.name}
+                        {/* Project: {selectedProject.name} */}
                       </span>
                     )}
                   </div>

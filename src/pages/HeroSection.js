@@ -96,7 +96,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-[rgb(126,58,242)]">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-[rgb(126,58,242)] mb-[40px]">
               Deliver Reliable Automation for Enterprise-Grade Software
               <div className="text-sm font-semibold mt-2 text-[rgb(126,58,242)]">
                 TesterAlly QA Platform

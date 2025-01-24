@@ -1,23 +1,72 @@
-import React, { useRef } from "react";
-import { MdDashboard, MdFolder, MdAssignment, MdList, MdPeople } from "react-icons/md";
-import { FaClipboardList } from "react-icons/fa";
+import React, { useState, useEffect, useRef } from "react";
+import { 
+  MdDashboard, 
+  MdBusiness, 
+  MdSettings, 
+  MdFolder, 
+  MdPeopleAlt,
+} from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isOrganizationSidebarVisible, setIsOrganizationSidebarVisible] = useState(false);
+  const [isSettingsSidebarVisible, setIsSettingsSidebarVisible] = useState(false);
 
   const sidebarRef = useRef(null);
 
-  const handleNavigate = (path) => {
-    navigate(path);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setIsOrganizationSidebarVisible(false);
+        setIsSettingsSidebarVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleOrganizationSidebar = () => {
+    setIsOrganizationSidebarVisible((prevState) => !prevState);
+    setIsSettingsSidebarVisible(false);
+  };
+
+  const toggleSettingsSidebar = () => {
+    setIsSettingsSidebarVisible((prevState) => !prevState);
+    setIsOrganizationSidebarVisible(false);
+  };
+
+  const handleNavigateToDashboard = () => {
+    navigate("/admin-dashboard");
+    setIsOrganizationSidebarVisible(false);
+    setIsSettingsSidebarVisible(false);
+  };
+
+  const handleNavigateToProjects = () => {
+    navigate("/admin-projects");
+    setIsOrganizationSidebarVisible(false);
+  };
+
+  const handleNavigateToUsers = () => {
+    navigate("/admin-users");
+    setIsOrganizationSidebarVisible(false);
+  };
+
+  const handleNavigateToAdminSettings = () => {
+    navigate("/admin-settings");
+    setIsSettingsSidebarVisible(false);
   };
 
   const currentPath = location.pathname;
 
   return (
-    <div className="adminsidebar-container" ref={sidebarRef}>
+    <div className="sidebar-container !w-[70px]" ref={sidebarRef}>
       {/* Main Sidebar */}
       <div className="sidebar collapsed">
         <div className="plus-button mt-[40px]"></div>
@@ -25,71 +74,78 @@ const AdminSidebar = () => {
         {/* Dashboard Option */}
         <div
           className={`sidebar-option ${currentPath === "/admin-dashboard" ? "active" : ""}`}
-          onClick={() => handleNavigate("/admin-dashboard")}
+          onClick={handleNavigateToDashboard}
         >
-          <MdDashboard className={`icon project-icon ${currentPath === "/admin-dashboard" ? "active-icon" : ""}`} />
+          <MdDashboard 
+            className={`icon project-icon ${currentPath === "/admin-dashboard" ? "active-icon" : ""}`} 
+          />
           <div className="option-name-container">
             <span className="option-name">Dashboard</span>
           </div>
         </div>
 
-        {/* Users Option */}
+        {/* Organization Option */}
         <div
-          className={`sidebar-option ${currentPath === "/admin-users" ? "active" : ""}`}
-          onClick={() => handleNavigate("/admin-users")}
+          className={`sidebar-option ${location.pathname === "/admin-projects" || location.pathname === "/admin-users" ? "active" : ""}`}
+          onClick={toggleOrganizationSidebar}
         >
-          <MdPeople className={`icon project-icon ${currentPath === "/admin-users" ? "active-icon" : ""}`} />
+          <MdBusiness 
+            className={`icon project-icon ${location.pathname === "/admin-projects" || location.pathname === "/admin-users" ? "active-icon" : ""}`}
+          />
           <div className="option-name-container">
-            <span className="option-name">Users</span>
+            <span className="option-name">Organization</span>
           </div>
         </div>
 
-        {/* Projects Option */}
+        {/* Settings Option */}
         <div
-          className={`sidebar-option ${currentPath === "/admin-projects" ? "active" : ""}`}
-          onClick={() => handleNavigate("/admin-projects")}
+          className={`sidebar-option ${location.pathname === "/admin-settings" ? "active" : ""}`}
+          onClick={toggleSettingsSidebar}
         >
-          <MdFolder className={`icon project-icon ${currentPath === "/admin-projects" ? "active-icon" : ""}`} />
+          <MdSettings 
+            className={`icon project-icon ${location.pathname === "/admin-settings" ? "active-icon" : ""}`} 
+          />
           <div className="option-name-container">
-            <span className="option-name">Projects</span>
+            <span className="option-name">Settings</span>
           </div>
         </div>
-
-        {/* Test Cases Option */}
-        <div
-          className={`sidebar-option ${currentPath === "/admin-testcases" ? "active" : ""}`}
-          onClick={() => handleNavigate("/admin-testcases")}
-        >
-          <MdAssignment className={`icon project-icon ${currentPath === "/admin-testcases" ? "active-icon" : ""}`} />
-          <div className="option-name-container">
-            <span className="option-name">Test Cases</span>
-          </div>
-        </div>
-
-        {/* Test Suites Option */}
-        <div
-          className={`sidebar-option ${currentPath === "/admin-testsuites" ? "active" : ""}`}
-          onClick={() => handleNavigate("/admin-testsuites")}
-        >
-          <MdList className={`icon project-icon ${currentPath === "/admin-testsuites" ? "active-icon" : ""}`} />
-          <div className="option-name-container">
-            <span className="option-name">Test Suites</span>
-          </div>
-        </div>
-
-        {/* Requirements Option */}
-        <div
-          className={`sidebar-option ${currentPath === "/admin-requirements" ? "active" : ""}`}
-          onClick={() => handleNavigate("/admin-requirements")}
-        >
-          <FaClipboardList className={`icon project-icon ${currentPath === "/admin-requirements" ? "active-icon" : ""}`} />
-          <div className="option-name-container">
-            <span className="option-name">Requirements</span>
-          </div>
-        </div>
-
 
       </div>
+
+      {/* Sub-sidebar: Organization */}
+      {isOrganizationSidebarVisible && (
+        <div className="sub-sidebar ml-[70px]">
+          <div className="sub-sidebar-header">Organization</div>
+          <div 
+            className="sub-sidebar-item" 
+            onClick={handleNavigateToProjects}
+          >
+            <MdFolder className="icon" />
+            <span>Projects</span>
+          </div>
+          <div 
+            className="sub-sidebar-item" 
+            onClick={handleNavigateToUsers}
+          >
+            <MdPeopleAlt className="icon" />
+            <span>Users</span>
+          </div>
+        </div>
+      )}
+
+      {/* Sub-sidebar: Settings */}
+      {isSettingsSidebarVisible && (
+        <div className= "sub-sidebar-settings ml-[70px]">
+          <div className="sub-sidebar-header">Settings</div>
+          <div 
+            className="sub-sidebar-item" 
+            onClick={handleNavigateToAdminSettings}
+          >
+            <MdSettings className="icon" />
+            <span>Admin Settings</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

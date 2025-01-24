@@ -12,10 +12,9 @@ const ProjectMembers = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Centralized API configuration
-  const API_BASE_URL = "https://testerally-be-ylpr.onrender.com/api";
+  const userId = localStorage.getItem("userId");
 
-  // Memoized fetch function to prevent unnecessary re-renders
+
   const fetchInvitedMembers = useCallback(async () => {
     if (!selectedProject?.id) return;
 
@@ -23,79 +22,128 @@ const ProjectMembers = () => {
     setError(null);
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/send-invite/`, {
-        params: { projectId: selectedProject.id },
+      const response = await axios.get(`https://testerally-be-ylpr.onrender.com/api/send-invite/`, {
+        params: { 
+          project_id: selectedProject.id,
+          user_id: userId
+        },
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Add authentication
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
 
-      setInvitedMembers(response.data.members || []);
+      setInvitedMembers(response.data || []);
     } catch (error) {
       console.error("Error fetching invited members:", error);
       setError(error.response?.data?.message || "Failed to fetch members");
     } finally {
       setIsLoading(false);
     }
-  }, [selectedProject?.id]);
+  }, [selectedProject?.id, userId]);
 
   useEffect(() => {
-    
-    const userId = localStorage.getItem("userId");
+     const userId = localStorage.getItem("userId");
+     if (!userId) {
+       return;
+     }
+ 
+     const savedProjectKey = `selectedProject_${userId}`;
+     const savedProject = localStorage.getItem(savedProjectKey);
+ 
+     console.log("selected project",savedProject)
+     
+     if (savedProject) {
+       try {
+         const project = JSON.parse(savedProject);
+         setSelectedProject(project);
 
-    if (!userId) {
-      navigate("/dashboard/login");
-      return;
-    }
+       } catch (error) {
+         console.error("Error parsing saved project:", error);
+         navigate("/dashboard-user");
+       }
+     } 
+ 
+ 
+     const handleProjectChange = (event) => {
+       const newProject = event.detail;
+       
+       if (newProject) {
+         setSelectedProject(newProject);
+         localStorage.setItem("selectedProject", JSON.stringify(newProject));
 
-    const savedProjectKey = `selectedProject_${userId}`;
-    const savedProject = localStorage.getItem(savedProjectKey);
-
-    if (savedProject) {
-      setSelectedProject(JSON.parse(savedProject));
-    } else {
-      navigate("/dashboard-user");
-    }
-  }, [navigate]);
-
+       }
+     };
+ 
+     window.addEventListener("projectChanged", handleProjectChange);
+     return () => window.removeEventListener("projectChanged", handleProjectChange);
+   }, [navigate]);
+ 
   
   useEffect(() => {
-    fetchInvitedMembers();
-  }, [fetchInvitedMembers]);
+    
+    if (selectedProject?.id) {
+      fetchInvitedMembers();
+    }
+
+  }, [selectedProject, fetchInvitedMembers]);
 
   const handleInviteMember = async () => {
     if (!inviteEmail) {
       setError("Please enter a valid email address.");
       return;
     }
-
+  
+    const payload = {
+      project_id: selectedProject.id,
+      user_id: userId,
+      recipient_email: inviteEmail,
+    };
+  
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/send-invite/`,
-        {
-          projectId: selectedProject.id,
-          email: inviteEmail,
-        },
+        `https://testerally-be-ylpr.onrender.com/api/send-invite/`,
+        payload,
         {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
         }
       );
-
-      if (response.data.success) {
         setInviteEmail("");
         setShowModal(false);
-        fetchInvitedMembers(); 
         setError(null);
-      } else {
-        setError(response.data.message || "Failed to send invite");
+        alert("Invitation sent successfully!");
+  
+      const responseData = response.data;
+      if (responseData.success) {
+        fetchInvitedMembers();
+        alert("Invitation sent successfully!");
+        
+      } else if (responseData.error === "User already registered with this email.") {
+        alert("This email is already registered in the system.");
+
       }
     } catch (error) {
       console.error("Error sending invite:", error);
-      setError(error.response?.data?.message || "An error occurred while sending the invite");
+  
+      const errorMessage =
+        error.response?.data?.error || 
+        error.response?.data?.message || 
+        "An error occurred while sending the invite";
+
+      if (errorMessage.includes("already registered")) {
+        setInviteEmail("");
+        setShowModal(false);
+        setError(null);
+        setError("This user is already registered in the system.");
+      } else if (errorMessage.includes("invalid email")) {
+        setError("The email address is invalid.");
+      } else {
+        setError(errorMessage || "Failed to send invitation");
+      }
     }
   };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -108,7 +156,7 @@ const ProjectMembers = () => {
               </h2>
               {selectedProject ? (
                 <span className="text-sm text-gray-600 mt-1 block">
-                  Project: {selectedProject.name}
+                   {/* Project: {selectedProject.name} */}
                 </span>
               ) : (
                 <span className="text-sm text-red-500 mt-1 block">
@@ -148,7 +196,7 @@ const ProjectMembers = () => {
                       {member.email}
                     </span>
                     <span className="text-sm text-gray-500">
-                      Status: {member.status}
+                      Status: {member.status || 'Pending'}
                     </span>
                   </li>
                 ))}

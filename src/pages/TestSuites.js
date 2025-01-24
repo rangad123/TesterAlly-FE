@@ -202,7 +202,7 @@ const TestSuites = () => {
 
             <div className="p-4 flex flex-col lg:flex-row justify-between items-center space-y-4 sm:space-y-0">
               <h2 className="text-lg font-medium text-gray-700">
-                {selectedProject ? `Test Suites - ${selectedProject.name}` : 'Select a Project'}
+                {selectedProject ? `Test Suites  ${/* Commented out selectedProject.name */ ''}` : 'Select a Project'}
               </h2>
               {selectedProject && (
                 <div className="relative w-full sm:w-64">
@@ -306,8 +306,18 @@ const TestSuites = () => {
           </div>
 
           {editingId && (
-            <div className="bg-white rounded-lg shadow mt-6 p-6">
-              <h3 className="text-lg font-semibold mb-4">Edit Test Suite</h3>
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+              <div className="bg-white shadow-xl rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+                    <div className="p-6">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-semibold text-gray-800">Edit Test Case</h3>
+                        <button 
+                          onClick={handleCancel}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          <X className="w-6 h-6" />
+                        </button>
+                      </div>
               <div className="grid gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
@@ -361,6 +371,8 @@ const TestSuites = () => {
                     Cancel
                   </button>
                 </div>
+              </div>
+              </div>
               </div>
             </div>
           )}

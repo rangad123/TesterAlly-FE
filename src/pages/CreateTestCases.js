@@ -182,7 +182,7 @@ const CreateTestCases = () => {
                     <h2 className="create-test-cases-title">Create Test Cases</h2>
                     {selectedProject && (
                       <span className="project-name text-sm text-gray-600 mt-1">
-                        Project: {selectedProject.name}
+                        {/* Project: {selectedProject.name} */}
                       </span>
                     )}
                   </div>
