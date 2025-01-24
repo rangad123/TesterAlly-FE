@@ -132,6 +132,11 @@ const TestCases = () => {
   };
 
   const handleSave = async () => {
+    if (!editingTestCase.name || !editingTestCase.type || !editingTestCase.priority) {
+      setError("All fields are required");
+      return;
+    }
+  
     setLoading(true);
     try {
       const response = await fetch(
@@ -143,31 +148,42 @@ const TestCases = () => {
           },
           body: JSON.stringify({
             name: editingTestCase.name,
-            type: editingTestCase.type,
-            priority: editingTestCase.priority
+            testcase_type: editingTestCase.type,
+            testcase_priority: editingTestCase.priority
           }),
         }
       );
-
+  
       if (!response.ok) {
-        throw new Error("Failed to update test case");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update test case");
       }
-
-      const updatedTestCases = testCases.map((testCase) =>
-        testCase.id === editingTestCase.id
-          ? { ...testCase, ...editingTestCase }
-          : testCase
+  
+      const result = await response.json();
+  
+      setTestCases(prevTestCases => 
+        prevTestCases.map(testCase => 
+          testCase.id === editingTestCase.id 
+            ? { 
+                ...testCase, 
+                name: result.name, 
+                testcase_type: result.testcase_type, 
+                testcase_priority: result.testcase_priority 
+              } 
+            : testCase
+        )
       );
-
-      setTestCases(updatedTestCases);
+  
       setEditingTestCase(null);
+      setError(null);
     } catch (error) {
       console.error("Error saving test case:", error);
-      setError("Failed to update test case");
+      setError(error.message || "Failed to update test case");
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleDelete = async (testCaseId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this test case?");
