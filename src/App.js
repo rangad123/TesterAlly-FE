@@ -506,7 +506,7 @@ const App = () => {
                 }
               />
               <Route
-                path="member-register"
+                path="member-register/:token"
                 exact
                 element={
                   <MemberRegister
