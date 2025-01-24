@@ -1,151 +1,180 @@
-import React, { useState, useEffect, useRef } from "react";
-import { 
-  MdDashboard, 
-  MdBusiness, 
-  MdSettings, 
-  MdFolder, 
-  MdPeopleAlt,
+import React, { useState, useEffect } from "react";
+import {
+  MdDashboard,
+  MdBusiness,
+  MdKeyboardArrowDown,
+  MdKeyboardArrowRight,
+  MdPeople,
+  MdClose,
+  MdMenu,
 } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./Sidebar.css";
+import "./AdminSidebar.css";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isOrganizationSidebarVisible, setIsOrganizationSidebarVisible] = useState(false);
-  const [isSettingsSidebarVisible, setIsSettingsSidebarVisible] = useState(false);
-
-  const sidebarRef = useRef(null);
-
+  const [organizations, setOrganizations] = useState([]);
+  const [expandedOrganizations, setExpandedOrganizations] = useState({});
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [activeOrganization, setActiveOrganization] = useState(null);
+  const [projectMembers, setProjectMembers] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setIsOrganizationSidebarVisible(false);
-        setIsSettingsSidebarVisible(false);
+    const fetchOrganizations = async () => {
+      try {
+        const response = await fetch(
+          "https://testerally-be-ylpr.onrender.com/api/organizations/"
+        );
+        const data = await response.json();
+        const initialExpandedState = data.reduce((acc, org) => {
+          acc[org.id] = false;
+          return acc;
+        }, {});
+        setOrganizations(data);
+        setExpandedOrganizations(initialExpandedState);
+      } catch (error) {
+        console.error("Error fetching organizations:", error);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    fetchOrganizations();
   }, []);
 
-  const toggleOrganizationSidebar = () => {
-    setIsOrganizationSidebarVisible((prevState) => !prevState);
-    setIsSettingsSidebarVisible(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const toggleSettingsSidebar = () => {
-    setIsSettingsSidebarVisible((prevState) => !prevState);
-    setIsOrganizationSidebarVisible(false);
+  const toggleOrganizationExpand = async (organization) => {
+    if (!organization.projects) {
+      try {
+        const response = await fetch(
+          `https://testerally-be-ylpr.onrender.com/api/organizations/${organization.id}/projects/`
+        );
+        const projects = await response.json();
+        organization.projects = projects;
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    }
+
+    setExpandedOrganizations((prev) => ({
+      ...prev,
+      [organization.id]: !prev[organization.id],
+    }));
+    setActiveOrganization(organization.id);
   };
 
-  const handleNavigateToDashboard = () => {
-    navigate("/admin-dashboard");
-    setIsOrganizationSidebarVisible(false);
-    setIsSettingsSidebarVisible(false);
+  const handleProjectSelect = async (project, organization) => {
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/projects/${project.id}/members/`
+      );
+      const members = await response.json();
+      setSelectedProject(project);
+      setProjectMembers(members);
+      setActiveOrganization(organization.id);
+      
+      // Expand the organization if not already expanded
+      setExpandedOrganizations((prev) => ({
+        ...prev,
+        [organization.id]: true,
+      }));
+    } catch (error) {
+      console.error("Error fetching project members:", error);
+      setProjectMembers([]);
+    }
   };
 
-  const handleNavigateToProjects = () => {
-    navigate("/admin-projects");
-    setIsOrganizationSidebarVisible(false);
-  };
-
-  const handleNavigateToUsers = () => {
-    navigate("/admin-users");
-    setIsOrganizationSidebarVisible(false);
-  };
-
-  const handleNavigateToAdminSettings = () => {
-    navigate("/admin-settings");
-    setIsSettingsSidebarVisible(false);
-  };
-
-  const currentPath = location.pathname;
+  const renderNavItem = (icon, label, path, isActive) => (
+    <div
+      className={`nav-item ${isActive ? "active" : ""}`}
+      onClick={() => navigate(path)}
+    >
+      {icon}
+      {isSidebarOpen && <span className="nav-label">{label}</span>}
+    </div>
+  );
 
   return (
-    <div className="sidebar-container !w-[70px]" ref={sidebarRef}>
-      {/* Main Sidebar */}
-      <div className="sidebar collapsed">
-        <div className="plus-button mt-[40px]"></div>
-
-        {/* Dashboard Option */}
-        <div
-          className={`sidebar-option ${currentPath === "/admin-dashboard" ? "active" : ""}`}
-          onClick={handleNavigateToDashboard}
-        >
-          <MdDashboard 
-            className={`icon project-icon ${currentPath === "/admin-dashboard" ? "active-icon" : ""}`} 
-          />
-          <div className="option-name-container">
-            <span className="option-name">Dashboard</span>
-          </div>
-        </div>
-
-        {/* Organization Option */}
-        <div
-          className={`sidebar-option ${location.pathname === "/admin-projects" || location.pathname === "/admin-users" ? "active" : ""}`}
-          onClick={toggleOrganizationSidebar}
-        >
-          <MdBusiness 
-            className={`icon project-icon ${location.pathname === "/admin-projects" || location.pathname === "/admin-users" ? "active-icon" : ""}`}
-          />
-          <div className="option-name-container">
-            <span className="option-name">Organization</span>
-          </div>
-        </div>
-
-        {/* Settings Option */}
-        <div
-          className={`sidebar-option ${location.pathname === "/admin-settings" ? "active" : ""}`}
-          onClick={toggleSettingsSidebar}
-        >
-          <MdSettings 
-            className={`icon project-icon ${location.pathname === "/admin-settings" ? "active-icon" : ""}`} 
-          />
-          <div className="option-name-container">
-            <span className="option-name">Settings</span>
-          </div>
-        </div>
-
+    <div className={`admin-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
+      <div className="sidebar-toggle" onClick={toggleSidebar}>
+        {isSidebarOpen ? <MdClose className="menu-icon" /> : <MdMenu className="menu-icon" />}
       </div>
 
-      {/* Sub-sidebar: Organization */}
-      {isOrganizationSidebarVisible && (
-        <div className="sub-sidebar ml-[70px]">
-          <div className="sub-sidebar-header">Organization</div>
-          <div 
-            className="sub-sidebar-item" 
-            onClick={handleNavigateToProjects}
-          >
-            <MdFolder className="icon" />
-            <span>Projects</span>
-          </div>
-          <div 
-            className="sub-sidebar-item" 
-            onClick={handleNavigateToUsers}
-          >
-            <MdPeopleAlt className="icon" />
-            <span>Users</span>
-          </div>
-        </div>
-      )}
+      <nav className="sidebar-navigation">
+        {renderNavItem(
+          <MdDashboard className="nav-icon" />,
+          "Dashboard",
+          "/admin-dashboard",
+          location.pathname === "/admin-dashboard"
+        )}
 
-      {/* Sub-sidebar: Settings */}
-      {isSettingsSidebarVisible && (
-        <div className= "sub-sidebar-settings ml-[70px]">
-          <div className="sub-sidebar-header">Settings</div>
-          <div 
-            className="sub-sidebar-item" 
-            onClick={handleNavigateToAdminSettings}
-          >
-            <MdSettings className="icon" />
-            <span>Admin Settings</span>
-          </div>
+        <div className="organizations-section">
+          {isSidebarOpen && <div className="section-header">Organizations</div>}
+          {organizations.map((organization) => (
+            <div
+              key={organization.id}
+              className={`organization-item ${
+                activeOrganization === organization.id ? "active" : ""
+              }`}
+            >
+              <div
+                className="organization-header"
+                onClick={() => toggleOrganizationExpand(organization)}
+              >
+                {isSidebarOpen && (
+                  <>
+                    {expandedOrganizations[organization.id] ? (
+                      <MdKeyboardArrowDown className="expand-icon" />
+                    ) : (
+                      <MdKeyboardArrowRight className="expand-icon" />
+                    )}
+                    <MdBusiness className="org-icon" />
+                    <span className="org-name">{organization.name}</span>
+                  </>
+                )}
+              </div>
+
+              {expandedOrganizations[organization.id] &&
+                organization.projects &&
+                isSidebarOpen && (
+                  <div className="projects-list">
+                    {organization.projects.map((project) => (
+                      <div
+                        key={project.id}
+                        className={`project-item ${
+                          selectedProject?.id === project.id ? "selected" : ""
+                        }`}
+                        onClick={() => handleProjectSelect(project, organization)}
+                      >
+                        {project.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
+            </div>
+          ))}
         </div>
-      )}
+
+        {isSidebarOpen && selectedProject && projectMembers.length > 0 && (
+          <div className="project-members-section">
+            <div className="section-header">
+              <MdPeople className="nav-icon" />
+              {selectedProject.name} Members
+            </div>
+            <div className="members-list">
+              {projectMembers.map((member) => (
+                <div key={member.id} className="member-item">
+                  {member.name}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </nav>
     </div>
   );
 };
