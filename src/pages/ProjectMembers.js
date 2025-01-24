@@ -23,7 +23,7 @@ const ProjectMembers = () => {
     setError(null);
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/get-invited-members`, {
+      const response = await axios.get(`${API_BASE_URL}/send-invite/`, {
         params: { projectId: selectedProject.id },
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}` // Add authentication
