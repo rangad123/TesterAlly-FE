@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trash2 } from 'lucide-react';
+
 
 const ProjectList = () => {
   const navigate = useNavigate();
@@ -35,44 +35,28 @@ const ProjectList = () => {
     }
   }, [userId]);
 
-  const handleDeleteProject = async (projectId) => {
-    if (!window.confirm("Are you sure you want to delete this project?")) return;
+  const handleProjectClick = (project) => {
 
-    try {
-      if (!projectId || !userId) {
-        alert(!projectId ? "Invalid project ID." : "Invalid user ID.");
-        return;
-      }
+    const currentUser = localStorage.getItem("userId");
+    const savedProjectKey = `selectedProject_${currentUser}`;
+    localStorage.setItem(savedProjectKey, JSON.stringify(project));
+    localStorage.setItem("selectedProject", JSON.stringify(project));
 
-      const deleteResponse = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/projects/${projectId}/?user_id=${userId}`,
-        {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
 
-      if (deleteResponse.ok) {
-        alert("Project deleted successfully.");
-        setAllProjects(allProjects.filter(project => project.id !== projectId));
-        navigate("/dashboard-user");
-      } else {
-        const errorData = await deleteResponse.json();
-        console.error("Delete failed:", errorData);
-        alert(errorData.message || "Failed to delete project.");
-      }
-    } catch (error) {
-      console.error("Error during deletion:", error);
-      alert("An error occurred while deleting the project. Please try again.");
-    }
+    window.dispatchEvent(new CustomEvent("projectChanged", { 
+      detail: project 
+    }));
+
+
+    navigate("/project-details");
   };
-
 
   const renderProjectRow = (project) => {
     return (
       <tr
         key={project.id} 
-        className="group hover:bg-gray-50 transition-colors duration-200 border-b"
+        className="group hover:bg-gray-50 transition-colors duration-200 border-b cursor-pointer"
+        onClick={() => handleProjectClick(project)}
       >
         <td className="px-6 py-4 text-sm text-gray-900">
           <span className="font-medium">{project.name}</span>
@@ -83,17 +67,7 @@ const ProjectList = () => {
         <td className="px-6 py-4 text-sm text-gray-500">
           {project.project_type || "N/A"}
         </td>
-        <td className="px-6 py-4 text-sm font-medium">
-          <div className="flex items-center space-x-2 transition-opacity duration-200">
-            <button
-              onClick={() => handleDeleteProject(project.id)}
-              className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200"
-            >
-              <Trash2 className="w-4 h-4 mr-1" />
-              Delete
-            </button>
-          </div>
-        </td>
+
       </tr>
     );
   };
@@ -129,9 +103,7 @@ const ProjectList = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Project Type
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
-                        </th>
+
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">

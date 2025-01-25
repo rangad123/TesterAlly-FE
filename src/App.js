@@ -325,6 +325,7 @@ import AdminTestSuite from "./pages/AdminTestSuite";
 import ProjectList from "./pages/ProjectList";
 import TestData from "./pages/TestData";
 import MemberRegister from "./pages/MemberRegister";
+import ProjectListDetails from "./pages/ProjectListDetails";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -455,7 +456,9 @@ const App = () => {
                 path="/admin-dashboard"
                 exact
                 element={
-                  <AdminDashboard isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <AdminDashboard />
+                  </PrivateRoute>
                 }
               />
               <Route
@@ -636,6 +639,15 @@ const App = () => {
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <ProjectList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/project-details/project-list-details"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <ProjectListDetails />
                   </PrivateRoute>
                 }
               />

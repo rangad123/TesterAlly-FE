@@ -1,219 +1,193 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "./WriteManually.css";
-import { AiOutlineClose } from "react-icons/ai";
+import React, { useState } from "react";
+import { Save, X, Edit2, Trash2 } from 'lucide-react';
 
-const WriteTestManually = ({ setShowWriteTestManually }) => {
-  const [step, setStep] = useState(1);
-  const [url, setUrl] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [selectedProject, setSelectedProject] = useState(null);
-  const navigate = useNavigate();
+const WriteTestManually = () => {
+  const [testSteps, setTestSteps] = useState([]);
+  const [currentStep, setCurrentStep] = useState("");
+  const [editingStep, setEditingStep] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editedValue, setEditedValue] = useState("");
 
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      navigate("/dashboard/login");
+  const handleAddStep = () => {
+    if (currentStep !== "") {
+      alert("Please save the current step before adding a new one.");
       return;
     }
-
-    const savedProjectKey = `selectedProject_${userId}`;
-    const savedProject = localStorage.getItem(savedProjectKey);
-
-    if (savedProject) {
-      setSelectedProject(JSON.parse(savedProject));
-    } else {
-      navigate("/dashboard-user");
-    }
-
-    const handleProjectChange = (event) => {
-      const newProject = event.detail;
-      setSelectedProject(newProject);
-    };
-
-    window.addEventListener("projectChanged", handleProjectChange);
-
-    return () =>
-      window.removeEventListener("projectChanged", handleProjectChange);
-  }, [navigate]);
-
-  const handleSave = () => {
-    if (!url.trim() || !username.trim() || !password.trim()) {
-      setError("All fields are required!");
-      return;
-    }
-
-    if (!selectedProject?.id) {
-      alert("Please select a project before saving.");
-      return;
-    }
-
-    const steps = [
-      `1. Open the URL: ${url}`,
-      `2. Enter the username: ${username}`,
-      `3. Enter the password: ${password}`,
-      `4. Click on Login.`,
-    ];
-
-    alert(
-      `Test steps saved successfully for project: ${selectedProject.name}!\n\n${steps.join(
-        "\n"
-      )}`
-    );
-
-    setShowWriteTestManually(false);
+    setTestSteps([
+      ...testSteps,
+      { stepNumber: testSteps.length + 1, choice: "", isSaved: false, isSelected: false },
+    ]);
   };
 
-  const handleCancel = () => {
-    navigate("/test-cases");
+  const handleSaveStep = (index) => {
+    if (testSteps[index].choice.trim() === "") {
+      alert("Please provide a choice for this step before saving.");
+      return;
+    }
+    const updatedSteps = [...testSteps];
+    updatedSteps[index].isSaved = true;
+    setTestSteps(updatedSteps);
+    setCurrentStep("");
   };
 
-  
+  const handleCancelStep = (index) => {
+    const updatedSteps = [...testSteps];
+    updatedSteps.splice(index, 1);
+    setTestSteps(updatedSteps);
+    setCurrentStep("");
+  };
+
+  const handleEditStep = (index) => {
+    setEditingStep(index);
+    setEditedValue(testSteps[index].choice);
+    setModalOpen(true);
+  };
+
+  const handleSaveEdit = () => {
+    const updatedSteps = [...testSteps];
+    updatedSteps[editingStep].choice = editedValue;
+    setTestSteps(updatedSteps);
+    setModalOpen(false);
+    setEditingStep(null);
+  };
+
+  const handleDeleteStep = (index) => {
+    const updatedSteps = [...testSteps];
+    updatedSteps.splice(index, 1);
+    setTestSteps(updatedSteps);
+  };
+
+  const handleChangeStep = (index, value) => {
+    const updatedSteps = [...testSteps];
+    updatedSteps[index].choice = value;
+    setTestSteps(updatedSteps);
+  };
+
+  const handleCheckboxChange = (index) => {
+    const updatedSteps = [...testSteps];
+    updatedSteps[index].isSelected = !updatedSteps[index].isSelected;
+    setTestSteps(updatedSteps);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
-        <div className="lg:p-6 sm:p-0">
-          <div className="write-manually-page">
-            <div className="write-manually-page-wrapper">
-              <div className="wm-container">
-                <div className="create-test-cases-header">
-                  <div className="flex flex-col">
-                    <h2 className="create-test-cases-title">Write Test Manually</h2>
-                    {selectedProject ? (
-                      <span className="project-name text-sm text-gray-600 mt-1">
-                        {/* Project: {selectedProject.name} */}
-                      </span>
-                    ) : (
-                      <span className="project-name text-sm text-red-500 mt-1">
-                        No project selected
-                      </span>
-                    )}
-                  </div>
-                  <div className="create-test-cases-button-group-right">
-                    <button onClick={handleCancel} className="cancel-btn">
-                      <AiOutlineClose className="inline-icon" />
-                      Cancel
-                    </button>
-                  </div>
+        <div className="p-6">
+        <div className="create-test-cases-page-container">
+        <div className="create-test-cases-wrapper">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="create-test-cases-title">Write Test Manually</h2>
+            <button
+              className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600"
+              onClick={handleAddStep}
+            >
+              Add Test
+            </button>
+          </div>
+
+          {testSteps.map((step, index) => (
+            <div className="bg-white shadow-md p-4 mb-4 rounded-lg border border-gray-300"
+              key={index}
+              
+            >
+
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="checkbox"
+                    checked={step.isSelected}
+                    onChange={() => handleCheckboxChange(index)}
+                  />
+                  <span className="font-medium">Step {step.stepNumber}</span>
                 </div>
 
-                {error && <div className="wm-error">{error}</div>}
+                <div className="flex items-center justify-between">
 
-                {step === 1 && (
-                  <div className="wm-step">
-                    <label className="wm-label">
-                      Step 1: Open the URL <span className="wm-required">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="wm-input"
-                      value={url}
-                      onChange={(e) => {
-                        setUrl(e.target.value);
-                        setError("");
-                      }}
-                      placeholder="Enter the URL"
-                    />
-                    <button
-                      className="wm-next-btn"
-                      onClick={() => setStep(2)}
-                      disabled={!url.trim()}
-                    >
-                      Next
-                    </button>
-                  </div>
+                {step.isSaved ? (
+                  <div className="text-gray-700 mt-3 mb-3">{step.choice}</div>
+                ) : (
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-md p-2 mt-3 mb-3"
+                    value={step.choice}
+                    onChange={(e) => handleChangeStep(index, e.target.value)}
+                    placeholder="Enter your test case"
+                  />
                 )}
+              </div>
 
-                {step === 2 && (
-                  <div className="wm-step">
-                    <label className="wm-label">
-                      Step 2: Enter the Username{" "}
-                      <span className="wm-required">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="wm-input"
-                      value={username}
-                      onChange={(e) => {
-                        setUsername(e.target.value);
-                        setError("");
-                      }}
-                      placeholder="Enter the Username"
-                    />
-                    <div className="wm-review">
-                      <p>
-                        <span>Entered URL:</span> {url}
-                        <button
-                          className="wm-edit-btn"
-                          onClick={() => setStep(1)}
-                        >
-                          Edit
-                        </button>
-                      </p>
-                    </div>
+              <div className="flex space-x-2">
+                {!step.isSaved ? (
+                  <>
                     <button
-                      className="wm-next-btn"
-                      onClick={() => setStep(3)}
-                      disabled={!username.trim()}
+                      className="inline-flex items-center px-4 py-2 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+                      onClick={() => handleSaveStep(index)}
                     >
-                      Next
-                    </button>
-                  </div>
-                )}
-
-                {step === 3 && (
-                  <div className="wm-step">
-                    <label className="wm-label">
-                      Step 3: Enter the Password{" "}
-                      <span className="wm-required">*</span>
-                    </label>
-                    <input
-                      type="password"
-                      className="wm-input"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                        setError("");
-                      }}
-                      placeholder="Enter the Password"
-                    />
-                    <div className="wm-review">
-                      <p>
-                        <span>Entered URL:</span> {url}
-                        <button
-                          className="wm-edit-btn"
-                          onClick={() => setStep(1)}
-                        >
-                          Edit
-                        </button>
-                      </p>
-                      <p>
-                        <span>Entered Username:</span> {username}
-                        <button
-                          className="wm-edit-btn"
-                          onClick={() => setStep(2)}
-                        >
-                          Edit
-                        </button>
-                      </p>
-                    </div>
-                    <button
-                      className="wm-save-btn"
-                      onClick={handleSave}
-                      disabled={!password.trim()}
-                    >
+                      <Save className="w-4 h-4 mr-1" />
                       Save
                     </button>
-                  </div>
+                    <button
+                      className="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                      onClick={() => handleCancelStep(index)}
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
+                      onClick={() => handleEditStep(index)}
+                    >
+                      <Edit2 className="w-4 h-4 mr-1" />
+                      Edit
+                    </button>
+                    <button
+                      className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200"
+                      onClick={() => handleDeleteStep(index)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </button>
+                  </>
                 )}
               </div>
             </div>
-          </div>
+          ))}
+
+          {modalOpen && (
+            <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold mb-4">Edit Step</h3>
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 rounded-md p-2 mb-4"
+                  value={editedValue}
+                  onChange={(e) => setEditedValue(e.target.value)}
+                />
+                <div className="flex space-x-2">
+                  <button
+                    className="inline-flex items-center px-4 py-2 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
+                    onClick={handleSaveEdit}
+                  >
+                    <Save className="w-4 h-4 mr-1" />
+                    Save
+                  </button>
+                  <button
+                    className="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                    onClick={() => setModalOpen(false)}
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 };
