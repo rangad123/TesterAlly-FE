@@ -17,12 +17,22 @@ const Login = (props) => {
   };
 
   let navigate = useNavigate();
-  const { isLoggedIn, setIsLoggedIn, setName, setEmail } = props;
+  const { setIsLoggedIn, setName, setEmail } = props;
+
 
   useEffect(() => {
-    if (isLoggedIn) navigate("/dashboard-user");
-  }, [isLoggedIn, navigate]);
-
+    const email = localStorage.getItem("userEmail");
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+  
+    if (isLoggedIn) {
+      if (email === "admin@gmail.com") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/dashboard-user");
+      }
+    }
+  }, [navigate]);
+  
 
 
   useEffect(() => {
@@ -42,62 +52,61 @@ const Login = (props) => {
   };
 
   const handleLogin = async (ev) => {
-  ev.preventDefault();
-  console.time("Login Total Time"); 
-  setLoading(true);
-
-  const email = ev.target.email.value;
-  const password = ev.target.password.value;
-  const formData = { email, password };
-
-  console.time("Form Data Setup");
-  console.log("Form Data:", formData);
-  console.timeEnd("Form Data Setup");
-
-  try {
-    console.time("API Call"); 
-    const res = await axios.post(URL, formData);
-    console.timeEnd("API Call");
-
-    const data = res.data;
-    console.log("API Response Data:", data);
-
-    if (data.success === true) {
-      console.time("Post-Success Operations"); 
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("userName", data.user.name);
-      localStorage.setItem("userId", data.user.id);
-
-      const userId = localStorage.getItem("userId");
+    ev.preventDefault();
+    console.time("Login Total Time");
+    setLoading(true);
   
-  console.log("User ID stored in localStorage:", userId);
+    const email = ev.target.email.value;
+    const password = ev.target.password.value;
+    const formData = { email, password };
 
-      toast.success(data.message);
-      setIsLoggedIn(true);
-      setEmail(email);
-      setName(data.user.name);
-      navigate("/dashboard-user");
-      console.timeEnd("Post-Success Operations");
-    } else {
-      console.warn("API Error Message:", data.message);
-      toast.error(data.message || "An error occurred during login.");
-    }
-  } catch (error) {
-    console.error("Error Details:", error);
-    if (error.response) {
-      toast.error(
-        error.response.data.message || "Invalid email or password."
-      );
-    } else {
-      toast.error("Network error. Please check your connection.");
-    }
-  } finally {
-    setLoading(false);
-    console.timeEnd("Login Total Time"); 
-  }
-};
+    console.log(formData)
+  
+    try {
+      console.time("API Call");
+      const res = await axios.post(URL, formData);
+      console.timeEnd("API Call");
+  
+      const data = res.data;
+  
+      if (data.success === true) {
+        console.time("Post-Success Operations");
+  
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userName", data.user.name);
+        localStorage.setItem("userId", data.user.id);
 
+        setIsLoggedIn(true);
+        setEmail(email);
+        setName(data.user.name);
+  
+        if (email === "admin@gmail.com") {
+          navigate("/admin-dashboard"); 
+        } else {
+          navigate("/dashboard-user"); 
+        }
+  
+        console.timeEnd("Post-Success Operations");
+      } else {
+        console.warn("API Error Message:", data.message);
+        toast.error(data.message || "An error occurred during login.");
+      }
+    } catch (error) {
+      console.error("Error Details:", error);
+      if (error.response) {
+        toast.error(error.response.data.message || "Invalid email or password.");
+      } else {
+        toast.error("Network error. Please check your connection.");
+      }
+    } finally {
+      setLoading(false);
+      console.timeEnd("Login Total Time");
+    }
+  };
+  
+  
+  
 
   return (
     <div className="w-full flex flex-col lg:flex-row justify-center items-center min-h-screen -mt-10 px-6 py-8 gap-8">

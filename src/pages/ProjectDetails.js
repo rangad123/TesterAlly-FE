@@ -295,22 +295,11 @@ const ProjectDetails = () => {
   };
 
 
-  const handleAddClick = () => {
-    navigate("/projects-list")
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
         <div className="p-6">
           <h2 className="mb-6 text-2xl font-semibold text-gray-800">Project Details</h2>
-
-                <button
-                  onClick={handleAddClick}
-                  className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
-                >
-                  All Projects
-                </button>
 
           {loading ? (
             <div className="text-center p-8 bg-white rounded-lg shadow-md">

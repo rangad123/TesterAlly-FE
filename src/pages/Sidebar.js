@@ -6,6 +6,7 @@ import {
   FaCogs,
   FaUserShield,
   FaUsers,
+  FaFolderOpen
 } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 import { MdDashboard, MdAccountCircle } from "react-icons/md";
@@ -128,6 +129,14 @@ const Sidebar = () => {
     setIsSubSidebarVisible(false);
   };
 
+  const handleProjectList = () => {
+    navigate("/projects-list")
+    setIsTestCasesVisible(true);
+    setIsProjectSettingsVisible(false);
+    setIsSettingsVisible(false);
+    setIsSubSidebarVisible(false);
+  };
+
   const currentPath = location.pathname;
 
   const isAnyOptionActive = currentPath === "/test-suites" || currentPath === "/test-cases"
@@ -162,6 +171,16 @@ const Sidebar = () => {
       <MdDashboard className={`icon project-icon ${window.location.pathname === "/dashboard-user" ? "active-icon" : ""}`}  />
       <div className="option-name-container">
         <span className="option-name">Dashboard</span>
+      </div>
+    </div>
+
+    <div
+      className={`sidebar-option ${currentPath === "/projects-list" ? "active" : ""}`}
+      onClick={handleProjectList}
+    >
+      <FaFolderOpen className={`icon project-icon ${window.location.pathname === "/projects-list" ? "active-icon" : ""}`}  />
+      <div className="option-name-container">
+        <span className="option-name">Project List</span>
       </div>
     </div>
 
