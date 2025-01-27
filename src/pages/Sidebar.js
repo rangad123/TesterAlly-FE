@@ -59,6 +59,18 @@ const Sidebar = () => {
   }, [isMobileView]);
 
 
+  useEffect(() => {
+    const handleShowProjectSidebar = (event) => {
+      setIsTestCasesVisible(true);
+    };
+  
+    window.addEventListener("showProjectSidebar", handleShowProjectSidebar);
+    return () => {
+      window.removeEventListener("showProjectSidebar", handleShowProjectSidebar);
+    };
+  }, []);
+
+  
   const toggleSubSidebar = () => {
     setIsSubSidebarVisible((prevState) => !prevState);
     setIsSettingsVisible(false); 
@@ -131,10 +143,7 @@ const Sidebar = () => {
 
   const handleProjectList = () => {
     navigate("/projects-list")
-    setIsTestCasesVisible(true);
-    setIsProjectSettingsVisible(false);
-    setIsSettingsVisible(false);
-    setIsSubSidebarVisible(false);
+
   };
 
   const currentPath = location.pathname;

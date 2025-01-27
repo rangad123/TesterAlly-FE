@@ -115,7 +115,7 @@ const TestData = () => {
                       className="create-btn"
                       disabled={isLoading || !selectedProject}
                     >
-                      {isLoading ? "Creating..." : "Create"}
+                      {isLoading ? "Uploading..." : "Upload"}
                     </button>
                   </div>
                 </div>

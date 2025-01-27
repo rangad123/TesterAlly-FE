@@ -326,6 +326,7 @@ import ProjectList from "./pages/ProjectList";
 import TestData from "./pages/TestData";
 import MemberRegister from "./pages/MemberRegister";
 import ProjectListDetails from "./pages/ProjectListDetails";
+import TestSteps from "./pages/TestSteps";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -669,6 +670,16 @@ const App = () => {
                   </PrivateRoute>
                 }
               />
+              <Route
+                path="test-cases/:testCaseId/steps"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <TestSteps />
+                  </PrivateRoute>
+                }
+              />
+
               <Route
                 path="testcase-Priorities"
                 exact
