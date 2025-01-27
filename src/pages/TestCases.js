@@ -184,6 +184,16 @@ const TestCases = () => {
     }
   };
 
+  const handleRowClick = (testCase) => {
+    navigate(`/test-cases/${testCase.id}/steps`, {
+      state: {
+        testCaseName: testCase.name,
+        testCaseId: testCase.id,
+        projectId: selectedProject.id
+      }
+    });
+  };
+
 
   const handleDelete = async (testCaseId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this test case?");
@@ -298,7 +308,8 @@ const TestCases = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredTestCases.map((testCase) => (
-                      <tr key={testCase.id}>
+                      <tr key={testCase.id} onClick={() => handleRowClick(testCase)} className="cursor-pointer hover:bg-gray-50">
+                        
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {testCase.name}
                         </td>

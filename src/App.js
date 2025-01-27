@@ -326,7 +326,11 @@ import ProjectList from "./pages/ProjectList";
 import TestData from "./pages/TestData";
 import MemberRegister from "./pages/MemberRegister";
 import ProjectListDetails from "./pages/ProjectListDetails";
+<<<<<<< HEAD
 import UserRoles from "./UserRoles";
+=======
+import TestSteps from "./pages/TestSteps";
+>>>>>>> 2be32393208c24d7a7063076288353df203ae1dc
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -670,6 +674,16 @@ const App = () => {
                   </PrivateRoute>
                 }
               />
+              <Route
+                path="test-cases/:testCaseId/steps"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <TestSteps />
+                  </PrivateRoute>
+                }
+              />
+
               <Route
                 path="testcase-Priorities"
                 exact

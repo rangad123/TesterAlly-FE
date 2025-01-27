@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 
 
 const ProjectList = () => {
-  const navigate = useNavigate();
+//  const navigate = useNavigate();
   const [allProjects, setAllProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("userId");
@@ -48,7 +48,10 @@ const ProjectList = () => {
     }));
 
 
-    navigate("/project-details");
+    window.dispatchEvent(new CustomEvent("showProjectSidebar", { 
+      detail: true 
+    }));
+
   };
 
   const renderProjectRow = (project) => {

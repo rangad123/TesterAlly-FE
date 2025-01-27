@@ -9,7 +9,7 @@
 }
 
 .create-test-cases-wrapper {
-  max-width: 800px;
+  /* max-width: 800px; */
   width: 100%;
   border-radius: 12px;
   padding: 25px;
@@ -98,7 +98,7 @@
 }
 
 .create-test-cases-btn-manual {
-  color: rgb(126, 58, 242);
+  color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 8px;

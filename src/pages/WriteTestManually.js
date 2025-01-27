@@ -1,22 +1,109 @@
-import React, { useState } from "react";
-import { Save, X, Edit2, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Save, X, Edit2, Trash2, Plus } from 'lucide-react';
+import { useNavigate, useLocation } from "react-router-dom";
 
 const WriteTestManually = () => {
   const [testSteps, setTestSteps] = useState([]);
-  const [currentStep, setCurrentStep] = useState("");
-  const [editingStep, setEditingStep] = useState(null);
+  const [testCaseInfo, setTestCaseInfo] = useState({
+    name: '',
+    type: '',
+    priority: ''
+  });
+  const [editMode, setEditMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editedValue, setEditedValue] = useState("");
+  const [editingStep, setEditingStep] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+
+  useEffect(() => {
+    const defaultStep = {
+      stepNumber: 1,
+      choice: `Navigate to URL: https://example.com`, 
+      isSaved: true,
+      isSelected: true
+    };
+
+    const editData = location.state?.editData;
+    if (editData) {
+      setEditMode(true);
+      setTestCaseInfo({
+        name: editData.name,
+        type: editData.type,
+        priority: editData.priority
+      });
+
+      const formattedSteps = editData.steps.map((step, index) => ({
+        stepNumber: index + 1,
+        choice: step,
+        isSaved: true,
+        isSelected: true
+      }));
+      setTestSteps(formattedSteps);
+    } else {
+      setTestSteps([defaultStep]);
+    }
+  }, [location]);
 
   const handleAddStep = () => {
-    if (currentStep !== "") {
+    const lastStep = testSteps[testSteps.length - 1];
+    if (!lastStep.isSaved) {
       alert("Please save the current step before adding a new one.");
       return;
     }
+    
     setTestSteps([
       ...testSteps,
-      { stepNumber: testSteps.length + 1, choice: "", isSaved: false, isSelected: false },
+      {
+        stepNumber: testSteps.length + 1,
+        choice: "",
+        isSaved: false,
+        isSelected: true
+      }
     ]);
+  };
+
+  const handleCreateTestCase = async () => {
+    const selectedSteps = testSteps
+      .filter(step => step.isSelected && step.isSaved)
+      .map(step => step.choice);
+
+    if (selectedSteps.length === 0) {
+      alert("Please select at least one test step.");
+      return;
+    }
+
+    const payload = {
+      name: testCaseInfo.name,
+      type: testCaseInfo.type,
+      priority: testCaseInfo.priority,
+      steps: selectedSteps
+    };
+
+    try {
+      const url = editMode 
+        ? `https://your-api-url/api/testcases/${location.state.editData.id}/`
+        : "https://your-api-url/api/testcases/";
+      
+      const method = editMode ? "PUT" : "POST";
+      
+      const response = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        alert(editMode ? "Test Case Updated Successfully" : "Test Case Created Successfully");
+        navigate("/test-cases");
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to ${editMode ? 'update' : 'create'} test case: ${errorData.message || "Unknown error"}`);
+      }
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    }
   };
 
   const handleSaveStep = (index) => {
@@ -27,14 +114,19 @@ const WriteTestManually = () => {
     const updatedSteps = [...testSteps];
     updatedSteps[index].isSaved = true;
     setTestSteps(updatedSteps);
-    setCurrentStep("");
   };
 
   const handleCancelStep = (index) => {
+    if (testSteps.length === 1) {
+      alert("Cannot delete the first step. You must have at least one step.");
+      return;
+    }
     const updatedSteps = [...testSteps];
     updatedSteps.splice(index, 1);
+    updatedSteps.forEach((step, idx) => {
+      step.stepNumber = idx + 1;
+    });
     setTestSteps(updatedSteps);
-    setCurrentStep("");
   };
 
   const handleEditStep = (index) => {
@@ -44,17 +136,15 @@ const WriteTestManually = () => {
   };
 
   const handleSaveEdit = () => {
+    if (editedValue.trim() === "") {
+      alert("Step cannot be empty");
+      return;
+    }
     const updatedSteps = [...testSteps];
     updatedSteps[editingStep].choice = editedValue;
     setTestSteps(updatedSteps);
     setModalOpen(false);
     setEditingStep(null);
-  };
-
-  const handleDeleteStep = (index) => {
-    const updatedSteps = [...testSteps];
-    updatedSteps.splice(index, 1);
-    setTestSteps(updatedSteps);
   };
 
   const handleChangeStep = (index, value) => {
@@ -73,121 +163,133 @@ const WriteTestManually = () => {
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
         <div className="p-6">
-        <div className="create-test-cases-page-container">
-        <div className="create-test-cases-wrapper">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="create-test-cases-title">Write Test Manually</h2>
-            <button
-              className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600"
-              onClick={handleAddStep}
-            >
-              Add Test
-            </button>
-          </div>
+          <div className="create-test-cases-wrapper">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                {editMode ? 'Edit Test Case' : 'Write Test Manually'}
+              </h2>
+              <button
+                className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700"
+                onClick={handleCreateTestCase}
+              >
+                {editMode ? 'Update Test Case' : 'Create Test Case'}
+              </button>
+            </div>
 
-          {testSteps.map((step, index) => (
-            <div className="bg-white shadow-md p-4 mb-4 rounded-lg border border-gray-300"
-              key={index}
-              
-            >
-
-                <div className="flex items-center space-x-4">
-                  <input
-                    type="checkbox"
-                    checked={step.isSelected}
-                    onChange={() => handleCheckboxChange(index)}
-                  />
-                  <span className="font-medium">Step {step.stepNumber}</span>
+            {testSteps.map((step, index) => (
+              <div 
+                className="bg-white shadow-md p-4 mb-4 rounded-lg border border-gray-300"
+                key={index}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-4">
+                    <input
+                      type="checkbox"
+                      checked={step.isSelected}
+                      onChange={() => handleCheckboxChange(index)}
+                      className="w-4 h-4 text-purple-600"
+                    />
+                    <span className="font-medium">Step {step.stepNumber}</span>
+                  </div>
+                  {index === testSteps.length - 1 && step.isSaved && (
+                    <button
+                      onClick={handleAddStep}
+                      className="inline-flex items-center px-3 py-1.5 bg-purple-50 text-purple-600 rounded-md hover:bg-purple-100"
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add Step
+                    </button>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="mb-3">
+                  {step.isSaved ? (
+                    <div className="text-gray-700">{step.choice}</div>
+                  ) : (
+                    <input
+                      type="text"
+                      className="w-full border border-gray-300 rounded-md p-2"
+                      value={step.choice}
+                      onChange={(e) => handleChangeStep(index, e.target.value)}
+                      placeholder="Enter your test step"
+                    />
+                  )}
+                </div>
 
-                {step.isSaved ? (
-                  <div className="text-gray-700 mt-3 mb-3">{step.choice}</div>
-                ) : (
+                <div className="flex justify-end space-x-2">
+                  {!step.isSaved ? (
+                    <>
+                      <button
+                        className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100"
+                        onClick={() => handleSaveStep(index)}
+                      >
+                        <Save className="w-4 h-4 mr-1" />
+                        Save
+                      </button>
+                      <button
+                        className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100"
+                        onClick={() => handleCancelStep(index)}
+                      >
+                        <X className="w-4 h-4 mr-1" />
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100"
+                        onClick={() => handleEditStep(index)}
+                      >
+                        <Edit2 className="w-4 h-4 mr-1" />
+                        Edit
+                      </button>
+                      {testSteps.length > 1 && (
+                        <button
+                          className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100"
+                          onClick={() => handleCancelStep(index)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Delete
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {modalOpen && (
+              <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+                  <h3 className="text-xl font-bold mb-4">Edit Step</h3>
                   <input
                     type="text"
-                    className="w-full border border-gray-300 rounded-md p-2 mt-3 mb-3"
-                    value={step.choice}
-                    onChange={(e) => handleChangeStep(index, e.target.value)}
-                    placeholder="Enter your test case"
+                    className="w-full border border-gray-300 rounded-md p-2 mb-4"
+                    value={editedValue}
+                    onChange={(e) => setEditedValue(e.target.value)}
                   />
-                )}
-              </div>
-
-              <div className="flex space-x-2">
-                {!step.isSaved ? (
-                  <>
+                  <div className="flex justify-end space-x-2">
                     <button
-                      className="inline-flex items-center px-4 py-2 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
-                      onClick={() => handleSaveStep(index)}
+                      className="inline-flex items-center px-4 py-2 bg-green-50 text-green-600 rounded-md hover:bg-green-100"
+                      onClick={handleSaveEdit}
                     >
                       <Save className="w-4 h-4 mr-1" />
                       Save
                     </button>
                     <button
-                      className="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
-                      onClick={() => handleCancelStep(index)}
+                      className="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100"
+                      onClick={() => setModalOpen(false)}
                     >
                       <X className="w-4 h-4 mr-1" />
                       Cancel
                     </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
-                      onClick={() => handleEditStep(index)}
-                    >
-                      <Edit2 className="w-4 h-4 mr-1" />
-                      Edit
-                    </button>
-                    <button
-                      className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200"
-                      onClick={() => handleDeleteStep(index)}
-                    >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      Delete
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-
-          {modalOpen && (
-            <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-4">Edit Step</h3>
-                <input
-                  type="text"
-                  className="w-full border border-gray-300 rounded-md p-2 mb-4"
-                  value={editedValue}
-                  onChange={(e) => setEditedValue(e.target.value)}
-                />
-                <div className="flex space-x-2">
-                  <button
-                    className="inline-flex items-center px-4 py-2 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
-                    onClick={handleSaveEdit}
-                  >
-                    <Save className="w-4 h-4 mr-1" />
-                    Save
-                  </button>
-                  <button
-                    className="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
-                    onClick={() => setModalOpen(false)}
-                  >
-                    <X className="w-4 h-4 mr-1" />
-                    Cancel
-                  </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
-    </div>
     </div>
   );
 };

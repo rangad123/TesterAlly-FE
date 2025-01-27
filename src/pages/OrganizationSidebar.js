@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import {
   FaUsers,
   FaBuilding,
-  FaProjectDiagram,
   FaPlusCircle
 } from "react-icons/fa";
 
@@ -13,8 +12,10 @@ const OrganizationSidebar = ({ isVisible, isMobileView, onOptionSelect }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [organizations, setOrganizations] = useState([]);
   const [selectedOrganization, setSelectedOrganization] = useState(null);
-  const [activeMenuItem, setActiveMenuItem] = useState("");
+  const [activeMenuItem, ] = useState("");
   const [isOrganizationProjectsExpanded, setIsOrganizationProjectsExpanded] = useState(false);
+  const [projectMembers, setProjectMembers] = useState([]);
+  const [isProjectMembersDropdownOpen, setIsProjectMembersDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchOrganizations = async () => {
@@ -26,14 +27,13 @@ const OrganizationSidebar = ({ isVisible, isMobileView, onOptionSelect }) => {
         setOrganizations(data);
 
         if (data.length > 0) {
-          
           const firstOrg = data[0];
           const projectsResponse = await fetch(
             `https://testerally-be-ylpr.onrender.com/api/organizations/${firstOrg.id}/projects/`
           );
           const projects = await projectsResponse.json();
           firstOrg.projects = projects;
-          
+
           setSelectedOrganization(firstOrg);
         }
       } catch (error) {
@@ -46,7 +46,6 @@ const OrganizationSidebar = ({ isVisible, isMobileView, onOptionSelect }) => {
 
   const handleOrganizationSelect = async (organization) => {
     try {
-      
       if (!organization.projects) {
         const response = await fetch(
           `https://testerally-be-ylpr.onrender.com/api/organizations/${organization.id}/projects/`
@@ -58,9 +57,9 @@ const OrganizationSidebar = ({ isVisible, isMobileView, onOptionSelect }) => {
       setSelectedOrganization(organization);
       setIsDropdownOpen(false);
       setSearchTerm("");
-      
+
       if (isMobileView) {
-        onOptionSelect(); 
+        onOptionSelect();
       }
     } catch (error) {
       console.error("Error fetching organization projects:", error);
@@ -68,27 +67,39 @@ const OrganizationSidebar = ({ isVisible, isMobileView, onOptionSelect }) => {
   };
 
   const handleCreateOrganization = () => {
-    navigate("/create-organization"); 
+    navigate("/create-organization");
   };
 
-  const organizationMenuItems = [
-    { icon: FaUsers, label: "Organization Members", path: "/organization-members" },
-    { icon: FaProjectDiagram, label: "Organization Projects", path: "/organization-projects" },
+  const handleProjectClick = async (project) => {
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/projects/${project.id}/members/`
+      );
+      const members = await response.json();
+      setProjectMembers(members);
+      setIsProjectMembersDropdownOpen(true);
+    } catch (error) {
+      console.error("Error fetching project members:", error);
+    }
+  };
+
+/*  const organizationMenuItems = [
+  { icon: FaUsers, label: "Organization Members", path: "" },
   ];
 
-  const handleMenuClick = (path) => {
+   const handleMenuClick = (path) => {
     if (!selectedOrganization) {
       alert("Please select an organization first to access this feature.");
       return;
     }
-  
+
     navigate(path);
 
     if (isMobileView) {
-      onOptionSelect(); 
+      onOptionSelect();
     }
   };
-
+*/
   const filteredOrganizations = organizations.filter((org) =>
     org.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -169,7 +180,7 @@ const OrganizationSidebar = ({ isVisible, isMobileView, onOptionSelect }) => {
         <div className="flex justify-center text-lg text-gray-500 p-2">
           Organization Management
         </div>
-
+{/*
         {organizationMenuItems.map((item, index) => (
           <div
             key={index}
@@ -189,13 +200,13 @@ const OrganizationSidebar = ({ isVisible, isMobileView, onOptionSelect }) => {
             <span>{item.label}</span>
           </div>
         ))}
-
+*/}
         {/* Organization Projects Section */}
         <div
           className={`sub-sidebar-item flex items-center gap-2 p-2 cursor-pointer ${
             !selectedOrganization ? "text-gray-400" : activeMenuItem === "Organization Projects" ? "bg-[#9ac5e2] text-white" : "text-gray-700"
           } hover:bg-blue-100`}
-          onClick={() => selectedOrganization && setIsOrganizationProjectsExpanded(!isOrganizationProjectsExpanded)}
+          onClick={() => setIsOrganizationProjectsExpanded(!isOrganizationProjectsExpanded)}
         >
           <FaBuilding className="icon" />
           <span>Organization Projects</span>
@@ -222,10 +233,7 @@ const OrganizationSidebar = ({ isVisible, isMobileView, onOptionSelect }) => {
                 <div
                   key={project.id}
                   className="p-2 text-gray-700 hover:bg-blue-50 cursor-pointer"
-                  onClick={() => {
-                    navigate(`/organization-project/${project.id}`);
-                    if (isMobileView) onOptionSelect();
-                  }}
+                  onClick={() => handleProjectClick(project)}
                 >
                   {project.name}
                 </div>
@@ -233,6 +241,27 @@ const OrganizationSidebar = ({ isVisible, isMobileView, onOptionSelect }) => {
             ) : (
               <div className="p-2 text-gray-500">No projects found</div>
             )}
+          </div>
+        )}
+
+        {/* Project Members Dropdown */}
+        {isProjectMembersDropdownOpen && (
+          <div className="pl-4">
+            <div className="flex justify-center text-lg text-gray-500 p-2"><FaUsers className="mt-1 mr-3" />Project Members</div>
+            <div className="max-h-[200px] overflow-y-auto text-black">
+              {projectMembers.length > 0 ? (
+                projectMembers.map((member) => (
+                  <div
+                    key={member.id}
+                    className="p-2 text-gray-700 hover:bg-blue-50"
+                  >
+                    {member.name}
+                  </div>
+                ))
+              ) : (
+                <div className="p-2 text-gray-500">No members found</div>
+              )}
+            </div>
           </div>
         )}
       </div>

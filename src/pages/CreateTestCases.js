@@ -7,7 +7,7 @@ const CreateTestCases = () => {
   const [testCaseType, setTestCaseType] = useState("");
   const [testCasePriority, setTestCasePriority] = useState("");
   const [errors, setErrors] = useState({ name: "", url: "", type: "", priority: "" });
-  const [isLoading, setIsLoading] = useState(false);
+//  const [isLoading, setIsLoading] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [testCaseTypes, settestCaseTypes] = useState([]);
   const [priorities, setPriorities] = useState([]);
@@ -39,7 +39,7 @@ const CreateTestCases = () => {
   }, [navigate]);
 
 
-  const validateFields = () => {
+/*  const validateFields = () => {
     const newErrors = {};
     let isValid = true;
 
@@ -93,6 +93,8 @@ const CreateTestCases = () => {
       setIsLoading(false);
     }
   };
+*/
+
   const handleCancel = () => {
     navigate("/dashboard-user");
   };
@@ -190,6 +192,7 @@ const CreateTestCases = () => {
                     <button onClick={handleCancel} className="cancel-btn">
                       Cancel
                     </button>
+                    {/*
                     <button
                       onClick={handleCreateTestCase}
                       className="create-btn"
@@ -197,6 +200,7 @@ const CreateTestCases = () => {
                     >
                       {isLoading ? "Creating..." : "Create"}
                     </button>
+                    */}
                   </div>
                 </div>
 
@@ -278,13 +282,15 @@ const CreateTestCases = () => {
 
   
                   <div className="create-test-cases-button-group">
-                    <button onClick={handleWriteTestManually} className="create-test-cases-btn-manual">
-                      Write Test Manually
-                    </button>
 
                     <button onClick={handleTestSuite} className="create-test-cases-test-suite-btn">
                       Test Suite
                     </button>
+
+                    <button onClick={handleWriteTestManually} className="create-test-cases-btn-manual bg-purple-600">
+                      Next
+                    </button>
+
                   </div>
                 </div>
               </div>
