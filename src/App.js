@@ -329,8 +329,6 @@ import ProjectListDetails from "./pages/ProjectListDetails";
 import UserRoles from "./pages/UserRoles";
 import TestSteps from "./pages/TestSteps";
 
-import TestSteps from "./pages/TestSteps";
-import UserRoles from "./pages/UserRoles";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
