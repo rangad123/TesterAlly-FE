@@ -9,72 +9,99 @@ const WriteTestManually = () => {
     type: '',
     priority: ''
   });
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, ] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editedValue, setEditedValue] = useState("");
   const [editingStep, setEditingStep] = useState(null);
+  const [, setTestData] = useState(null);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [url, setUrl] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [createdTestCaseId, setCreatedTestCaseId] = useState(null);
 
   useEffect(() => {
-    const defaultStep = {
-      stepNumber: 1,
-      choice: `Navigate to URL: https://example.com`, 
-      isSaved: true,
-      isSelected: true
-    };
-
-    const editData = location.state?.editData;
-    if (editData) {
-      setEditMode(true);
-      setTestCaseInfo({
-        name: editData.name,
-        type: editData.type,
-        priority: editData.priority
-      });
-
-      const formattedSteps = editData.steps.map((step, index) => ({
-        stepNumber: index + 1,
-        choice: step,
-        isSaved: true,
-        isSelected: true
-      }));
-      setTestSteps(formattedSteps);
-    } else {
-      setTestSteps([defaultStep]);
-    }
-  }, [location]);
-
-  const handleAddStep = () => {
-    const lastStep = testSteps[testSteps.length - 1];
-    if (!lastStep.isSaved) {
-      alert("Please save the current step before adding a new one.");
+    
+    const info = location.state?.testCaseInfo;
+    if (!info) {
+      
+      navigate("/create-test-cases");
       return;
     }
-    
-    setTestSteps([
-      ...testSteps,
-      {
-        stepNumber: testSteps.length + 1,
-        choice: "",
-        isSaved: false,
-        isSelected: true
+    setTestCaseInfo(info);
+    fetchTestData(info.projectId);
+  }, [location, navigate]);
+
+  const fetchTestData = async (projectId) => {
+    if (!projectId) return;
+
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/testdata/${projectId}/`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        
+        const initialStep = {
+          stepNumber: 1,
+          choice: `Navigate to URL: ${data.url}`,
+          isSaved: true,
+          isSelected: true
+        };
+        setTestSteps([initialStep]);
+
+        if (createdTestCaseId) {
+          await saveStepToAPI(initialStep, createdTestCaseId);
+        }
+      } else {
+        setShowUrlInput(true);
       }
-    ]);
+    } catch (error) {
+      console.error("Error fetching test data:", error);
+      setShowUrlInput(true);
+    }
+  };
+
+  const saveStepToAPI = async (step, testCaseId) => {
+    try {
+      const response = await fetch("https://testerally-be-ylpr.onrender.com/api/teststeps/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          testcase: testCaseId,
+          step_number: step.stepNumber,
+          step_description: step.choice
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save step");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error saving step:", error);
+      throw error;
+    }
   };
 
   const handleCreateTestCase = async () => {
+    if (!testCaseInfo) {
+      alert("Missing test case information!");
+      return;
+    }
+
     const selectedSteps = testSteps
       .filter(step => step.isSelected && step.isSaved)
       .map(step => step.choice);
 
     if (selectedSteps.length === 0) {
-      alert("Please select at least one test step.");
+      alert("Please add and save at least one test step.");
       return;
     }
 
     const payload = {
+      project_id: testCaseInfo.projectId,
       name: testCaseInfo.name,
       type: testCaseInfo.type,
       priority: testCaseInfo.priority,
@@ -82,38 +109,103 @@ const WriteTestManually = () => {
     };
 
     try {
-      const url = editMode 
-        ? `https://your-api-url/api/testcases/${location.state.editData.id}/`
-        : "https://your-api-url/api/testcases/";
-      
-      const method = editMode ? "PUT" : "POST";
-      
-      const response = await fetch(url, {
-        method: method,
+      const response = await fetch("https://testerally-be-ylpr.onrender.com/api/testcases/", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
 
       if (response.ok) {
-        alert(editMode ? "Test Case Updated Successfully" : "Test Case Created Successfully");
+        const testCase = await response.json();
+        setCreatedTestCaseId(testCase.id);
+
+        for (const step of testSteps.filter(s => s.isSelected && s.isSaved)) {
+          await saveStepToAPI(step, testCase.id);
+        }
+
+        alert("Test Case Created Successfully");
         navigate("/test-cases");
+
       } else {
         const errorData = await response.json();
-        alert(`Failed to ${editMode ? 'update' : 'create'} test case: ${errorData.message || "Unknown error"}`);
+        alert(`Failed to create test case: ${errorData.message || "Unknown error"}`);
       }
     } catch (error) {
       alert(`Error: ${error.message}`);
     }
   };
 
-  const handleSaveStep = (index) => {
+  const handleUrlSubmit = async () => {
+    const projectId = JSON.parse(localStorage.getItem(`selectedProject_${localStorage.getItem("userId")}`))?.id;
+    if (!projectId) return;
+
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/testdata/${projectId}/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setTestData(data);
+        setTestSteps([{
+          stepNumber: 1,
+          choice: `Navigate to URL: ${data.url}`,
+          isSaved: true,
+          isSelected: true
+        }]);
+        setShowUrlInput(false);
+      } else {
+        alert("Failed to save URL");
+      }
+    } catch (error) {
+      console.error("Error saving URL:", error);
+      alert("Error saving URL");
+    }
+  };
+
+
+  const handleAddStep = async () => {
+    const lastStep = testSteps[testSteps.length - 1];
+    if (!lastStep.isSaved) {
+      alert("Please save the current step before adding a new one.");
+      return;
+    }
+    
+    const newStep = {
+      stepNumber: testSteps.length + 1,
+      choice: "",
+      isSaved: false,
+      isSelected: true
+    };
+    
+    setTestSteps([...testSteps, newStep]);
+  };
+
+  const handleSaveStep = async (index) => {
     if (testSteps[index].choice.trim() === "") {
       alert("Please provide a choice for this step before saving.");
       return;
     }
+
     const updatedSteps = [...testSteps];
     updatedSteps[index].isSaved = true;
     setTestSteps(updatedSteps);
+
+    if (createdTestCaseId) {
+      try {
+        await saveStepToAPI(updatedSteps[index], createdTestCaseId);
+      } catch (error) {
+        alert("Failed to save step to server");
+
+        updatedSteps[index].isSaved = false;
+        setTestSteps(updatedSteps);
+      }
+    }
   };
 
   const handleCancelStep = (index) => {
@@ -147,6 +239,8 @@ const WriteTestManually = () => {
     setEditingStep(null);
   };
 
+  
+
   const handleChangeStep = (index, value) => {
     const updatedSteps = [...testSteps];
     updatedSteps[index].choice = value;
@@ -163,6 +257,26 @@ const WriteTestManually = () => {
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
         <div className="p-6">
+
+        {showUrlInput ? (
+            <div className="mb-6 p-4 bg-white rounded-lg shadow">
+              <h3 className="text-lg font-medium mb-2">Enter Test URL</h3>
+              <input
+                type="text"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                className="w-full p-2 border rounded mb-2"
+                placeholder="Enter URL"
+              />
+              <button
+                onClick={handleUrlSubmit}
+                className="bg-purple-600 text-white px-4 py-2 rounded"
+              >
+                Save URL
+              </button>
+            </div>
+          ) : null}
+
           <div className="create-test-cases-wrapper">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-800">

@@ -324,14 +324,21 @@ const TestCases = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <button
-                            onClick={() => handleEdit(testCase)}
+                            onClick={(e) => {
+                              e.stopPropagation(); 
+                              handleEdit(testCase);
+                            }}
                             className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
                           >
                             <Edit2 className="w-4 h-4 mr-1" />
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(testCase.id)}
+
+                          onClick={(e) => {
+                            e.stopPropagation(); 
+                            handleDelete(testCase.id);
+                          }}
                             className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 ml-2"
                           >
                             <Trash2 className="w-4 h-4 mr-1" />

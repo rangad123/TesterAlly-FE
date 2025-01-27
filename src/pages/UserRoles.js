@@ -1,7 +1,7 @@
 import React from "react";
 
 const UserRoles = () => {
-  // Example roles data
+
   const roles = [
     { id: 1, name: "Super Administrator", description: "Has full control over the system, including managing users, roles, projects, and overall tool settings." },
     { id: 2, name: "Project Manager", description: "Oversees project activities, assigns tasks, and monitors progress to ensure timely completion." },

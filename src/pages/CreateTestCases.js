@@ -38,6 +38,45 @@ const CreateTestCases = () => {
     return () => window.removeEventListener("projectChanged", handleProjectChange);
   }, [navigate]);
 
+  const validateFields = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    if (!name.trim()) {
+      newErrors.name = "Test Case Name is required!";
+      isValid = false;
+    }
+
+    if (!testCaseType.trim()) {
+      newErrors.type = "Test Case Type is required!";
+      isValid = false;
+    }
+
+    if (!testCasePriority.trim()) {
+      newErrors.priority = "Test Case Priority is required!";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleWriteTestManually = () => {
+    if (!validateFields()) return;
+
+    
+    navigate("/write-manually", {
+      state: {
+        testCaseInfo: {
+          name,
+          type: testCaseType,
+          priority: testCasePriority,
+          projectId: selectedProject.id
+        }
+      }
+    });
+  };
+
 
 /*  const validateFields = () => {
     const newErrors = {};
@@ -103,9 +142,6 @@ const CreateTestCases = () => {
     navigate("/test-suites");
   };
 
-  const handleWriteTestManually = () => {
-    navigate("/write-manually");
-  };
 
   useEffect(() => {
     const fetchTestCaseTypes = async () => {
