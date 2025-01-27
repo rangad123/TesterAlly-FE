@@ -87,7 +87,6 @@ import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import './AppNavBar.css';  
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 const AppNavBar = (props) => {
   let navigate = useNavigate();

@@ -326,6 +326,7 @@ import ProjectList from "./pages/ProjectList";
 import TestData from "./pages/TestData";
 import MemberRegister from "./pages/MemberRegister";
 import ProjectListDetails from "./pages/ProjectListDetails";
+import UserRoles from "./UserRoles";
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
 // import { RiLogoutBoxLine } from "react-icons/ri";
@@ -723,6 +724,13 @@ const App = () => {
                   </PrivateRoute>
                 }
               />
+              <Route 
+                path="user-roles"
+                exact
+                element={<PrivateRoute isLoggedIn={isLoggedIn}>
+                  <UserRoles/>
+                </PrivateRoute>}
+                />
             </Routes>
           </div>
         </div>
