@@ -223,7 +223,7 @@ const Register = (props) => {
             <div>
               <div className="mb-2 block">
                 <label htmlFor="name" className="font-medium required">
-                  Name
+                  Organization Name
                 </label>
               </div>
               <input
@@ -246,7 +246,7 @@ const Register = (props) => {
             <div>
               <div className="mb-2 block">
                 <label htmlFor="email" className="font-medium required">
-                  Email
+                  Business Email
                 </label>
               </div>
               <input
