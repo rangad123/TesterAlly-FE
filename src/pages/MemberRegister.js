@@ -7,7 +7,6 @@ import { FaEyeSlash } from "react-icons/fa";
 import "./Login.css";
 import { useParams } from "react-router-dom";
 
-const URL = "https://testerally-be-ylpr.onrender.com/api/accept-invite/{token}/";
 
 const MemberRegister = (props) => {
   const { setName, setEmail } = props;
@@ -22,7 +21,8 @@ const MemberRegister = (props) => {
   const { token } = useParams(); 
   console.log("Extracted Token:", token);
 
-
+  const URL = `https://testerally-be-ylpr.onrender.com/api/accept-invite/${token}/`;
+  
   const validateEmail = (email) => {
     const domainRegex = /@.+\..+/; 
     if (!domainRegex.test(email)) {
@@ -130,6 +130,7 @@ const MemberRegister = (props) => {
 
         const data = res.data;
         console.log("Response:", res.data);
+
 
         if (data.success === true) {
           localStorage.setItem("userName", name);
