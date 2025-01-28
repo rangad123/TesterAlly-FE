@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
-import { Save, X, Edit2, Trash2 } from 'lucide-react';
+import { Save, X, Edit2, Trash2, Plus } from 'lucide-react';
 
 const TestCases = () => {
   const navigate = useNavigate();
@@ -12,7 +12,11 @@ const TestCases = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [editingTestCase, setEditingTestCase] = useState(null);
   const [error, setError] = useState(null);
-
+  const [activeTab, setActiveTab] = useState('details');
+  const [testSteps, setTestSteps] = useState([]);
+  const [newStepValue, setNewStepValue] = useState("");
+  const [editingStep, setEditingStep] = useState(null);
+  const [editStepValue, setEditStepValue] = useState("");
   const [testCaseTypes, setTestCaseTypes] = useState([]);
   const [testCasePriorities, setTestCasePriorities] = useState([]);
 
@@ -118,17 +122,116 @@ const TestCases = () => {
     fetchTestCases();
   }, [selectedProject]);
 
+  const fetchTestSteps = async (testCaseId) => {
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/teststeps/?testcase_id=${testCaseId}`
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch test steps');
+      }
+      const data = await response.json();
+      const sortedData = data.sort((a, b) => a.step_number - b.step_number);
+      setTestSteps(sortedData);
+    } catch (error) {
+      console.error("Error fetching test steps:", error);
+      setError("Failed to fetch test steps");
+    }
+  };
+
   const filteredTestCases = testCases.filter((testCase) =>
     testCase.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (testCase) => {
+  const handleEdit = async (testCase) => {
     setEditingTestCase({
       id: testCase.id,
       name: testCase.name,
       type: testCase.testcase_type || "",
       priority: testCase.testcase_priority || "",
     });
+    await fetchTestSteps(testCase.id);
+    setActiveTab('details');
+  };
+
+  const handleAddStep = async () => {
+    if (!newStepValue.trim()) {
+      setError("Step description cannot be empty");
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://testerally-be-ylpr.onrender.com/api/teststeps/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          testcase: editingTestCase.id,
+          step_number: testSteps.length + 1,
+          step_description: newStepValue.trim()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add step");
+      }
+
+      await fetchTestSteps(editingTestCase.id);
+      setNewStepValue("");
+    } catch (error) {
+      setError("Failed to add step");
+      console.error("Error adding step:", error);
+    }
+  };
+
+  const handleUpdateStep = async (stepId) => {
+    if (!editStepValue.trim()) {
+      setError("Step description cannot be empty");
+      return;
+    }
+
+    try {
+      const step = testSteps.find(s => s.id === stepId);
+      const response = await fetch(`https://testerally-be-ylpr.onrender.com/api/teststeps/${stepId}/`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          testcase: editingTestCase.id,
+          step_number: step.step_number,
+          step_description: editStepValue.trim()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update step");
+      }
+
+      await fetchTestSteps(editingTestCase.id);
+      setEditingStep(null);
+      setEditStepValue("");
+    } catch (error) {
+      setError("Failed to update step");
+      console.error("Error updating step:", error);
+    }
+  };
+
+
+  const handleDeleteStep = async (stepId) => {
+    if (!window.confirm("Are you sure you want to delete this step?")) return;
+
+    try {
+      const response = await fetch(`https://testerally-be-ylpr.onrender.com/api/teststeps/${stepId}/?testcase_id=${editingTestCase.id}`, {
+        method: "DELETE"
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete step");
+      }
+
+      await fetchTestSteps(editingTestCase.id);
+    } catch (error) {
+      setError("Failed to delete step");
+      console.error("Error deleting step:", error);
+    }
   };
 
   const handleSave = async () => {
@@ -227,6 +330,175 @@ const TestCases = () => {
   const handleCancel = () => {
     setEditingTestCase(null);
   };
+
+
+  const renderEditModal = () => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="bg-white shadow-xl rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Edit Test Case</h3>
+            <button onClick={handleCancel} className="text-gray-500 hover:text-gray-700">
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="flex border-b mb-4">
+            <button
+              className={`px-4 py-2 ${activeTab === 'details' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500'}`}
+              onClick={() => setActiveTab('details')}
+            >
+              Test Case Details
+            </button>
+            <button
+              className={`px-4 py-2 ${activeTab === 'steps' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500'}`}
+              onClick={() => setActiveTab('steps')}
+            >
+              Test Steps
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'details' ? (
+            <div className="grid gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Name<span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={editingTestCase.name}
+                  onChange={(e) => setEditingTestCase(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Test Case Type<span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={editingTestCase.type}
+                  onChange={(e) => setEditingTestCase(prev => ({ ...prev, type: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="">Select Type</option>
+                  {testCaseTypes.map((type) => (
+                    <option key={type.id} value={type.name}>{type.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Test Case Priority<span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={editingTestCase.priority}
+                  onChange={(e) => setEditingTestCase(prev => ({ ...prev, priority: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="">Select Priority</option>
+                  {testCasePriorities.map((priority) => (
+                    <option key={priority.id} value={priority.priority_level}>
+                      {priority.priority_level}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={newStepValue}
+                  onChange={(e) => setNewStepValue(e.target.value)}
+                  className="flex-1 p-2 border border-gray-300 rounded-md"
+                  placeholder="Enter new test step"
+                />
+                <button
+                  onClick={handleAddStep}
+                  className="inline-flex items-center px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add Step
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {testSteps.map((step) => (
+                  <div key={step.id} className="flex items-center gap-2 p-2 border rounded-md">
+                    <span className="min-w-[40px] text-sm font-medium">#{step.step_number}</span>
+                    {editingStep === step.id ? (
+                      <>
+                        <input
+                          type="text"
+                          value={editStepValue}
+                          onChange={(e) => setEditStepValue(e.target.value)}
+                          className="flex-1 p-2 border border-gray-300 rounded-md"
+                        />
+                        <button
+                          onClick={() => handleUpdateStep(step.id)}
+                          className="p-1 text-green-600 hover:text-green-700"
+                        >
+                          <Save className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingStep(null);
+                            setEditStepValue("");
+                          }}
+                          className="p-1 text-gray-600 hover:text-gray-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <span className="flex-1">{step.step_description}</span>
+                        <button
+                          onClick={() => {
+                            setEditingStep(step.id);
+                            setEditStepValue(step.step_description);
+                          }}
+                          className="p-1 text-blue-600 hover:text-blue-700"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteStep(step.id)}
+                          className="p-1 text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2 mt-6">
+            <button
+              onClick={handleSave}
+              className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save Changes
+            </button>
+            <button
+              onClick={handleCancel}
+              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -353,8 +625,8 @@ const TestCases = () => {
             )}
           </div>
 
-          {editingTestCase && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          {editingTestCase && renderEditModal (
+ {/* <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
     <div className="bg-white shadow-xl rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
@@ -437,7 +709,7 @@ const TestCases = () => {
         </div>
       </div>
     </div>
-  </div>
+  </div> */}
 )}
         </div>
       </div>

@@ -15,6 +15,34 @@ const WriteTestManually = () => {
   const location = useLocation();
 
   useEffect(() => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        navigate("/dashboard-user");
+        return;
+      }
+  
+      const savedProjectKey = `selectedProject_${userId}`;
+      const savedProject = localStorage.getItem(savedProjectKey);
+  
+      if (savedProject) {
+        try {
+          JSON.parse(savedProject);
+        } catch (err) {
+          console.error("Error parsing saved project:", err);
+          localStorage.removeItem(savedProjectKey);
+        }
+      }
+  
+      const handleProjectChange = () => {
+        
+        navigate("/test-cases");
+      };
+  
+      window.addEventListener("projectChanged", handleProjectChange);
+      return () => window.removeEventListener("projectChanged", handleProjectChange);
+    }, [navigate]);
+
+  useEffect(() => {
     const info = location.state?.testCaseInfo;
     if (!info) {
       navigate("/create-test-cases");

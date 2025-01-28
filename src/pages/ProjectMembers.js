@@ -9,11 +9,17 @@ const ProjectMembers = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
+  const [selectedRole, setSelectedRole] = useState("member"); // Default role
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
 
+  const roles = [
+    { id: "admin", label: "Admin" },
+    { id: "manager", label: "Manager" },
+    { id: "member", label: "Member" }
+  ];
 
   const fetchInvitedMembers = useCallback(async () => {
     if (!selectedProject?.id) return;
@@ -22,7 +28,7 @@ const ProjectMembers = () => {
     setError(null);
 
     try {
-      const response = await axios.get(`https://testerally-be-ylpr.onrender.com/api/send-invite/`, {
+      const response = await axios.get(`https://testerally-be-ylpr.onrender.com/api/projects/${selectedProject.id}/members/`, {
         params: { 
           project_id: selectedProject.id,
           user_id: userId
@@ -42,49 +48,40 @@ const ProjectMembers = () => {
   }, [selectedProject?.id, userId]);
 
   useEffect(() => {
-     const userId = localStorage.getItem("userId");
-     if (!userId) {
-       return;
-     }
- 
-     const savedProjectKey = `selectedProject_${userId}`;
-     const savedProject = localStorage.getItem(savedProjectKey);
- 
-     console.log("selected project",savedProject)
-     
-     if (savedProject) {
-       try {
-         const project = JSON.parse(savedProject);
-         setSelectedProject(project);
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      return;
+    }
 
-       } catch (error) {
-         console.error("Error parsing saved project:", error);
-         navigate("/dashboard-user");
-       }
-     } 
- 
- 
-     const handleProjectChange = (event) => {
-       const newProject = event.detail;
-       
-       if (newProject) {
-         setSelectedProject(newProject);
-         localStorage.setItem("selectedProject", JSON.stringify(newProject));
-
-       }
-     };
- 
-     window.addEventListener("projectChanged", handleProjectChange);
-     return () => window.removeEventListener("projectChanged", handleProjectChange);
-   }, [navigate]);
- 
-  
-  useEffect(() => {
+    const savedProjectKey = `selectedProject_${userId}`;
+    const savedProject = localStorage.getItem(savedProjectKey);
     
+    if (savedProject) {
+      try {
+        const project = JSON.parse(savedProject);
+        setSelectedProject(project);
+      } catch (error) {
+        console.error("Error parsing saved project:", error);
+        navigate("/dashboard-user");
+      }
+    }
+
+    const handleProjectChange = (event) => {
+      const newProject = event.detail;
+      if (newProject) {
+        setSelectedProject(newProject);
+        localStorage.setItem("selectedProject", JSON.stringify(newProject));
+      }
+    };
+
+    window.addEventListener("projectChanged", handleProjectChange);
+    return () => window.removeEventListener("projectChanged", handleProjectChange);
+  }, [navigate]);
+
+  useEffect(() => {
     if (selectedProject?.id) {
       fetchInvitedMembers();
     }
-
   }, [selectedProject, fetchInvitedMembers]);
 
   const handleInviteMember = async () => {
@@ -92,13 +89,14 @@ const ProjectMembers = () => {
       setError("Please enter a valid email address.");
       return;
     }
-  
+
     const payload = {
       project_id: selectedProject.id,
       user_id: userId,
       recipient_email: inviteEmail,
+      role: selectedRole 
     };
-  
+
     try {
       const response = await axios.post(
         `https://testerally-be-ylpr.onrender.com/api/send-invite/`,
@@ -109,23 +107,22 @@ const ProjectMembers = () => {
           },
         }
       );
-        setInviteEmail("");
-        setShowModal(false);
-        setError(null);
-        alert("Invitation sent successfully!");
-  
+      
+      setInviteEmail("");
+      setSelectedRole("member"); 
+      setShowModal(false);
+      setError(null);
+      alert("Invitation sent successfully!");
+
       const responseData = response.data;
       if (responseData.success) {
         fetchInvitedMembers();
-        alert("Invitation sent successfully!");
-        
       } else if (responseData.error === "User already registered with this email.") {
         alert("This email is already registered in the system.");
-
       }
     } catch (error) {
       console.error("Error sending invite:", error);
-  
+
       const errorMessage =
         error.response?.data?.error || 
         error.response?.data?.message || 
@@ -144,6 +141,12 @@ const ProjectMembers = () => {
     }
   };
 
+  const resetModal = () => {
+    setShowModal(false);
+    setInviteEmail("");
+    setSelectedRole("member");
+    setError(null);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -156,7 +159,7 @@ const ProjectMembers = () => {
               </h2>
               {selectedProject ? (
                 <span className="text-sm text-gray-600 mt-1 block">
-                   {/* Project: {selectedProject.name} */}
+                  {/* Project: {selectedProject.name} */}
                 </span>
               ) : (
                 <span className="text-sm text-red-500 mt-1 block">
@@ -192,9 +195,14 @@ const ProjectMembers = () => {
                     key={member.id}
                     className="p-3 bg-gray-50 border rounded-md flex items-center justify-between"
                   >
-                    <span className="text-gray-800 font-medium">
-                      {member.email}
-                    </span>
+                    <div>
+                      <span className="text-gray-800 font-medium">
+                        {member.email}
+                      </span>
+                      <span className="text-sm text-gray-500 ml-2">
+                        Role: {member.role || 'Member'}
+                      </span>
+                    </div>
                     <span className="text-sm text-gray-500">
                       Status: {member.status || 'Pending'}
                     </span>
@@ -216,16 +224,43 @@ const ProjectMembers = () => {
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Invite Member
             </h3>
-            <input
-              type="email"
-              placeholder="Enter member's email"
-              value={inviteEmail}
-              onChange={(e) => setInviteEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md mb-4"
-            />
-            <div className="flex justify-end space-x-3">
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="Enter member's email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-md"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <select
+                  id="role"
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-md bg-white"
+                >
+                  {roles.map(role => (
+                    <option key={role.id} value={role.id}>
+                      {role.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3 mt-6">
               <button
-                onClick={() => setShowModal(false)}
+                onClick={resetModal}
                 className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition"
               >
                 Cancel

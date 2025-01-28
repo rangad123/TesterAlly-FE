@@ -143,6 +143,10 @@ const Sidebar = () => {
 
   const handleProjectList = () => {
     navigate("/projects-list")
+    setIsTestCasesVisible(false);
+    setIsProjectSettingsVisible(false);
+    setIsSettingsVisible(false);
+    setIsSubSidebarVisible(false);
 
   };
 

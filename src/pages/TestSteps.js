@@ -285,7 +285,7 @@ const TestSteps = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="flex-1">{step.step_description}</div>
+                    <div className="flex-1 text-gray-700 break-words whitespace-pre-wrap overflow-hidden" >{step.step_description}</div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => startEditing(step)}
