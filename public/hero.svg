@@ -28,7 +28,7 @@
   <!-- AI Testing text and symbols -->
   <g transform="translate(600,450) scale(1.5)">
     <text x="0" y="80" text-anchor="middle" fill="#4c1d95" font-family="Arial" font-weight="bold" font-size="32">TesterAlly</text>
-    <text x="0" y="120" text-anchor="middle" fill="#4c1d95" font-family="Arial" font-size="24">AI-Powered Testing</text>
+    <text x="0" y="120" text-anchor="middle" fill="#4c1d95" font-family="Arial" font-size="24">AI-Powered Automation Testing Tool</text>
   </g>
   
   <!-- Testing symbols -->
