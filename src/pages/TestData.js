@@ -6,27 +6,43 @@ const TestData = () => {
   const [url, setUrl] = useState("");
   const [errors, setErrors] = useState({ url: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [uploadedData, setUploadedData] = useState(null);
+  const [hasCheckedInitialData, setHasCheckedInitialData] = useState(false);
   const navigate = useNavigate();
 
-
   const fetchTestData = async (projectId) => {
+    if (!projectId) return;
+    
     setIsLoading(true);
+
     try {
       const response = await fetch(
         `https://testerally-be-ylpr.onrender.com/api/testdata/${projectId}/`
       );
+      
       if (response.ok) {
         const data = await response.json();
         setUploadedData(data);
-      } else {
         
-        setUploadedData(null);
+      } else if (response.status === 404) {
+         setUploadedData(null);
+
+      } else {
+        throw new Error(`Error fetching test data: ${response.status}`);
       }
     } catch (error) {
-      console.error("Error fetching test data:", error);
-      setUploadedData(null);
+      if (error.message.includes('404')) {
+        
+        setUploadedData(null);
+      } else {
+        console.error("Error fetching test data:", error);
+      }
+    } finally {
+      setIsLoading(false);
+      setHasCheckedInitialData(true);
     }
   };
 
@@ -41,20 +57,33 @@ const TestData = () => {
     const savedProject = localStorage.getItem(savedProjectKey);
 
     if (savedProject) {
-      const parsedProject = JSON.parse(savedProject);
-      setSelectedProject(parsedProject);
-      fetchTestData(parsedProject.id); 
+      try {
+        const parsedProject = JSON.parse(savedProject);
+        if (parsedProject && parsedProject.id) {
+          setSelectedProject(parsedProject);
+          fetchTestData(parsedProject.id);
+          setHasCheckedInitialData(true);
+        }
+      } catch (error) {
+        console.error("Error parsing saved project:", error);
+        localStorage.removeItem(savedProjectKey);
+      }
     }
 
     const handleProjectChange = (event) => {
       const newProject = event.detail;
       setSelectedProject(newProject);
-      setUrl(""); 
-      setErrors({ url: "" }); 
+      setUrl("");
+      setErrors({ url: "" });
+      setHasCheckedInitialData(false);
       if (newProject?.id) {
+       
         fetchTestData(newProject.id);
+        window.dispatchEvent(new CustomEvent('testDataProjectChanged', {
+          detail: { projectId: newProject.id }
+        }));
       } else {
-        setUploadedData(null); 
+        setUploadedData(null);
       }
     };
 
@@ -84,17 +113,15 @@ const TestData = () => {
 
   const handleCreateTestCase = async () => {
     if (!validateFields()) return;
-  
-    const finalUrl = url.startsWith("http") ? url : `https://${url}`;
-  
     if (!selectedProject?.id) {
-      alert("Selected project is invalid. Please select a valid project.");
+      alert("Please select a project first.");
       return;
     }
-  
+
+    const finalUrl = url.startsWith("http") ? url : `https://${url}`;
     const payload = { url: finalUrl };
-  
-    setIsLoading(true);
+
+    setIsUploading(true);
     try {
       const response = await fetch(
         `https://testerally-be-ylpr.onrender.com/api/testdata/${selectedProject.id}/`,
@@ -104,30 +131,36 @@ const TestData = () => {
           body: JSON.stringify(payload),
         }
       );
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        setUploadedData(data);
-        alert("Test Data Uploaded Successfully");
-      } else {
-        alert(`Failed to upload test data: ${data.message || "Unknown error"}`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to upload test data: ${response.status}`);
       }
+
+      const data = await response.json();
+      setUploadedData(data);
+      alert("Test Data Uploaded Successfully");
     } catch (error) {
-      console.error("Error during POST request:", error);
-      alert(`Error: ${error.message}`);
+      console.error("Error during upload:", error);
+      alert(`Error uploading test data: ${error.message}`);
     } finally {
-      setIsLoading(false);
+      setIsUploading(false);
     }
   };
 
   const handleEdit = () => {
-    setUrl(uploadedData.url);
-    setUploadedData(null);
+    if (uploadedData) {
+      setUrl(uploadedData.url);
+      setUploadedData(null);
+    }
   };
 
   const handleDelete = async () => {
-    setIsLoading(true);
+    if (!selectedProject?.id) return;
+    if (!window.confirm("Are you sure you want to delete this test data?")) {
+      return;
+    }
+
+    setIsDeleting(true);
     try {
       const response = await fetch(
         `https://testerally-be-ylpr.onrender.com/api/testdata/${selectedProject.id}/`,
@@ -136,23 +169,97 @@ const TestData = () => {
         }
       );
 
-      if (response.ok) {
+      if (response.ok || response.status === 404) {
         setUploadedData(null);
         setUrl("");
         alert("Test Data Deleted Successfully");
       } else {
-        const errorData = await response.json();
-        alert(`Failed to delete test data: ${errorData.message || "Unknown error"}`);
+        throw new Error(`Failed to delete test data: ${response.status}`);
       }
     } catch (error) {
+      console.error("Error during deletion:", error);
       alert(`Error: ${error.message}`);
     } finally {
-      setIsLoading(false);
+      setIsDeleting(false);
     }
   };
 
   const handleCancel = () => {
     navigate("/dashboard-user");
+  };
+
+  const renderContent = () => {
+    if (!hasCheckedInitialData || isLoading) {
+      return <div className="p-4 text-gray-600">Loading...</div>;
+    }
+
+    if (!selectedProject) {
+      return (
+        <div className="p-4 text-gray-600">
+          Please select a project to manage test data.
+        </div>
+      );
+    }
+
+    if (uploadedData) {
+      return (
+        <div className="mt-4 p-4 bg-green-100 text-green-800 rounded">
+          <p>
+            Uploaded URL: <strong>{uploadedData.url}</strong>
+          </p>
+          <div className="mt-2 flex space-x-4">
+            <button 
+              onClick={handleEdit} 
+              className="edit-btn"
+              disabled={isDeleting}
+            >
+              Edit
+            </button>
+            <button 
+              onClick={handleDelete} 
+              className="delete-btn" 
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="create-test-cases-input-container">
+        <label className="block text-sm font-medium mb-2">
+          URL<span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={url}
+          onChange={(e) => {
+            setUrl(e.target.value);
+            setErrors((prev) => ({ ...prev, url: "" }));
+          }}
+          placeholder="Enter URL"
+          className={`create-project-input ${
+            errors.url ? "border-red-500" : "border-gray-300"
+          } focus:outline-none focus:ring-2 focus:ring-purple-500`}
+          disabled={isUploading}
+        />
+        {errors.url && (
+          <span className="text-red-500 text-sm mt-1">{errors.url}</span>
+        )}
+
+        <div className="mt-4">
+          <button
+            onClick={handleCreateTestCase}
+            className="create-btn"
+            disabled={isUploading}
+          >
+            {isUploading ? "saving..." : "Save"}
+          </button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -177,54 +284,7 @@ const TestData = () => {
                     </button>
                   </div>
                 </div>
-                      
-                {uploadedData ? (
-                  <div className="mt-4 p-4 bg-green-100 text-green-800 rounded">
-                    <p>
-                      Uploaded URL: <strong>{uploadedData.url}</strong>
-                    </p>
-                    <div className="mt-2 flex space-x-4">
-                      <button onClick={handleEdit} className="edit-btn">
-                        Edit
-                      </button>
-                      <button onClick={handleDelete} className="delete-btn" disabled={isLoading}>
-                        {isLoading ? "Deleting..." : "Delete"}
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="create-test-cases-input-container">
-                    <label className="block text-sm font-medium mb-2">
-                      URL<span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={url}
-                      onChange={(e) => {
-                        setUrl(e.target.value);
-                        setErrors((prev) => ({ ...prev, url: "" }));
-                      }}
-                      placeholder="Enter URL"
-                      className={`create-project-input ${
-                        errors.url ? "border-red-500" : "border-gray-300"
-                      } focus:outline-none focus:ring-2 focus:ring-purple-500`}
-                      disabled={!selectedProject}
-                    />
-                    {errors.url && (
-                      <span className="text-red-500 text-sm mt-1">{errors.url}</span>
-                    )}
-
-                    <div className="mt-4">
-                      <button
-                        onClick={handleCreateTestCase}
-                        className="create-btn"
-                        disabled={isLoading || !selectedProject}
-                      >
-                        {isLoading ? "Uploading..." : "Upload"}
-                      </button>
-                    </div>
-                  </div>
-                )}
+                {renderContent()}
               </div>
             </div>
           </div>
@@ -234,4 +294,4 @@ const TestData = () => {
   );
 };
 
-export default TestData;   
+export default TestData;

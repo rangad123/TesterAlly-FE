@@ -310,7 +310,7 @@ const TestSuites = () => {
               <div className="bg-white shadow-xl rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
                     <div className="p-6">
                       <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold text-gray-800">Edit Test Case</h3>
+                        <h3 className="text-lg font-semibold text-gray-800">Edit Test Suite</h3>
                         <button 
                           onClick={handleCancel}
                           className="text-gray-500 hover:text-gray-700"

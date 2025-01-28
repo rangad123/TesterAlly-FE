@@ -138,10 +138,6 @@ const CreateTestCases = () => {
     navigate("/dashboard-user");
   };
 
-  const handleTestSuite = () => {
-    navigate("/test-suites");
-  };
-
 
   useEffect(() => {
     const fetchTestCaseTypes = async () => {
@@ -225,9 +221,7 @@ const CreateTestCases = () => {
                     )}
                   </div>
                   <div className="create-test-cases-button-group-right">
-                    <button onClick={handleCancel} className="cancel-btn">
-                      Cancel
-                    </button>
+                    
                     {/*
                     <button
                       onClick={handleCreateTestCase}
@@ -319,8 +313,8 @@ const CreateTestCases = () => {
   
                   <div className="create-test-cases-button-group">
 
-                    <button onClick={handleTestSuite} className="create-test-cases-test-suite-btn">
-                      Test Suite
+                    <button onClick={handleCancel} className="cancel-btn">
+                      Cancel
                     </button>
 
                     <button onClick={handleWriteTestManually} className="create-test-cases-btn-manual bg-purple-600">
