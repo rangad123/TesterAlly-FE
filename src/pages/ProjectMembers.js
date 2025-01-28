@@ -16,9 +16,8 @@ const ProjectMembers = () => {
   const userId = localStorage.getItem("userId");
 
   const roles = [
-    { id: "admin", label: "Admin" },
-    { id: "manager", label: "Manager" },
-    { id: "member", label: "Member" }
+    { id: "manager", label: "Project Manager" },
+    { id: "member", label: "Project Member" }
   ];
 
   const fetchInvitedMembers = useCallback(async () => {
@@ -222,7 +221,7 @@ const ProjectMembers = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Invite Member
+              Project Member
             </h3>
             <div className="space-y-4">
               <div>

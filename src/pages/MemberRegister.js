@@ -22,7 +22,7 @@ const MemberRegister = (props) => {
   console.log("Extracted Token:", token);
 
   const URL = `https://testerally-be-ylpr.onrender.com/api/accept-invite/${token}/`;
-  
+
   const validateEmail = (email) => {
     const domainRegex = /@.+\..+/; 
     if (!domainRegex.test(email)) {
@@ -132,7 +132,7 @@ const MemberRegister = (props) => {
         console.log("Response:", res.data);
 
 
-        if (data.success === true) {
+        if (data.message === 'Invitation accepted and user registered!') {
           localStorage.setItem("userName", name);
           localStorage.setItem("userEmail", email);
           toast.success("Registration successful! You can now log in.");

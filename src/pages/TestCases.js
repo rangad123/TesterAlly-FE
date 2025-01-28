@@ -342,7 +342,7 @@ const TestCases = () => {
               <X className="w-6 h-6" />
             </button>
           </div>
-
+  
           {/* Tab Navigation */}
           <div className="flex border-b mb-4">
             <button
@@ -358,54 +358,72 @@ const TestCases = () => {
               Test Steps
             </button>
           </div>
-
+  
           {/* Tab Content */}
           {activeTab === 'details' ? (
-            <div className="grid gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Name<span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={editingTestCase.name}
-                  onChange={(e) => setEditingTestCase(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
+            <>
+              <div className="grid gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Name<span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={editingTestCase.name}
+                    onChange={(e) => setEditingTestCase(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Test Case Type<span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={editingTestCase.type}
+                    onChange={(e) => setEditingTestCase(prev => ({ ...prev, type: e.target.value }))}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="">Select Type</option>
+                    {testCaseTypes.map((type) => (
+                      <option key={type.id} value={type.name}>{type.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Test Case Priority<span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={editingTestCase.priority}
+                    onChange={(e) => setEditingTestCase(prev => ({ ...prev, priority: e.target.value }))}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="">Select Priority</option>
+                    {testCasePriorities.map((priority) => (
+                      <option key={priority.id} value={priority.priority_level}>
+                        {priority.priority_level}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Test Case Type<span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={editingTestCase.type}
-                  onChange={(e) => setEditingTestCase(prev => ({ ...prev, type: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded-md"
+              <div className="flex justify-end gap-2 mt-6">
+                <button
+                  onClick={handleSave}
+                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
                 >
-                  <option value="">Select Type</option>
-                  {testCaseTypes.map((type) => (
-                    <option key={type.id} value={type.name}>{type.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Test Case Priority<span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={editingTestCase.priority}
-                  onChange={(e) => setEditingTestCase(prev => ({ ...prev, priority: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Changes
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
                 >
-                  <option value="">Select Priority</option>
-                  {testCasePriorities.map((priority) => (
-                    <option key={priority.id} value={priority.priority_level}>
-                      {priority.priority_level}
-                    </option>
-                  ))}
-                </select>
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel
+                </button>
               </div>
-            </div>
+            </>
           ) : (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
@@ -424,7 +442,7 @@ const TestCases = () => {
                   Add Step
                 </button>
               </div>
-
+  
               <div className="space-y-2">
                 {testSteps.map((step) => (
                   <div key={step.id} className="flex items-center gap-2 p-2 border rounded-md">
@@ -476,30 +494,23 @@ const TestCases = () => {
                   </div>
                 ))}
               </div>
+              <div className="flex justify-end mt-6">
+                <button
+                  onClick={handleCancel}
+                  className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Close
+                </button>
+              </div>
             </div>
           )}
-
-          <div className="flex justify-end gap-2 mt-6">
-            <button
-              onClick={handleSave}
-              className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Save Changes
-            </button>
-            <button
-              onClick={handleCancel}
-              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
-            >
-              <X className="w-4 h-4 mr-2" />
-              Cancel
-            </button>
-          </div>
         </div>
       </div>
     </div>
   );
 
+  
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
