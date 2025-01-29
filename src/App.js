@@ -331,6 +331,7 @@ import TestSteps from "./pages/TestSteps";
 import AdminOrganization from "./pages/AdminOrganization";
 import { useLocation } from 'react-router-dom';
 import MemberDashBoard from "./pages/MemberDashBoard";
+import AdminSetting from "./pages/AdminSetting";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -461,6 +462,15 @@ const App = () => {
                   </PrivateRoute>
                 }
                 />
+                <Route
+                  path="/admin-setting"
+                  exact
+                  element={
+                    <PrivateRoute  isLoggedIn={isLoggedIn}>
+                      <AdminSetting/>
+                    </PrivateRoute>
+                  }
+                  />
               <Route
                 path="/admin-users"
                 exact

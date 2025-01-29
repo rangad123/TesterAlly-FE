@@ -183,7 +183,7 @@ const AppNavBar = (props) => {
               <CorporateFareIcon/>
             </Link>
             <Link
-              to="/admin-settings"
+              to="/admin-setting"
               className="text-lg font-medium text-blue-600 hover:text-blue-800 admin-nav-link"
               data-name="SettingPanel"
             >

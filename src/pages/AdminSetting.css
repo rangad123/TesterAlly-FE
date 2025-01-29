@@ -1,0 +1,82 @@
+/* General Styling for Admin Settings Container */
+.admin-settings-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background: #f5faff;
+    border-radius: 10px;
+    min-height: 100vh;
+  }
+  
+  .title {
+    text-align: center;
+    color: #2563eb;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+  
+  /* Styling for individual setting cards */
+  .setting-card {
+    background-color: white;
+    padding: 25px;
+    border-left: 5px solid #1d4ed8;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+  
+  .setting-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .section-title {
+    color: #2563eb;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-bottom: 15px;
+  }
+  
+  /* Save Button */
+  .save-button {
+    background-color: #2563eb !important;
+    color: white !important;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-transform: none;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .save-button:hover {
+    background-color: #1d4ed8 !important;
+  }
+  
+  .role-dropdown {
+    margin: 15px 0;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .setting-card {
+      padding: 20px;
+    }
+  
+    .save-button {
+      padding: 8px 12px;
+    }
+  
+    .card-content {
+      gap: 10px;
+    }
+  }
+  
