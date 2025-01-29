@@ -198,9 +198,9 @@ const ProjectMembers = () => {
                       <span className="text-gray-800 font-medium">
                         {member.email}
                       </span>
-                      <span className="text-sm text-gray-500 ml-2">
+                      {/* <span className="text-sm text-gray-500 ml-2">
                         Role: {member.role || 'Member'}
-                      </span>
+                      </span> */}
                     </div>
                     <span className="text-sm text-gray-500">
                       Status: {member.invitation_status || 'Pending'}

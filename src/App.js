@@ -330,6 +330,7 @@ import UserRoles from "./pages/UserRoles";
 import TestSteps from "./pages/TestSteps";
 import AdminOrganization from "./pages/AdminOrganization";
 import { useLocation } from 'react-router-dom';
+import MemberDashBoard from "./pages/MemberDashBoard";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -570,6 +571,15 @@ const App = () => {
                 }
               />
               <Route
+                path="/member-dashboard"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberDashBoard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
                 path="create-project"
                 exact
                 element={
@@ -746,6 +756,7 @@ const App = () => {
     </div>
   );
 };
+
 
 return (
   <div className="bg-purple-100">

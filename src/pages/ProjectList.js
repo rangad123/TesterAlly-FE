@@ -21,7 +21,7 @@ const ProjectList = () => {
         console.log("Projects", data);
 
         if (response.ok) {
-          setAllProjects(data);
+          setAllProjects(data.reverse());
         }
       } catch (err) {
         console.error("Error fetching projects:", err);

@@ -12,8 +12,111 @@ const TestSteps = () => {
   const [editingStep, setEditingStep] = useState(null);
   const [editValue, setEditValue] = useState("");
   const [newStepValue, setNewStepValue] = useState("");
+  const [activeTab, setActiveTab] = useState("testSteps");
+  const [testCase, setTestCase] = useState(null);
+  const [editingTestCase, setEditingTestCase] = useState(null);
+  const [testCaseTypes, setTestCaseTypes] = useState([]);
+  const [testCasePriorities, setTestCasePriorities] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
 
   const apiBaseUrl = "https://testerally-be-ylpr.onrender.com/api";
+
+
+  const fetchTestCase = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `${apiBaseUrl}/testcases/${testCaseId}/?project_id=${location.state.projectId}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch test case");
+      const data = await response.json();
+      setTestCase(data);
+    } catch (err) {
+      console.error("Error fetching test case:", err);
+      setError("Failed to fetch test case details");
+    }
+  }, [testCaseId, location.state.projectId]);
+
+  const fetchTestCaseMetadata = useCallback(async () => {
+    try {
+      const [typesResponse, prioritiesResponse] = await Promise.all([
+        fetch(`${apiBaseUrl}/testcase-types/?project_id=${location.state.projectId}`),
+        fetch(`${apiBaseUrl}/testcase-priorities/?project_id=${location.state.projectId}`)
+      ]);
+
+      const typesData = await typesResponse.json();
+      const prioritiesData = await prioritiesResponse.json();
+
+      setTestCaseTypes(typesData);
+      setTestCasePriorities(prioritiesData);
+    } catch (err) {
+      console.error("Error fetching metadata:", err);
+      setError("Failed to fetch test case metadata");
+    }
+  }, [location.state.projectId]);
+
+  useEffect(() => {
+    if (activeTab === "testCaseInfo") {
+      fetchTestCase();
+      fetchTestCaseMetadata();
+    }
+  }, [activeTab, fetchTestCase, fetchTestCaseMetadata]);
+
+  const handleEditTestCase = () => {
+    setIsEditing(true);
+    setEditingTestCase({
+      name: testCase.name,
+      type: testCase.testcase_type,
+      priority: testCase.testcase_priority,
+    });
+  };
+
+  const handleUpdateTestCase = async () => {
+    try {
+      const response = await fetch(
+        `${apiBaseUrl}/testcases/${testCaseId}/?project_id=${location.state.projectId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: editingTestCase.name,
+            testcase_type: editingTestCase.type,
+            testcase_priority: editingTestCase.priority
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update test case");
+      
+      const updatedTestCase = await response.json();
+      setTestCase(updatedTestCase);
+      setIsEditing(false);
+      setEditingTestCase(null);
+    } catch (err) {
+      console.error("Error updating test case:", err);
+      setError("Failed to update test case");
+    }
+  };
+
+  const handleDeleteTestCase = async () => {
+    if (!window.confirm("Are you sure you want to delete this test case?")) return;
+
+    try {
+      const response = await fetch(
+        `${apiBaseUrl}/testcases/${testCaseId}/?project_id=${location.state.projectId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to delete test case");
+      
+      navigate("/test-cases");
+    } catch (err) {
+      console.error("Error deleting test case:", err);
+      setError("Failed to delete test case");
+    }
+  };
 
 
   useEffect(() => {
@@ -199,6 +302,121 @@ const TestSteps = () => {
     setError(null);
   };
 
+  const renderTestCaseInfo = () => {
+    if (!testCase) return <div>Loading test case details...</div>;
+
+    if (isEditing) {
+      return (
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Name<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={editingTestCase.name}
+              onChange={(e) => setEditingTestCase(prev => ({ ...prev, name: e.target.value }))}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Test Case Type<span className="text-red-500">*</span>
+            </label>
+            <select
+              value={editingTestCase.type}
+              onChange={(e) => setEditingTestCase(prev => ({ ...prev, type: e.target.value }))}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select Type</option>
+              {testCaseTypes.map((type) => (
+                <option key={type.id} value={type.name}>{type.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Test Case Priority<span className="text-red-500">*</span>
+            </label>
+            <select
+              value={editingTestCase.priority}
+              onChange={(e) => setEditingTestCase(prev => ({ ...prev, priority: e.target.value }))}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select Priority</option>
+              {testCasePriorities.map((priority) => (
+                <option key={priority.id} value={priority.priority_level}>
+                  {priority.priority_level}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={handleUpdateTestCase}
+              className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save Changes
+            </button>
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                setEditingTestCase(null);
+              }}
+              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-gray-900">Test Case Details</h2>
+          <div className="space-x-2">
+            <button
+              onClick={handleEditTestCase}
+              className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100"
+            >
+              <Edit2 className="w-4 h-4 mr-1" />
+              Edit
+            </button>
+            <button
+              onClick={handleDeleteTestCase}
+              className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100"
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div className="grid gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-500">Name</label>
+            <p className="mt-1 text-lg text-gray-900">{testCase.name}</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-500">Type</label>
+            <p className="mt-1 text-lg text-gray-900">{testCase.testcase_type || "Not specified"}</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-500">Priority</label>
+            <p className="mt-1 text-lg text-gray-900">{testCase.testcase_priority || "Not specified"}</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex-1 lg:ml-[300px] p-6">
@@ -223,6 +441,13 @@ const TestSteps = () => {
             <h1 className="text-2xl font-bold text-gray-900">{testCaseName}</h1>
           </div>
 
+          <div className="flex border-b mb-4">
+            <button onClick={() => setActiveTab("testSteps")} className={`px-4 py-2 ${activeTab === "testSteps" ? "border-b-2 border-purple-600" : "text-gray-500"}`}>Test Steps</button>
+            <button onClick={() => setActiveTab("testCaseInfo")} className={`px-4 py-2 ${activeTab === "testCaseInfo" ? "border-b-2 border-purple-600" : "text-gray-500"}`}>Test Case Info</button>
+          </div>
+
+        {activeTab === "testSteps" ? (
+          <>
           {error && (
             <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-md">
               {error}
@@ -305,6 +530,11 @@ const TestSteps = () => {
               </div>
             ))}
           </div>
+          </>
+          ) : (
+            renderTestCaseInfo()
+          )}
+
         </div>
       </div>
     </div>

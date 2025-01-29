@@ -17,7 +17,6 @@ const CreateProject = ({ onProjectCreated }) => {
   const [userProjects, setUserProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
   const navigate = useNavigate();
 
   const projectTypes = [
@@ -76,6 +75,34 @@ const CreateProject = ({ onProjectCreated }) => {
     return isValid;
   };
 
+  const fetchProjects = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.warn("No userId found in localStorage");
+      return;
+    }
+  
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/projects/?user_id=${userId}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch user projects");
+      }
+      const projects = await response.json();
+      setUserProjects(projects);
+    } catch (error) {
+      console.error("Error fetching user projects:", error);
+    } finally {
+      setIsFetchingProjects(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchProjects();
+  }, []); 
+
   const handleCreateProject = async () => {
     if (!validateFields()) return;
   
@@ -116,6 +143,8 @@ const CreateProject = ({ onProjectCreated }) => {
       setUserProjects((prevProjects) => [...prevProjects, createdProject]);
   
       alert("Project Created Successfully");
+      
+      fetchProjects();
   
       navigate("/projects-list");
   

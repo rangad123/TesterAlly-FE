@@ -51,6 +51,25 @@ const Login = (props) => {
     }
   };
 
+  const handleRedirect = (roleId) => {
+    console.log("Redirecting with Role ID:", roleId);
+    roleId = Number(roleId);
+    switch (roleId) {
+      case 2:
+        navigate("/dashboard-user");
+        break;
+      case 3:
+        navigate("/member-dashboard");
+        break;
+      case 1: 
+        navigate("/admin-dashboard");
+        break;
+      default:
+        navigate("/dashboard/login"); 
+        break;
+    }
+  };
+
   const handleLogin = async (ev) => {
     ev.preventDefault();
     console.time("Login Total Time");
@@ -68,6 +87,8 @@ const Login = (props) => {
       console.timeEnd("API Call");
   
       const data = res.data;
+
+      console.log(data)
   
       if (data.success === true) {
         console.time("Post-Success Operations");
@@ -80,13 +101,13 @@ const Login = (props) => {
         setIsLoggedIn(true);
         setEmail(email);
         setName(data.user.name);
+
+        console.log("Role ID:", data.user.roleId); 
+
+
+        handleRedirect(data.user.roleId);
   
-        if (email === "admin@gmail.com") {
-          navigate("/admin-dashboard"); 
-        } else {
-          navigate("/dashboard-user"); 
-        }
-  
+      
         console.timeEnd("Post-Success Operations");
       } else {
         console.warn("API Error Message:", data.message);
