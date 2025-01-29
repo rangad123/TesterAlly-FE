@@ -328,6 +328,7 @@ import MemberRegister from "./pages/MemberRegister";
 import ProjectListDetails from "./pages/ProjectListDetails";
 import UserRoles from "./pages/UserRoles";
 import TestSteps from "./pages/TestSteps";
+import AdminOrganization from "./pages/AdminOrganization";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -339,11 +340,11 @@ const App = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
-  
+
   useEffect(() => {
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn");
     const storedName = localStorage.getItem("name");
@@ -464,6 +465,15 @@ const App = () => {
                   </PrivateRoute>
                 }
               />
+              <Route 
+                path="/admin-organization"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <AdminOrganization/>
+                  </PrivateRoute>
+                }
+                />
               <Route
                 path="/admin-users"
                 exact

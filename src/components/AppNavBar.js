@@ -86,7 +86,12 @@ import UserIcon from "../images/user.png";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import './AppNavBar.css';  
+import { Link } from "react-router-dom";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+
+import "./AppNavBar.css";
 
 const AppNavBar = (props) => {
   let navigate = useNavigate();
@@ -95,7 +100,6 @@ const AppNavBar = (props) => {
   const { isLoggedIn, setIsLoggedIn, name, setName, email, setEmail } = props;
 
   const handleLogout = () => {
-
     const userId = localStorage.getItem("userId");
     if (userId) {
       localStorage.removeItem(`selectedProject_${userId}`);
@@ -114,7 +118,6 @@ const AppNavBar = (props) => {
 
     navigate("/dashboard/login");
     toast.success("You are successfully logged out!");
-
   };
 
   useEffect(() => {
@@ -140,7 +143,7 @@ const AppNavBar = (props) => {
   };
 
   const handleRunClick = () => {
-    navigate("/dashboard-user"); 
+    navigate("/dashboard-user");
   };
 
   const isAdminRoute = location.pathname.startsWith("/admin");
@@ -160,11 +163,35 @@ const AppNavBar = (props) => {
           </span>
         </Navbar.Brand>
 
+        {/* If Admin is logged in, show centered blue links */}
+        {isAdminRoute && isLoggedIn && (
+          <div className="flex-1 flex justify-center space-x-8">
+            <Link
+              to="/admin-dashboard"
+              className="text-lg font-medium text-blue-600 hover:text-blue-800"
+            >
+              <DashboardIcon />
+            </Link>
+            <Link
+              to="/admin-organization"
+              className="text-lg font-medium text-blue-600 hover:text-blue-800"
+            >
+              <CorporateFareIcon/>
+            </Link>
+            <Link
+              to="/admin-settings"
+              className="text-lg font-medium text-blue-600 hover:text-blue-800"
+            >
+              <AdminPanelSettingsIcon/>
+            </Link>
+          </div>
+        )}
+
         {isAdminRoute ? (
           isLoggedIn ? (
             <div className="flex items-center space-x-4">
               <Dropdown
-                arrowIcon={false}
+                arrowIcon={true}
                 inline
                 label={
                   <Avatar
@@ -185,49 +212,46 @@ const AppNavBar = (props) => {
               </Dropdown>
             </div>
           ) : null
-        ) : (
-          
-          isLoggedIn ? (
-            <div className="flex items-center space-x-4">
-              <button
-                className="flex items-center px-3 py-1 bg-purple-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 transition duration-200"
-                onClick={handleRunClick}
-              >
-                <FaPlay className="h-4 w-4 mr-2" />
-                Run
-              </button>
+        ) : isLoggedIn ? (
+          <div className="flex items-center space-x-4">
+            <button
+              className="flex items-center px-3 py-1 bg-purple-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 transition duration-200"
+              onClick={handleRunClick}
+            >
+              <FaPlay className="h-4 w-4 mr-2" />
+              Run
+            </button>
 
-              <Dropdown
-                arrowIcon={false}
-                inline
-                label={
-                  <Avatar
-                    alt="User settings"
-                    img={UserIcon}
-                    className="h-10 w-10"
-                    rounded
-                  />
-                }
-              >
-                <Dropdown.Header>
-                  <span className="block text-sm">{name}</span>
-                  <span className="block truncate text-sm font-medium">
-                    {currentEmail}
-                  </span>
-                </Dropdown.Header>
-                <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
-              </Dropdown>
-            </div>
-          ) : (
-            <div className="text-sm/6 font-semibold text-gray-900 auth-buttons">
-              <button
-                onClick={() => navigate("/dashboard/login")}
-                className="login-button"
-              >
-                Login<span aria-hidden="true">&rarr;</span>
-              </button>
-            </div>
-          )
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={
+                <Avatar
+                  alt="User settings"
+                  img={UserIcon}
+                  className="h-10 w-10"
+                  rounded
+                />
+              }
+            >
+              <Dropdown.Header>
+                <span className="block text-sm">{name}</span>
+                <span className="block truncate text-sm font-medium">
+                  {currentEmail}
+                </span>
+              </Dropdown.Header>
+              <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
+            </Dropdown>
+          </div>
+        ) : (
+          <div className="text-sm/6 font-semibold text-gray-900 auth-buttons">
+            <button
+              onClick={() => navigate("/dashboard/login")}
+              className="login-button"
+            >
+              Login<span aria-hidden="true">&rarr;</span>
+            </button>
+          </div>
         )}
       </Navbar>
     </div>
