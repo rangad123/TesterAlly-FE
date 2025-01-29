@@ -53,13 +53,13 @@ const AdminOrganization = () => {
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
-          <p className="text-red-500">{error}</p>
+          <p className="text-red-500 ">{error}</p>
         ) : (
           <ul>
             {organizations.map((org) => (
               <li
                 key={org.id}
-                className={`p-3 rounded-lg cursor-pointer text-white font-medium transition ${selectedOrg?.id === org.id ? "bg-blue-700" : "hover:bg-blue-500"}`}
+                className={`p-3 rounded-lg cursor-pointer text-white font-medium transition ${selectedOrg?.id === org.id ? "bg-blue-700" : "hover:bg-blue-500"} metric-card2`}
                 onClick={() => setSelectedOrg(org)}
               >
                 {org.name}
