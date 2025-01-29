@@ -331,11 +331,8 @@ import TestSteps from "./pages/TestSteps";
 import AdminOrganization from "./pages/AdminOrganization";
 import { useLocation } from 'react-router-dom';
 import MemberDashBoard from "./pages/MemberDashBoard";
-<<<<<<< HEAD
-import MemberProjects from "./pages/MemberProjects";
-=======
 import AdminSetting from "./pages/AdminSetting";
->>>>>>> a9b95bab5510f2a7bcad5893025063bf477ac128
+import MemberProjects from "./pages/MemberProjects";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
