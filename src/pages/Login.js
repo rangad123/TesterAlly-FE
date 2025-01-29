@@ -20,20 +20,6 @@ const Login = (props) => {
   const { setIsLoggedIn, setName, setEmail } = props;
 
 
-  useEffect(() => {
-    const email = localStorage.getItem("userEmail");
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-  
-    if (isLoggedIn) {
-      if (email === "admin@gmail.com") {
-        navigate("/admin-dashboard");
-      } else {
-        navigate("/dashboard-user");
-      }
-    }
-  }, [navigate]);
-  
-
 
   useEffect(() => {
     const form = document.querySelector("form");
@@ -55,11 +41,11 @@ const Login = (props) => {
     console.log("Redirecting with Role ID:", roleId);
     roleId = Number(roleId);
     switch (roleId) {
-      case 2:
-        navigate("/dashboard-user");
-        break;
       case 3:
         navigate("/member-dashboard");
+        break;
+      case 2:
+        navigate("/dashboard-user");
         break;
       case 1: 
         navigate("/admin-dashboard");
