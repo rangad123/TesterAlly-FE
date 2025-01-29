@@ -1,0 +1,109 @@
+/* Main Container */
+.admin-dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    gap: 20px; /* Space between left and right panels */
+    margin-top: 20px; /* Space at the top */
+  }
+  
+  /* Left Panel (Sidebar) */
+  .dashboard-left-panel {
+    width: 300px;
+    background-color: #2563eb; /* Blue background */
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Space at the top */
+    height: 100vh;
+  }
+  
+  .metric-card {
+    background-color: #1d4ed8; /* Darker blue for the cards */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .dashboard-left-panel ul {
+    padding-left: 0;
+  }
+  
+  .dashboard-left-panel li {
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .dashboard-left-panel li:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .dashboard-left-panel li.selected {
+    background-color: #1d4ed8;
+  }
+  
+  /* Right Panel (Main Content) */
+  .dashboard-right-panel {
+    flex: 1;
+    background-color: #f9fafb; /* Light background for the right panel */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Space at the top */
+  }
+  
+  /* Heading Styles */
+  .dashboard-right-panel h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2563eb; /* Blue color */
+  }
+  
+  .dashboard-right-panel h2 {
+    font-size: 1.5rem;
+    color: #2563eb; /* Blue color */
+  }
+  
+  .dashboard-right-panel .highlight {
+    color: #1d4ed8; /* Darker blue for highlights */
+  }
+  
+  .dashboard-right-panel p {
+    font-size: 16px;
+    color: #4b5563; /* Dark gray for the text */
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .admin-dashboard-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px; /* Reduce the gap between panels */
+    }
+  
+    .dashboard-left-panel {
+      width: 100%;
+      margin-top: 10px; /* Space at the top */
+      height: auto;
+    }
+  
+    .dashboard-right-panel {
+      width: 100%;
+      margin-top: 10px;
+      padding: 20px;
+    }
+  
+    .grid {
+      grid-template-columns: repeat(1, 1fr); /* Single column grid for mobile */
+    }
+  
+    .dashboard-right-panel h1 {
+      font-size: 1.5rem;
+    }
+  
+    .dashboard-right-panel p {
+      font-size: 14px;
+    }
+  }
+  

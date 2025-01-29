@@ -1,7 +1,6 @@
-// src/pages/AdminOrganization.js
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import './AdminOrganization.css'
 
 const AdminOrganization = () => {
   const [organizations, setOrganizations] = useState([]);
@@ -44,10 +43,12 @@ const AdminOrganization = () => {
   }, [selectedOrg]);
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-1/5 bg-white text-blue-600 border-r border-gray-300 p-4 shadow-md">
-        <h2 className="text-2xl font-bold mb-4">Organizations</h2>
+    <div className="admin-dashboard-container">
+      {/* Left Panel (Sidebar) */}
+      <div className="dashboard-left-panel">
+        <div className="metric-card">
+        <h2 className="text-2xl font-bold mb-4 text-white">Organizations</h2>
+        </div>
 
         {loading ? (
           <p>Loading...</p>
@@ -58,9 +59,7 @@ const AdminOrganization = () => {
             {organizations.map((org) => (
               <li
                 key={org.id}
-                className={`p-3 rounded-lg cursor-pointer text-black font-medium transition ${
-                  selectedOrg?.id === org.id ? "bg-blue-100 text-blue-700" : "hover:bg-blue-50"
-                }`}
+                className={`p-3 rounded-lg cursor-pointer text-white font-medium transition ${selectedOrg?.id === org.id ? "bg-blue-700" : "hover:bg-blue-500"}`}
                 onClick={() => setSelectedOrg(org)}
               >
                 {org.name}
@@ -70,11 +69,11 @@ const AdminOrganization = () => {
         )}
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-6">
+      {/* Right Panel (Main Content) */}
+      <div className="dashboard-right-panel">
         {selectedOrg ? (
           <div className="bg-white shadow-md p-6 rounded-lg">
-            <h1 className="text-3xl font-bold mb-4">{selectedOrg.name}</h1>
+            <h1 className="text-3xl font-bold mb-4 text-blue-700">{selectedOrg.name}</h1>
 
             {/* Display Projects in Grid (4 per row) */}
             <h2 className="text-2xl font-semibold mb-2 text-blue-700">Projects</h2>

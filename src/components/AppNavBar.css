@@ -107,3 +107,39 @@
     padding: 0.4rem 0.8rem;
   }
 }
+
+.admin-nav-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px; /* Increased spacing between links */
+}
+
+.admin-nav-link {
+  position: relative;
+  display: inline-block;
+  transition: color 0.3s ease-in-out;
+}
+
+.admin-nav-link:hover {
+  color: #1e40af; /* Darker blue on hover */
+}
+
+.admin-nav-link::after {
+  content: attr(data-name); /* Show the link name */
+  position: absolute;
+  left: 50%;
+  bottom: -28px; /* Increased gap between icon and text */
+  transform: translateX(-50%);
+  background-color: transparent;
+  color: #1e40af; /* Blue text */
+  padding: 5px 10px;
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.admin-nav-link:hover::after {
+  opacity: 1;
+}

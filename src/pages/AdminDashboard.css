@@ -1,0 +1,135 @@
+/* Main Container */
+.admin-dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    margin-top: 20px; /* Space at the top */
+    gap: 20px; /* Add gap between the left and right panels */
+  }
+  
+  /* Left Panel Styles */
+  .dashboard-left-panel {
+    width: 300px;
+    background-color: #2563eb; /* Blue background */
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+    margin-top: 20px; /* Space at the top */
+  }
+  
+  .dashboard-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .metric-card {
+    background-color: #1d4ed8; /* Darker blue for the cards */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .metric-card h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .metric-card p {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .admin-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .admin-action {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white; /* White text color */
+    font-size: 16px;
+  }
+  
+  .admin-action:hover {
+    color: #93c5fd; /* Lighter blue on hover */
+  }
+  
+  .admin-action svg {
+    margin-right: 8px;
+  }
+  
+  /* Right Panel Styles */
+  .dashboard-right-panel {
+    flex: 1;
+    background-color: #f9fafb; /* Light background for the right panel */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Space at the top */
+  }
+  
+  /* Add gap for the right panel content */
+  .dashboard-right-panel h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2563eb; /* Blue color */
+  }
+  
+  .dashboard-right-panel .highlight {
+    color: #1d4ed8; /* Darker blue for highlights */
+  }
+  
+  .dashboard-right-panel p {
+    font-size: 16px;
+    color: #4b5563; /* Dark gray for the text */
+    margin-top: 10px;
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .admin-dashboard-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px; /* Reduce the gap between the panels on mobile */
+    }
+  
+    .dashboard-left-panel {
+      width: 100%;
+      height: auto;
+      margin-top: 10px; /* Space at the top */
+    }
+  
+    .dashboard-right-panel {
+      width: 100%;
+      margin-top: 10px;
+      padding: 20px;
+    }
+  
+    .dashboard-metrics {
+      gap: 15px;
+    }
+  
+    .metric-card {
+      padding: 15px;
+    }
+  
+    .admin-action {
+      font-size: 14px;
+    }
+  
+    .dashboard-right-panel h1 {
+      font-size: 1.5rem;
+    }
+  
+    .dashboard-right-panel p {
+      font-size: 14px;
+    }
+  }
+  

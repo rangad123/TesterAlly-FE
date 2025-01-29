@@ -90,6 +90,7 @@ import { Link } from "react-router-dom";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import "./AppNavBar.css"
 
 import "./AppNavBar.css";
 
@@ -165,22 +166,26 @@ const AppNavBar = (props) => {
 
         {/* If Admin is logged in, show centered blue links */}
         {isAdminRoute && isLoggedIn && (
-          <div className="flex-1 flex justify-center space-x-8">
+          <div className="flex-1 flex justify-center space-x-8 admin-nav-container">
             <Link
               to="/admin-dashboard"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800"
+              className="text-lg font-medium text-blue-600 hover:text-blue-800 admin-nav-link"
+              data-name="Dashboard"
             >
               <DashboardIcon />
             </Link>
             <Link
               to="/admin-organization"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800"
+              className="text-lg font-medium text-blue-600 hover:text-blue-800 admin-nav-link"
+              data-name="Organization"
+
             >
               <CorporateFareIcon/>
             </Link>
             <Link
               to="/admin-settings"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800"
+              className="text-lg font-medium text-blue-600 hover:text-blue-800 admin-nav-link"
+              data-name="SettingPanel"
             >
               <AdminPanelSettingsIcon/>
             </Link>
