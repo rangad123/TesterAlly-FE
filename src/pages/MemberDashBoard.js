@@ -1,9 +1,12 @@
 
 import React from "react";
 import "./style.css";
+import MemberSidebar from "./MemberSidebar";
 
 const MemberDashBoard = () => {
   return (
+    <div>
+    <MemberSidebar />
     <div className="dashboard-container">
       <div className="main-content">
 
@@ -15,6 +18,7 @@ const MemberDashBoard = () => {
         </div>
 
       </div>
+    </div>
     </div>
   );
 };

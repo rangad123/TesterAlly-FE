@@ -332,6 +332,7 @@ import AdminOrganization from "./pages/AdminOrganization";
 import { useLocation } from 'react-router-dom';
 import MemberDashBoard from "./pages/MemberDashBoard";
 import AdminSetting from "./pages/AdminSetting";
+import MemberProjects from "./pages/MemberProjects";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -403,12 +404,13 @@ const App = () => {
   const MainContent = () => {
     const location = useLocation();
     const isAdminRoute = location.pathname.includes('admin');
+    const isMemberRoute = location.pathname.includes('member-');
 
   return (
 
     <div className="h-full flex flex-col" style={{ paddingTop: "64px" }}>
         {/* Only show sidebar if logged in AND not on admin routes */}
-        {isLoggedIn && !isAdminRoute && (
+        {isLoggedIn && !isAdminRoute && !isMemberRoute && (
           <div>
             <Sidebar
               isOpen={isSidebarOpen}
@@ -586,6 +588,15 @@ const App = () => {
                 element={ 
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <MemberDashBoard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/member-projects"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberProjects />
                   </PrivateRoute>
                 }
               />
