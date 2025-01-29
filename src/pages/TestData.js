@@ -35,8 +35,7 @@ const TestData = () => {
       }
     } catch (error) {
       if (error.message.includes('404')) {
-        
-        setUploadedData(null);
+        console.error("Error fetching test data:", error);
       } else {
         console.error("Error fetching test data:", error);
       }

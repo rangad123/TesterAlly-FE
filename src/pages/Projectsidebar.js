@@ -21,7 +21,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
   const [activeMenuItem, setActiveMenuItem] = useState("");
   const [isProjectSettingsExpanded, setIsProjectSettingsExpanded] = useState(false);
 
-  useEffect(() => {
+
     const fetchProjects = async () => {
       const userId = localStorage.getItem("userId");
       if (!userId) {
@@ -73,15 +73,17 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
         console.error("Error fetching projects:", error);
       }
     };
-  
-    fetchProjects();
 
+  useEffect(() => {
+    fetchProjects();
   }, []); 
+  
 
   useEffect(() => {
   
     const handleProjectCreated = (event) => {
       const newProject = event.detail;
+      fetchProjects(); 
       setProjects((prevProjects) => [...prevProjects, newProject]);
       setSelectedProject(newProject);
       localStorage.setItem(`selectedProject_${newProject.user_id}`, JSON.stringify(newProject));
@@ -89,6 +91,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
   
     const handleProjectDeleted = (event) => {
       const { projectId } = event.detail;
+      fetchProjects(); 
       setProjects((prevProjects) => {
         const updatedProjects = prevProjects.filter((project) => project.id !== projectId);
 
@@ -114,6 +117,7 @@ const ProjectSidebar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect 
   
     const handleProjectChanged = (event) => {
       const changedProject = event.detail;
+      fetchProjects(); 
       if (changedProject) {
         setSelectedProject(changedProject);
         const userId = localStorage.getItem("userId");

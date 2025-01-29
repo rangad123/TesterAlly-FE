@@ -329,6 +329,7 @@ import ProjectListDetails from "./pages/ProjectListDetails";
 import UserRoles from "./pages/UserRoles";
 import TestSteps from "./pages/TestSteps";
 import AdminOrganization from "./pages/AdminOrganization";
+import { useLocation } from 'react-router-dom';
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -340,7 +341,8 @@ const App = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+
+
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
@@ -396,51 +398,35 @@ const App = () => {
   console.log("sessionStorage after logout:", sessionStorage);
 
   
-
+  const MainContent = () => {
+    const location = useLocation();
+    const isAdminRoute = location.pathname.includes('admin');
 
   return (
-    <div className="bg-purple-100">
-      <BrowserRouter>
-        <ToastContainer />
-        {/* Fixed Navbar */}
-        <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-md">
-          <AppNavBar
-            isLoggedIn={isLoggedIn}
-            setIsLoggedIn={setIsLoggedIn}
-            name={name}
-            setName={setName}
-            email={email}
-            setEmail={setEmail}
-          />
-        </div>
 
-        {/* Main Content with Padding */}
-        <div className="h-full flex flex-col" style={{ paddingTop: "64px" }}>
-          {isLoggedIn && (
-            <>
-              {/* Sidebar Toggle Button */}
-              {/* Sidebar Component */}
-              <div>
-                <Sidebar
-                  isOpen={isSidebarOpen}
-                  toggleSidebar={toggleSidebar}
-                  isLoggedIn={isLoggedIn}
-                  setIsLoggedIn={setIsLoggedIn}
-                  setName={setName}
-                  setEmail={setEmail}
-                  onLogout={handleLogout}
-                  className='w-64 md:w-48 h-full md:h-64'
-                />
-              </div>
+    <div className="h-full flex flex-col" style={{ paddingTop: "64px" }}>
+        {/* Only show sidebar if logged in AND not on admin routes */}
+        {isLoggedIn && !isAdminRoute && (
+          <div>
+            <Sidebar
+              isOpen={isSidebarOpen}
+              toggleSidebar={toggleSidebar}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              setName={setName}
+              setEmail={setEmail}
+              onLogout={handleLogout}
+              className='w-64 md:w-48 h-full md:h-64'
+            />
+          </div>
+        )}
 
-            </>
-          )}
-          {/* Content Area */}
-          <div
-            className={`transition-all duration-300 ease-in-out flex-grow ${
-              isSidebarOpen && isLoggedIn ? "ml-64" : "ml-0"
-            }`}
-          >
+        {/* Content Area */}
+        <div
+          className={`transition-all duration-300 ease-in-out flex-grow ${
+            isSidebarOpen && isLoggedIn && !isAdminRoute ? "ml-64" : "ml-0"
+          }`}
+        >
             <Routes>
               <Route
                 path="dashboard"
@@ -757,10 +743,28 @@ const App = () => {
                 />
             </Routes>
           </div>
-        </div>
-      </BrowserRouter>
     </div>
   );
+};
+
+return (
+  <div className="bg-purple-100">
+    <BrowserRouter>
+      <ToastContainer />
+      <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-md">
+        <AppNavBar
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
+          name={name}
+          setName={setName}
+          email={email}
+          setEmail={setEmail}
+        />
+      </div>
+      <MainContent />
+    </BrowserRouter>
+  </div>
+);
 };
 
 export default App;

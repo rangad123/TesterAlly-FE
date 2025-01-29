@@ -1,10 +1,8 @@
 import React from 'react'
-import AdminSidebar from './AdminSidebar'
 
 export default function AdminDashboard() {
   return (
     <div>
-      <AdminSidebar />
       <div className="dashboard-container">
       <div className="main-content">
 

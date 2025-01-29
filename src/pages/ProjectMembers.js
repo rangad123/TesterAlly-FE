@@ -203,7 +203,7 @@ const ProjectMembers = () => {
                       </span>
                     </div>
                     <span className="text-sm text-gray-500">
-                      Status: {member.status || 'Pending'}
+                      Status: {member.invitation_status || 'Pending'}
                     </span>
                   </li>
                 ))}
