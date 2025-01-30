@@ -1,113 +1,197 @@
 /* Main Container */
 .admin-dashboard-container {
-    display: flex;
-    min-height: 100vh;
-    gap: 20px; /* Space between left and right panels */
-    margin-top: 20px; /* Space at the top */
-  }
-  
-  /* Left Panel (Sidebar) */
-  .dashboard-left-panel {
-    width: 300px;
-    background-color: #2563eb; /* Blue background */
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 20px; /* Space at the top */
-    height: 100vh;
-  }
-  
-  .metric-card {
-    background-color: #1d4ed8; /* Darker blue for the cards */
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  min-height: 100vh;
+  gap: 20px; /* Space between left and right panels */
+  margin-top: 20px; /* Space at the top */
+  padding: 0 20px; /* Padding for all devices */
+}
+
+/* Left Panel (Sidebar) */
+.dashboard-left-panel {
+  width: 300px;
+  background-color: #2563eb; /* Blue background */
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px; /* Space at the top */
+  height: auto; /* Remove fixed height */
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.metric-card {
+  background-color: #1d4ed8; /* Darker blue for the cards */
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.metric-card2 {
+  margin-bottom: 5px;
+}
+
+.dashboard-left-panel ul {
+  padding-left: 0;
+}
+
+.dashboard-left-panel li {
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dashboard-left-panel li:hover {
+  background-color: #1d4ed8;
+}
+
+.dashboard-left-panel li.selected {
+  background-color: #1d4ed8;
+}
+
+/* Right Panel (Main Content) */
+.dashboard-right-panel {
+  flex: 1;
+  background-color: #f9fafb; /* Light background for the right panel */
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px; /* Space at the top */
+}
+
+.dashboard-right-panel h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2563eb; /* Blue color */
+}
+
+.dashboard-right-panel h2 {
+  font-size: 1.5rem;
+  color: #2563eb; /* Blue color */
+}
+
+.dashboard-right-panel .highlight {
+  color: #1d4ed8; /* Darker blue for highlights */
+}
+
+.dashboard-right-panel p {
+  font-size: 16px;
+  color: #4b5563; /* Dark gray for the text */
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  /* Large desktops and smaller screens */
+  .admin-dashboard-container {
+    flex-direction: row;
+    gap: 20px;
   }
 
-  .metric-card2{
-    margin-bottom: 5px;
+  .dashboard-left-panel {
+    width: 250px; /* Slightly reduce width for medium screens */
   }
-  .dashboard-left-panel ul {
-    padding-left: 0;
-  }
-  
-  .dashboard-left-panel li {
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .dashboard-left-panel li:hover {
-    background-color: #1d4ed8;
-  }
-  
-  .dashboard-left-panel li.selected {
-    background-color: #1d4ed8;
-  }
-  
-  /* Right Panel (Main Content) */
+
   .dashboard-right-panel {
-    flex: 1;
-    background-color: #f9fafb; /* Light background for the right panel */
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 20px; /* Space at the top */
+    padding: 30px;
   }
-  
-  /* Heading Styles */
+}
+
+@media (max-width: 992px) {
+  /* Tablets and below */
+  .admin-dashboard-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .dashboard-left-panel {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .dashboard-right-panel {
+    width: 100%;
+    margin-top: 10px;
+    padding: 20px;
+  }
+
   .dashboard-right-panel h1 {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #2563eb; /* Blue color */
+    font-size: 1.75rem;
   }
-  
+
   .dashboard-right-panel h2 {
-    font-size: 1.5rem;
-    color: #2563eb; /* Blue color */
+    font-size: 1.3rem;
   }
-  
-  .dashboard-right-panel .highlight {
-    color: #1d4ed8; /* Darker blue for highlights */
-  }
-  
+
   .dashboard-right-panel p {
-    font-size: 16px;
-    color: #4b5563; /* Dark gray for the text */
+    font-size: 14px;
   }
-  
-  /* Mobile Responsive */
-  @media (max-width: 768px) {
-    .admin-dashboard-container {
-      flex-direction: column;
-      align-items: center;
-      gap: 10px; /* Reduce the gap between panels */
-    }
-  
-    .dashboard-left-panel {
-      width: 100%;
-      margin-top: 10px; /* Space at the top */
-      height: auto;
-    }
-  
-    .dashboard-right-panel {
-      width: 100%;
-      margin-top: 10px;
-      padding: 20px;
-    }
-  
-    .grid {
-      grid-template-columns: repeat(1, 1fr); /* Single column grid for mobile */
-    }
-  
-    .dashboard-right-panel h1 {
-      font-size: 1.5rem;
-    }
-  
-    .dashboard-right-panel p {
-      font-size: 14px;
-    }
+
+  .metric-card {
+    padding: 12px; /* Adjust padding for tablet */
+    font-size: 14px;
   }
-  
+}
+
+@media (max-width: 768px) {
+  /* Mobile devices */
+  .admin-dashboard-container {
+    padding: 10px;
+  }
+
+  .dashboard-left-panel {
+    width: 100%;
+    margin-top: 10px;
+    box-shadow: none; /* Remove shadow for mobile */
+    border-radius: 0; /* Remove rounded corners for mobile */
+  }
+
+  .dashboard-right-panel {
+    width: 100%;
+    margin-top: 10px;
+    padding: 15px;
+  }
+
+  .dashboard-right-panel h1 {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-right-panel h2 {
+    font-size: 1.25rem;
+  }
+
+  .dashboard-right-panel p {
+    font-size: 13px; /* Smaller text size for mobile */
+  }
+
+  .metric-card {
+    padding: 10px; /* Smaller padding for mobile */
+    font-size: 13px; /* Smaller font size for mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  /* Very small screens (extra small phones) */
+  .dashboard-left-panel {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .dashboard-right-panel {
+    padding: 10px;
+  }
+
+  .dashboard-right-panel h1 {
+    font-size: 1.25rem;
+  }
+
+  .dashboard-right-panel p {
+    font-size: 12px;
+  }
+
+  .metric-card {
+    padding: 8px; /* Smaller padding */
+    font-size: 12px; /* Smaller text */
+  }
+}
