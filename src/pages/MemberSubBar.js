@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaInfoCircle,
-  FaUsers,
   FaList,
   FaCog,
   FaFlag,
@@ -164,8 +163,7 @@ useEffect(() => {
 
 
   const projectSettingsItems = [
-    { icon: FaInfoCircle, label: "Project Details", },
-    { icon: FaUsers, label: "Project Members",  },
+    { icon: FaInfoCircle, label: "Project Details", path:'/member-project-details' },
     { icon: FaFileAlt, label: "Test Data",  },
     { icon: FaList, label: "Requirement Types",  },
     { icon: FaCog, label: "Test Case Types", },

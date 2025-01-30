@@ -64,13 +64,13 @@ const CreateTestCases = () => {
   const handleWriteTestManually = () => {
     if (!validateFields()) return;
 
-    
+
     navigate("/write-manually", {
       state: {
         testCaseInfo: {
           name,
-          type: testCaseType,
-          priority: testCasePriority,
+          testcase_type: testCaseType,
+          testcase_priority: testCasePriority,
           projectId: selectedProject.id
         }
       }
@@ -162,6 +162,7 @@ const CreateTestCases = () => {
         }
   
         const data = await response.json();
+        console.log("Fetched Test Case Types:", data);
         settestCaseTypes(data); 
       } catch (error) {
         setError(error.message || "Failed to fetch test case types");
@@ -194,6 +195,7 @@ const CreateTestCases = () => {
         }
   
         const data = await response.json();
+        console.log("Fetched Priorities:", data);
         setPriorities(data); 
       } catch (error) {
         setError(error.message || "Failed to fetch test case priorities");
@@ -262,7 +264,9 @@ const CreateTestCases = () => {
   </label>
   <select
     value={testCaseType}
+    
     onChange={(e) => {
+      console.log("User Selected Test Case Type:", e.target.value);
       setTestCaseType(e.target.value);
       setErrors((prev) => ({ ...prev, type: "" }));
     }}
@@ -290,6 +294,7 @@ const CreateTestCases = () => {
   <select
     value={testCasePriority}
     onChange={(e) => {
+      console.log("User Selected Test Case Priority:", e.target.value); 
       setTestCasePriority(e.target.value);
       setErrors((prev) => ({ ...prev, priority: "" }));
     }}

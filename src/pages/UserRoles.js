@@ -9,6 +9,9 @@ const UserRoles = () => {
   ];
 
   return (
+    <div className="dashboard-container">
+
+      <div className="main-content">
     <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6 mt-2">User Roles</h1>
       <div className="space-y-4">
@@ -22,7 +25,7 @@ const UserRoles = () => {
           </div>
         ))}
       </div>
-    </div>
+    </div></div></div>
   );
 };
 

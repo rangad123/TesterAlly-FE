@@ -6,13 +6,14 @@
   gap: 20px; 
   margin-top: 20px; 
   padding: 0 20px; 
+  background-color: rgb(237 235 254 / var(--tw-bg-opacity, 1));
 }
 
 /* Left Panel (Sidebar) */
 .dashboard-left-panel {
   width: 300px;
-  background-color: #2563eb; 
-  color: white;
+  background-color: whitesmoke;  
+  color: rgb(103, 45, 216);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -22,7 +23,7 @@
 }
 
 .metric-card {
-  background-color: #1d4ed8; 
+  background-color: rgb(103, 45, 216);  
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 10px;
@@ -43,37 +44,33 @@
   transition: all 0.3s ease;
 }
 
-.dashboard-left-panel li:hover {
-  background-color: #1d4ed8;
-}
-
+.dashboard-left-panel li:hover,
 .dashboard-left-panel li.selected {
-  background-color: #1d4ed8;
+  background-color: rgb(103, 45, 216);
 }
 
 /* Right Panel (Main Content) */
 .dashboard-right-panel {
   flex: 1;
-  background-color: #f9fafb; 
+  background-color: rgb(237 235 254 / var(--tw-bg-opacity, 1)); 
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-top: 20px; 
 }
 
 .dashboard-right-panel h1 {
   font-size: 2rem;
   font-weight: bold;
-  color: #2563eb; 
+  color: rgb(126, 58, 242);  
 }
 
 .dashboard-right-panel h2 {
   font-size: 1.5rem;
-  color: #2563eb; 
+  color: rgb(126, 58, 242);  
 }
 
 .dashboard-right-panel .highlight {
-  color: #1d4ed8; 
+  color: rgb(103, 45, 216);  
 }
 
 .dashboard-right-panel p {
@@ -83,7 +80,6 @@
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-  /* Large desktops and smaller screens */
   .admin-dashboard-container {
     flex-direction: row;
     gap: 20px;
@@ -99,7 +95,6 @@
 }
 
 @media (max-width: 992px) {
-  /* Tablets and below */
   .admin-dashboard-container {
     flex-direction: column;
     gap: 20px;
@@ -129,13 +124,12 @@
   }
 
   .metric-card {
-    padding: 12px; /* Adjust padding for tablet */
+    padding: 12px;
     font-size: 14px;
   }
 }
 
 @media (max-width: 768px) {
-  /* Mobile devices */
   .admin-dashboard-container {
     padding: 10px;
   }
@@ -172,7 +166,6 @@
 }
 
 @media (max-width: 480px) {
-  /* Very small screens (extra small phones) */
   .dashboard-left-panel {
     width: 100%;
     padding: 10px;

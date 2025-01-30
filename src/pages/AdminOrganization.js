@@ -10,7 +10,6 @@ const AdminOrganization = () => {
   const [loading, setLoading] = useState(false);  // Add a loading state to control the loading indicator
   const [error, setError] = useState(null);
 
-  // Fetch Organizations from Backend API
   useEffect(() => {
     const fetchOrganizations = async () => {
       setLoading(true); // Set loading to true while fetching data
@@ -58,7 +57,7 @@ const AdminOrganization = () => {
   };
 
   return (
-    <div className="admin-dashboard-container">
+    <div className="admin-dashboard-container ">
       {/* Left Panel (Sidebar) */}
       <div className="dashboard-left-panel">
         <div className="metric-card">

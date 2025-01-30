@@ -4,10 +4,7 @@ import MemberSidebar from "./MemberSidebar";
 
 const MemberProjects = () => {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState([]);
-  const [testCases, setTestCases] = useState([]);
-  const [testSuites, setTestSuites] = useState([]);
-  const [requirements, setRequirements] = useState([]);
+  const [data, setData] = useState({ projects: [], test_cases: [], test_suites: [], requirements: [] });
   const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("userId");
 
@@ -15,31 +12,9 @@ const MemberProjects = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-
-        const projectResponse = await fetch(
-          `https://testerally-be-ylpr.onrender.com/api/user-projects/${userId}/`
-        );
-        const projectData = await projectResponse.json();
-        setProjects(projectData.projects || []);
-
-        const testCaseResponse = await fetch(
-          `https://testerally-be-ylpr.onrender.com/api/user-projects/${userId}/`
-        );
-        const testCaseData = await testCaseResponse.json();
-        setTestCases(testCaseData.test_cases || []);
-
-        const testSuiteResponse = await fetch(
-          `https://testerally-be-ylpr.onrender.com/api/user-projects/${userId}/`
-        );
-        const testSuiteData = await testSuiteResponse.json();
-        setTestSuites(testSuiteData.test_suites || []);
-
-        const requirementResponse = await fetch(
-          `https://testerally-be-ylpr.onrender.com/api/user-projects/${userId}/`
-        );
-        const requirementData = await requirementResponse.json();
-        setRequirements(requirementData.requirements || []);
-
+        const response = await fetch(`https://testerally-be-ylpr.onrender.com/api/user-projects/${userId}/`);
+        const result = await response.json();
+        setData(result);
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
@@ -47,33 +22,24 @@ const MemberProjects = () => {
       }
     };
 
-    if (userId) {
-      fetchData();
-    }
+    if (userId) fetchData();
   }, [userId]);
 
   const handleProjectClick = (project) => {
-    const currentUser = localStorage.getItem("userId");
-
-    const projectTestCases = testCases.filter(tc => tc.project_id === project.id);
-    const projectTestSuites = testSuites.filter(ts => ts.project_id === project.id);
-    const projectRequirements = requirements.filter(req => req.project_id === project.id);
-
     const projectData = {
       ...project,
-      test_cases: projectTestCases,
-      test_suites: projectTestSuites,
-      requirements: projectRequirements,
+      test_cases: data.test_cases.filter(tc => tc.project_id === project.id),
+      test_suites: data.test_suites.filter(ts => ts.project_id === project.id),
+      requirements: data.requirements.filter(req => req.project_id === project.id),
     };
 
-    // Save to localStorage
-    localStorage.setItem(`selectedProject_${currentUser}`, JSON.stringify(projectData));
+    localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(projectData));
     localStorage.setItem("selectedProject", JSON.stringify(projectData));
 
     window.dispatchEvent(new CustomEvent("projectChanged", { detail: projectData }));
     window.dispatchEvent(new CustomEvent("showProjectSidebar", { detail: true }));
 
-    navigate("/test-cases");
+    navigate("/member-project-details");
   };
 
   return (
@@ -82,78 +48,60 @@ const MemberProjects = () => {
       <div className="flex flex-col min-h-screen">
         <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
           <div className="p-6">
-            <h2 className="mb-6 text-2xl font-semibold text-gray-800">
-              Projects
-            </h2>
+            <h2 className="mb-6 text-2xl font-semibold text-gray-800">My Projects</h2>
 
+            {/* Loading Indicator */}
             {loading ? (
               <div className="text-center p-8 bg-white rounded-lg shadow-md">
                 <p className="text-gray-600 text-lg mb-4">Loading projects...</p>
               </div>
             ) : (
-              <div className="space-y-6">
-                {projects.length === 0 ? (
-                  <div className="text-center p-8 bg-white rounded-lg shadow-md">
-                    <p className="text-gray-600 text-lg mb-4">
-                      You have no projects yet.
-                    </p>
-                    <p className="text-gray-500">
-                      Please create a project to get started.
-                    </p>
+              <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {data.projects.length === 0 ? (
+                  <div className="col-span-full text-center py-6 text-gray-500 bg-white rounded-lg shadow-md">
+                    No projects available.
                   </div>
                 ) : (
-                  <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-                    <table className="min-w-full table-auto">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Project Name
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Description
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Project Type
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Statistics
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {projects.map((project) => {
-                          const projectTestCases = testCases.filter(tc => tc.project_id === project.id);
-                          const projectTestSuites = testSuites.filter(ts => ts.project_id === project.id);
-                          const projectRequirements = requirements.filter(req => req.project_id === project.id);
-
-                          return (
-                            <tr
-                              key={project.id}
-                              className="group hover:bg-gray-50 transition-colors duration-200 border-b cursor-pointer"
-                              onClick={() => handleProjectClick(project)}
-                            >
-                              <td className="px-6 py-4 text-sm text-gray-900">
-                                <span className="font-medium">{project.name}</span>
-                              </td>
-                              <td className="px-6 py-4 text-sm text-gray-500">
-                                {project.description || "No description provided"}
-                              </td>
-                              <td className="px-6 py-4 text-sm text-gray-500">
-                                {project.project_type || "N/A"}
-                              </td>
-                              <td className="px-6 py-4 text-sm text-gray-500">
-                                <div className="space-y-1">
-                                  <p>Test Cases: {projectTestCases.length}</p>
-                                  <p>Test Suites: {projectTestSuites.length}</p>
-                                  <p>Requirements: {projectRequirements.length}</p>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                  data.projects.map((project) => (
+                    <div
+                      key={project.id}
+                      onClick={() => handleProjectClick(project)}
+                      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer overflow-hidden"
+                    >
+                      <div className="p-6">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">{project.name}</h3>
+                        <p className="text-gray-600 mb-4 line-clamp-2">
+                          {project.description || "No description provided"}
+                        </p>
+                        <div className="text-sm text-gray-500">
+                          <p className="mb-1">Project Type: {project.project_type || "N/A"}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="border-t border-gray-100 bg-gray-50 px-6 py-4">
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="text-center">
+                            <div className="text-2xl font-semibold text-blue-600">
+                              {data.test_cases.filter(tc => tc.project_id === project.id).length}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">Test Cases</div>
+                          </div>
+                          <div className="text-center border-l border-r border-gray-200">
+                            <div className="text-2xl font-semibold text-green-600">
+                              {data.test_suites.filter(ts => ts.project_id === project.id).length}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">Test Suites</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-semibold text-purple-600">
+                              {data.requirements.filter(req => req.project_id === project.id).length}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">Requirements</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
                 )}
               </div>
             )}

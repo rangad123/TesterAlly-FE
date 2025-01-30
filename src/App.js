@@ -333,6 +333,8 @@ import { useLocation } from 'react-router-dom';
 import MemberDashBoard from "./pages/MemberDashBoard";
 import AdminSetting from "./pages/AdminSetting";
 import MemberProjects from "./pages/MemberProjects";
+import MemberProjectDetails from "./pages/MemberProjectDetails";
+import MemberProfile from "./pages/MemberProfile";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -597,6 +599,24 @@ const App = () => {
                 element={ 
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <MemberProjects />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/member-project-details"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberProjectDetails />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/member-profile"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberProfile />
                   </PrivateRoute>
                 }
               />

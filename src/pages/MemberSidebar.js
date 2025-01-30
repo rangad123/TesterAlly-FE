@@ -73,7 +73,7 @@ const MemberSidebar = () => {
 
 
   const handleNavigateToProfile = () => {
-
+    navigate("/member-profile")
     setIsTestCasesVisible(false);
     setIsProjectSettingsVisible(false);
     setIsSettingsVisible(false);
@@ -115,7 +115,7 @@ const MemberSidebar = () => {
 
   const currentPath = location.pathname;
 
-  const isAnyOptionActive = currentPath === "/test-suites" || currentPath === "/test-cases"
+  const isAnyOptionActive = currentPath === "/member-project-details" || currentPath === "/test-cases"
   || currentPath === "/create-requirement"
   || currentPath === "/project-members" || currentPath === "/project-details" 
   || currentPath === "/requirement-details" || currentPath === "/requirement-type"
@@ -186,10 +186,10 @@ const MemberSidebar = () => {
 
     {/* Profile Option */}
     <div
-      className={`sidebar-option ${currentPath === "/profile" ? "active" : ""}`}
+      className={`sidebar-option ${currentPath === "/member-profile" ? "active" : ""}`}
       onClick={handleNavigateToProfile}
     >
-      <MdAccountCircle className={`icon project-icon ${window.location.pathname === "/profile" ? "active-icon" : ""}`}  />
+      <MdAccountCircle className={`icon project-icon ${window.location.pathname === "/member-profile" ? "active-icon" : ""}`}  />
       <div className="option-name-container">
         <span className="option-name">Profile</span>
       </div>

@@ -42,15 +42,19 @@ const WriteTestManually = () => {
       return () => window.removeEventListener("projectChanged", handleProjectChange);
     }, [navigate]);
 
-  useEffect(() => {
-    const info = location.state?.testCaseInfo;
-    if (!info) {
-      navigate("/create-test-cases");
-      return;
-    }
-    setTestCaseInfo(info);
-    fetchTestData(info.projectId);
-  }, [location, navigate]);
+    useEffect(() => {
+      const info = location.state?.testCaseInfo;
+    
+      if (!info || !info.name || !info.testcase_type || !info.testcase_priority) {
+        alert("Test case data is incomplete or missing.");
+        navigate("/test-cases/create-testcases");
+        return;
+      }
+    
+      setTestCaseInfo(info);
+      fetchTestData(info.projectId);
+    }, [location, navigate]);
+    
 
   const fetchTestData = async (projectId) => {
     if (!projectId) return;
@@ -81,6 +85,7 @@ const WriteTestManually = () => {
   };
 
   const handleCreateTestCase = async () => {
+
     try {
 
       const testCaseResponse = await fetch("https://testerally-be-ylpr.onrender.com/api/testcases/", {
@@ -89,8 +94,8 @@ const WriteTestManually = () => {
         body: JSON.stringify({
           project_id: testCaseInfo.projectId,
           name: testCaseInfo.name,
-          type: testCaseInfo.type,
-          priority: testCaseInfo.priority
+          testcase_type: testCaseInfo.testcase_type,
+          testcase_priority: testCaseInfo.testcase_priority
         })
       });
 
@@ -99,6 +104,7 @@ const WriteTestManually = () => {
       }
 
       const testCaseData = await testCaseResponse.json();
+      
       const testCaseId = testCaseData.id;
 
       const stepPromises = testSteps
