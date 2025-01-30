@@ -1,28 +1,28 @@
 /* Main Container */
 .admin-dashboard-container {
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  flex-wrap: wrap; 
   min-height: 100vh;
-  gap: 20px; /* Space between left and right panels */
-  margin-top: 20px; /* Space at the top */
-  padding: 0 20px; /* Padding for all devices */
+  gap: 20px; 
+  margin-top: 20px; 
+  padding: 0 20px; 
 }
 
 /* Left Panel (Sidebar) */
 .dashboard-left-panel {
   width: 300px;
-  background-color: #2563eb; /* Blue background */
+  background-color: #2563eb; 
   color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-top: 20px; /* Space at the top */
-  height: auto; /* Remove fixed height */
-  flex-shrink: 0; /* Prevent shrinking */
+  margin-top: 20px; 
+  height: auto; 
+  flex-shrink: 0;
 }
 
 .metric-card {
-  background-color: #1d4ed8; /* Darker blue for the cards */
+  background-color: #1d4ed8; 
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 10px;
@@ -54,31 +54,31 @@
 /* Right Panel (Main Content) */
 .dashboard-right-panel {
   flex: 1;
-  background-color: #f9fafb; /* Light background for the right panel */
+  background-color: #f9fafb; 
   padding: 40px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-top: 20px; /* Space at the top */
+  margin-top: 20px; 
 }
 
 .dashboard-right-panel h1 {
   font-size: 2rem;
   font-weight: bold;
-  color: #2563eb; /* Blue color */
+  color: #2563eb; 
 }
 
 .dashboard-right-panel h2 {
   font-size: 1.5rem;
-  color: #2563eb; /* Blue color */
+  color: #2563eb; 
 }
 
 .dashboard-right-panel .highlight {
-  color: #1d4ed8; /* Darker blue for highlights */
+  color: #1d4ed8; 
 }
 
 .dashboard-right-panel p {
   font-size: 16px;
-  color: #4b5563; /* Dark gray for the text */
+  color: #4b5563; 
 }
 
 /* Responsive Design */
@@ -90,7 +90,7 @@
   }
 
   .dashboard-left-panel {
-    width: 250px; /* Slightly reduce width for medium screens */
+    width: 250px;
   }
 
   .dashboard-right-panel {
@@ -143,8 +143,8 @@
   .dashboard-left-panel {
     width: 100%;
     margin-top: 10px;
-    box-shadow: none; /* Remove shadow for mobile */
-    border-radius: 0; /* Remove rounded corners for mobile */
+    box-shadow: none; 
+    border-radius: 0; 
   }
 
   .dashboard-right-panel {
@@ -162,12 +162,12 @@
   }
 
   .dashboard-right-panel p {
-    font-size: 13px; /* Smaller text size for mobile */
+    font-size: 13px; 
   }
 
   .metric-card {
-    padding: 10px; /* Smaller padding for mobile */
-    font-size: 13px; /* Smaller font size for mobile */
+    padding: 10px; 
+    font-size: 13px; 
   }
 }
 
@@ -191,7 +191,7 @@
   }
 
   .metric-card {
-    padding: 8px; /* Smaller padding */
-    font-size: 12px; /* Smaller text */
+    padding: 8px; 
+    font-size: 12px;
   }
 }
