@@ -36,7 +36,7 @@ const Register = (props) => {
     setPhone(value);
 
     if (!validatePhone(value)) {
-      setPhoneError("Phone number must start with 7 or 9 and be 10 digits long.");
+      setPhoneError("Phone number must be between 10 to 15 digits.");
     } else {
       setPhoneError("");
     }

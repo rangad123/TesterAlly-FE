@@ -74,7 +74,7 @@ const AdminOrganization = () => {
           // Project List (Left Panel) Not Needed Now, as it's in the Right Panel
           <div>
             <button
-              className="mb-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition"
+              className="mb-4 px-4 py-2 text-gray-700 rounded hover:text-purple-600 transition"
               onClick={handleBackButtonClick}
             >
               ← Back to Projects
@@ -84,7 +84,7 @@ const AdminOrganization = () => {
           // Project List (Left Panel)
           <div>
             <button
-              className="mb-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition"
+              className="mb-4 px-4 py-2 text-gray-700 hover:text-purple-600 rounded transition"
               onClick={handleBackButtonClick}
             >
               ← Back to Organizations
@@ -96,7 +96,7 @@ const AdminOrganization = () => {
                 projects.map((project) => (
                   <li
                     key={project.id}
-                    className={`p-3 rounded-lg cursor-pointer text-white font-medium transition ${selectedProject?.id === project.id ? "bg-blue-700" : "hover:bg-blue-500"} metric-card2`}
+                    className={`organizationlist p-3 rounded-lg cursor-pointer font-medium transition ${selectedProject?.id === project.id ? "bg-blue-500" : "hover:bg-[rgb(237,235,254)]"} metric-card2`}
                     onClick={() => setSelectedProject(project)}
                   >
                     {project.name}
@@ -111,7 +111,7 @@ const AdminOrganization = () => {
             {organizations.map((org) => (
               <li
                 key={org.id}
-                className={`p-3 rounded-lg cursor-pointer text-white font-medium transition ${selectedOrg?.id === org.id ? "bg-blue-700" : "hover:bg-blue-500"} metric-card2`}
+                className={` organizationlist p-3 rounded-lg cursor-pointer font-medium transition ${selectedOrg?.id === org.id ? "bg-blue-500" : "hover:bg-[rgb(237,235,254)]"} metric-card2`}
                 onClick={() => setSelectedOrg(org)}
               >
                 {org.name}
@@ -126,29 +126,36 @@ const AdminOrganization = () => {
         {loading ? (
           <p>Loading...</p>
         ) : selectedProject ? (
-          <div className="bg-white shadow-md p-6 rounded-lg">
-            <h1 className="text-3xl font-bold mb-4 text-blue-700">{selectedProject.name}</h1>
-            <h2 className="text-2xl font-semibold mb-2 text-blue-700">Project Details</h2>
-            <p className="text-gray-500">Description: {selectedProject.description}</p>
-            <h3 className="text-xl font-semibold mt-4 text-blue-600">Test Cases</h3>
-            {selectedProject.test_cases && selectedProject.test_cases.length > 0 ? (
-              <ul className="list-disc list-inside text-blue-500">
-                {selectedProject.test_cases.map((testCase) => (
-                  <li key={testCase.id}>
-                    {testCase.name} - {testCase.testcase_type} - Priority: {testCase.testcase_priority}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-500">No test case found.</p>
-            )}
-            <h3 className="text-xl font-semibold mt-4 text-blue-600">Project Members</h3>
-            <ProjectMembers projectId={selectedProject.id} />
+          <div className="bg-white rounded-xl shadow-lg p-6 lg:p-8">
+            <div>
+              <h2 className="text-lg lg:text-xl font-semibold mb-3 text-gray-800">Project Details</h2>
+              <p className="text-gray-500">Description: {selectedProject.description || 'No description available.'}</p>
+            </div>
+            <div>
+                  <h3 className="text-lg lg:text-xl font-semibold mb-3 text-gray-800 mt-5">Test Cases</h3>
+                  {selectedProject.test_cases && selectedProject.test_cases.length > 0 ? (
+                    <div className="grid gap-4">
+                      {selectedProject.test_cases.map((testCase) => (
+                        <div key={testCase.id} className="p-4 bg-[rgb(237,235,254)] rounded-lg">
+                          <p className="text-[rgb(126,58,242)] font-medium">{testCase.name}</p>
+                          <p className="text-gray-600 text-sm">
+                            Type: {testCase.testcase_type} | Priority: {testCase.testcase_priority}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">No test cases found.</p>
+                  )}
+                </div>
+                
+                <ProjectMembers projectId={selectedProject.id} />
+              
           </div>
         ) : selectedOrg ? (
           <div className="bg-white shadow-md p-6 rounded-lg">
             <h1 className="text-3xl font-bold mb-4 text-blue-700">{selectedOrg.name}</h1>
-            <h2 className="text-2xl font-semibold mb-2 text-blue-700">Projects</h2>
+            <h2 className="text-lg lg:text-xl font-semibold mb-4 text-gray-800">Projects</h2>
             {projects.length === 0 ? (
               <p className="text-gray-500">No projects found for this organization.</p>
             ) : (
@@ -156,10 +163,10 @@ const AdminOrganization = () => {
                 {projects.map((project) => (
                   <div
                     key={project.id}
-                    className="bg-white p-4 rounded-lg shadow-md border border-gray-200 transition-all hover:shadow-lg hover:scale-105 cursor-pointer"
+                    className="bg-[rgb(237,235,254)] p-4 lg:p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
                     onClick={() => setSelectedProject(project)}
                   >
-                    <h3 className="text-xl font-semibold text-blue-600">{project.name}</h3>
+                    <h3 className="text-lg font-semibold text-[rgb(126,58,242)]">{project.name}</h3>
                   </div>
                 ))}
               </div>
@@ -191,19 +198,22 @@ const ProjectMembers = ({ projectId }) => {
   }, [projectId]);
 
   return (
-    <div className="mt-3">
-      <h4 className="text-lg font-semibold text-blue-700">Project Members:</h4>
+    <div>
+      <h3 className="text-lg lg:text-xl font-semibold mb-3 text-gray-800 mt-5">Project Members</h3>
       {members.length === 0 ? (
         <p className="text-gray-500">No members assigned.</p>
       ) : (
-        <ul className="list-disc list-inside text-blue-500">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {members.map((member) => (
-            <li key={member.id}>{member.name}</li>
+            <div key={member.id} className="p-4 bg-[rgb(237,235,254)] rounded-lg">
+              <p className="text-[rgb(126,58,242)] font-medium">{member.name}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
 };
+
 
 export default AdminOrganization;

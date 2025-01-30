@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Save, X, Edit2, Trash2, ChevronDown } from 'lucide-react';
+import { Save, X, Edit2, Trash2, ChevronDown, Calendar, User, Clock, Tag } from 'lucide-react';
 
 const ProjectDetails = () => {
   const navigate = useNavigate();
@@ -179,46 +179,6 @@ const ProjectDetails = () => {
     }
   };
 
-  const renderProjectRow = (project, isSelected = false) => {
-    return (
-      <tr
-        key={project.id} 
-        className="group hover:bg-gray-50 transition-colors duration-200 border-b"
-      >
-        <td className="px-6 py-4 text-sm text-gray-900">
-          <span className="font-medium">{project.name}</span>
-        </td>
-        <td className="px-6 py-4 text-sm text-gray-500">
-          {project.description || "N/A"}
-        </td>
-        <td className="px-6 py-4 text-sm text-gray-500">
-          {project.project_type || "N/A"}
-        </td>
-        {isSelected && (
-          <td className="px-6 py-4 text-sm text-gray-500">{userName}</td>
-        )}
-        <td className="px-6 py-4 text-sm font-medium">
-          <div className="flex items-center space-x-2 transition-opacity duration-200">
-            <button
-              onClick={() => handleEditClick(project)}
-              className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
-            >
-              <Edit2 className="w-4 h-4 mr-1" />
-              Edit
-            </button>
-            <button
-              onClick={() => handleDeleteProject(project.id)}
-              className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200"
-            >
-              <Trash2 className="w-4 h-4 mr-1" />
-              Delete
-            </button>
-          </div>
-        </td>
-      </tr>
-    );
-  };
-
   const renderEditModal = () => {
     if (!isEditModalOpen) return null;
 
@@ -294,180 +254,141 @@ const ProjectDetails = () => {
     );
   };
 
+  const renderProjectDetails = () => {
+    if (!selectedProject) return null;
 
+    return (
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="p-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4 md:mb-0">
+              {selectedProject.name}
+            </h1>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => handleEditClick(selectedProject)}
+                className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
+              >
+                <Edit2 className="w-4 h-4 mr-2" />
+                Edit Project
+              </button>
+              <button
+                onClick={() => handleDeleteProject(selectedProject.id)}
+                className="inline-flex items-center px-4 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete Project
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="space-y-4">
+              <div className="flex items-center text-gray-600">
+                <Tag className="w-5 h-5 mr-2" />
+                <span className="font-medium mr-2">Type:</span>
+                <span>{selectedProject.project_type || "Not specified"}</span>
+              </div>
+              <div className="flex items-center text-gray-600">
+                <User className="w-5 h-5 mr-2" />
+                <span className="font-medium mr-2">Created by:</span>
+                <span>{userName}</span>
+              </div>
+              <div className="flex items-center text-gray-600">
+                <Calendar className="w-5 h-5 mr-2" />
+                <span className="font-medium mr-2">Created:</span>
+                <span>{selectedProject.created_at || "N/A"}</span>
+              </div>
+              <div className="flex items-center text-gray-600">
+                <Clock className="w-5 h-5 mr-2" />
+                <span className="font-medium mr-2">Last updated:</span>
+                <span>{selectedProject.updated_at || "N/A"}</span>
+              </div>
+            </div>
+            
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-medium text-gray-900 mb-2">Description</h3>
+              <p className="text-gray-600">
+                {selectedProject.description || "No description provided"}
+              </p>
+            </div>
+          </div>
+
+          <div className="border-t pt-6">
+            <div className="flex space-x-4 mb-6 overflow-x-auto">
+              {[ "test-cases", "test-suites"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
+                    activeTab === tab
+                      ? "text-blue-600 border-b-2 border-blue-600"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  {tab.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+                </button>
+              ))}
+            </div>
+
+            {activeTab === "test-cases" && (
+              <div className="bg-white rounded-lg">
+                {testCases.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No test cases available</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {testCases.map((testCase) => (
+                      <div key={testCase.id} className="p-4 border rounded-lg hover:bg-gray-50">
+                        <h4 className="font-medium text-gray-900">{testCase.name}</h4>
+                        <p className="text-gray-600 mt-1">{testCase.url || "N/A"}</p>
+                        <span className="inline-block mt-2 px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
+                          {testCase.status || "Not Started"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === "test-suites" && (
+              <div className="bg-white rounded-lg">
+                {testSuites.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No test suites available</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {testSuites.map((suite) => (
+                      <div key={suite.id} className="p-4 border rounded-lg hover:bg-gray-50">
+                        <h4 className="font-medium text-gray-900">{suite.title}</h4>
+                        <p className="text-gray-600 mt-1">{suite.description || "N/A"}</p>
+                        <div className="mt-2 text-sm text-gray-500">
+                          Test Cases: {suite.test_cases_count || 0}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
-        <div className="p-6">
-          <h2 className="mb-6 text-2xl font-semibold text-gray-800">Project Details</h2>
-
+        <div className="p-4 md:p-6">
           {loading ? (
             <div className="text-center p-8 bg-white rounded-lg shadow-md">
               <p className="text-gray-600 text-lg mb-4">Loading projects...</p>
             </div>
           ) : selectedProject ? (
-            <div>
-              <div className="flex space-x-4 mb-6">
-                <button
-                  onClick={() => setActiveTab("details")}
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === "details"
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-600"
-                  }`}
-                >
-                  Project Details
-                </button>
-                <button
-                  onClick={() => setActiveTab("test-cases")}
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === "test-cases"
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-600"
-                  }`}
-                >
-                  Test Cases
-                </button>
-                <button
-                  onClick={() => setActiveTab("test-suites")}
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === "test-suites"
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-600"
-                  }`}
-                >
-                  Test Suites
-                </button>
-              </div>
-
-              {activeTab === "details" && (
-                <div>
-                <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-                  <table className="min-w-full table-auto">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Project Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Description
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Project Type
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Created By
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {renderProjectRow(selectedProject, true)}
-                    </tbody>
-                  </table>
-                  </div>
-                  {renderEditModal()}
-                </div>
-              )}
-
-              {activeTab === "test-cases" && (
-                <div className="bg-white rounded-lg shadow-md">
-                  <div className="p-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-medium text-gray-900">Test Cases</h3>
-                    </div>
-                    {testCases.length === 0 ? (
-                      <div className="text-center py-8">
-                        <p className="text-gray-500 text-sm">No test cases available</p>
-                      </div>
-                    ) : (
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Test Case Name
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Description
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {testCases.map((testCase) => (
-                              <tr key={testCase.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                  {testCase.name}
-                                </td>
-                                <td className="px-6 py-4 text-sm text-gray-500">
-                                  {testCase.url || "N/A"}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                  {testCase.status || "Not Started"}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "test-suites" && (
-                <div className="bg-white rounded-lg shadow-md">
-                  <div className="p-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-medium text-gray-900">Test Suites</h3>
-                    </div>
-                    {testSuites.length === 0 ? (
-                      <div className="text-center py-8">
-                        <p className="text-gray-500 text-sm">No test suites available</p>
-                      </div>
-                    ) : (
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Suite Name
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Description
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Test Cases Count
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {testSuites.map((suite) => (
-                              <tr key={suite.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                  {suite.title}
-                                </td>
-                                <td className="px-6 py-4 text-sm text-gray-500">
-                                  {suite.description || "N/A"}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                  {suite.test_cases_count || 0}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+            renderProjectDetails()
           ) : (
             <div className="text-center p-8 bg-white rounded-lg shadow-md">
               <p className="text-gray-600 text-lg mb-4">No project selected</p>
@@ -481,6 +402,7 @@ const ProjectDetails = () => {
           )}
         </div>
       </div>
+      {renderEditModal()}
     </div>
   );
 };

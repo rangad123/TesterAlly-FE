@@ -9,10 +9,9 @@ const WriteTestManually = () => {
     type: '',
     priority: ''
   });
-  const [showUrlInput, setShowUrlInput] = useState(false);
-  const [url, setUrl] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
       const userId = localStorage.getItem("userId");
@@ -56,35 +55,38 @@ const WriteTestManually = () => {
     }, [location, navigate]);
     
 
-  const fetchTestData = async (projectId) => {
-    if (!projectId) return;
-
-    try {
-      const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testdata/${projectId}/`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        const initialStep = {
-          stepNumber: 1,
-          choice: `Navigate to URL: ${data.url}`,
-          isSaved: true,
-          isSelected: true
-        };
-        setTestSteps([initialStep]);
-        setShowUrlInput(false);
-      } else if (response.status === 404) {
-        setShowUrlInput(true);
+    const fetchTestData = async (projectId) => {
+      if (!projectId) return;
+    
+      try {
+        const response = await fetch(`https://testerally-be-ylpr.onrender.com/api/testdata/${projectId}/`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.url) {
+            setTestSteps([
+              {
+                stepNumber: 1,
+                choice: `Navigate to URL: ${data.url}`,
+                isSaved: true,
+                isSelected: true
+              }
+            ]);
+          } else {
+            setTestSteps([]);
+          }
+        } else {
+          setTestSteps([]);
+        }
+      } catch (error) {
+        console.error("Error fetching test data:", error);
         setTestSteps([]);
       }
-    } catch (error) {
-      console.error("Error fetching test data:", error);
-      setShowUrlInput(true);
-      setTestSteps([]);
-    }
-  };
+    };
+    
 
   const handleCreateTestCase = async () => {
+
+    setIsLoading(true);
 
     try {
 
@@ -104,7 +106,7 @@ const WriteTestManually = () => {
       }
 
       const testCaseData = await testCaseResponse.json();
-      
+
       const testCaseId = testCaseData.id;
 
       const stepPromises = testSteps
@@ -135,58 +137,13 @@ const WriteTestManually = () => {
       console.error("Error creating test case and steps:", error);
       alert(`Error: ${error.message}`);
     }
-  };
-
-  const handleUrlSubmit = async () => {
-    if (!testCaseInfo.projectId) {
-      alert("Project ID is missing.");
-      return;
-    }
-  
-    const finalUrl = url.startsWith("http") ? url : `https://${url}`;
-    const payload = { url: finalUrl };
-
-    try {
-      console.log("Sending payload:", payload);
-  
-      const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/testdata/${testCaseInfo.projectId}/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-  
-      if (response.ok) {
-        const data = await response.json();
-        setTestSteps([{
-          stepNumber: 1,
-          choice: `Navigate to URL: ${data.url}`,
-          isSaved: true,
-          isSelected: true,
-        }]);
-        setShowUrlInput(false);
-      } else {
-        const errorText = await response.text();
-        console.error("Failed to save URL. Response:", errorText);
-        alert("Failed to save URL.");
-      }
-    } catch (error) {
-      console.error("Error saving URL:", error);
-      alert("Error saving URL");
+    finally {
+      setIsLoading(false);
     }
   };
-  
-  
+
 
   const handleAddStep = () => {
-    const lastStep = testSteps[testSteps.length - 1];
-    if (!lastStep?.isSaved) {
-      alert("Please save the current step before adding a new one.");
-      return;
-    }
-    
     const newStep = {
       stepNumber: testSteps.length + 1,
       choice: "",
@@ -209,10 +166,7 @@ const WriteTestManually = () => {
   };
 
   const handleDeleteStep = (index) => {
-    if (testSteps.length === 1) {
-      alert("Cannot delete the first step. You must have at least one step.");
-      return;
-    }
+    
     const updatedSteps = testSteps.filter((_, idx) => idx !== index);
     updatedSteps.forEach((step, idx) => {
       step.stepNumber = idx + 1;
@@ -224,26 +178,6 @@ const WriteTestManually = () => {
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
         <div className="p-6">
-          {showUrlInput ? (
-            <div className="mb-6 p-4 bg-white rounded-lg shadow">
-              <h3 className="text-lg font-medium mb-2">Enter Test URL</h3>
-              <input
-                type="text"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                className="w-full p-2 border rounded mb-2"
-                placeholder="Enter URL"
-                required
-              />
-              <button
-                onClick={handleUrlSubmit}
-                className="bg-purple-600 text-white px-4 py-2 rounded"
-                disabled={!url}
-              >
-                Save URL
-              </button>
-            </div>
-          ) : null}
 
           <div className="bg-white shadow rounded-lg p-6">
             <div className="flex justify-between items-center mb-6">
@@ -252,7 +186,7 @@ const WriteTestManually = () => {
                 className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700"
                 onClick={handleCreateTestCase}
               >
-                Create Test Case
+                {isLoading ? "Creating..." : "Create Test Case"}
               </button>
             </div>
 
@@ -335,7 +269,9 @@ const WriteTestManually = () => {
               </div>
             ))}
 
-            {testSteps.length > 0 && testSteps[testSteps.length - 1].isSaved && (
+{(testSteps.length === 0 || testSteps[testSteps.length - 1].isSaved) && (
+
+
               <button
                 onClick={handleAddStep}
                 className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-600 rounded-md hover:bg-purple-100"

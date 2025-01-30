@@ -3,14 +3,13 @@
     max-width: 1200px;
     margin: auto;
     padding: 20px;
-    background: #f5faff;
     border-radius: 10px;
     min-height: 100vh;
   }
   
   .title {
     text-align: center;
-    color: #2563eb;
+    color: rgb(103, 45, 216);
     font-weight: bold;
     padding: 20px;
     margin-bottom: 30px;
@@ -20,7 +19,7 @@
   .setting-card {
     background-color: white;
     padding: 25px;
-    border-left: 5px solid #1d4ed8;
+    border-left: 5px solid rgb(103, 45, 216);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
     border-radius: 8px;
