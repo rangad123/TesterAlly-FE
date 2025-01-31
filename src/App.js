@@ -335,6 +335,7 @@ import AdminSetting from "./pages/AdminSetting";
 import MemberProjects from "./pages/MemberProjects";
 import MemberProjectDetails from "./pages/MemberProjectDetails";
 import MemberProfile from "./pages/MemberProfile";
+import MemberTestDetails from "./pages/MemberTestDetails";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -617,6 +618,15 @@ const App = () => {
                 element={ 
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <MemberProfile />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/member-test-details"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberTestDetails />
                   </PrivateRoute>
                 }
               />
