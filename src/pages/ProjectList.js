@@ -72,6 +72,9 @@ const ProjectList = () => {
         <td className="px-6 py-4 text-sm text-gray-500">
           {project.project_type || "N/A"}
         </td>
+        <td className="px-6 py-4 text-sm text-gray-500">
+          {project.created_at ? new Date(project.created_at).toLocaleDateString() : "N/A"}
+        </td>
 
       </tr>
     );
@@ -107,6 +110,9 @@ const ProjectList = () => {
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Project Type
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Project Date
                         </th>
 
                       </tr>
