@@ -336,6 +336,11 @@ import MemberProjects from "./pages/MemberProjects";
 import MemberProjectDetails from "./pages/MemberProjectDetails";
 import MemberProfile from "./pages/MemberProfile";
 import MemberTestDetails from "./pages/MemberTestDetails";
+import MemberTestCases from "./pages/MemberTestCases";
+import MemberWriteTest from "./pages/MemberWriteTest";
+import MemberTestStep from "./pages/MemberTestStep";
+import AdminProjectDetails from "./pages/AdminProjectDetails";
+import AdminLayout from "./pages/AdminLayout";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -458,12 +463,25 @@ const App = () => {
                   </PrivateRoute>
                 }
               />
+              <Route
+                path="/admin-project-details"
+                exact
+                element={
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <AdminLayout>
+                      <AdminProjectDetails />
+                    </AdminLayout>
+                  </PrivateRoute>
+                }
+              />
               <Route 
                 path="/admin-organization"
                 exact
                 element={
                   <PrivateRoute isLoggedIn={isLoggedIn}>
-                    <AdminOrganization/>
+                    <AdminLayout>
+                      <AdminOrganization/>
+                    </AdminLayout>
                   </PrivateRoute>
                 }
                 />
@@ -627,6 +645,33 @@ const App = () => {
                 element={ 
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <MemberTestDetails />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/member-create-testcase"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberTestCases />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/member-write-testcase"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberWriteTest />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/member-test-cases/:testCaseId/steps"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberTestStep />
                   </PrivateRoute>
                 }
               />

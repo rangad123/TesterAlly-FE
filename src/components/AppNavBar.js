@@ -169,25 +169,26 @@ const AppNavBar = (props) => {
           <div className="flex-1 flex justify-center space-x-8 admin-nav-container">
             <Link
               to="/admin-dashboard"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800 admin-nav-link"
-              data-name="Dashboard"
+              className="flex items-center space-x-2 text-gray-600 hover:text-purple-600 transition-colors duration-200"
             >
               <DashboardIcon />
+              <span className="hidden md:inline">Dashboard</span>
             </Link>
             <Link
               to="/admin-organization"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800 admin-nav-link"
-              data-name="Organization"
+              className="flex items-center space-x-2 text-gray-600 hover:text-purple-600 transition-colors duration-200"
 
             >
               <CorporateFareIcon/>
+              <span className="hidden md:inline">Organization</span>
             </Link>
             <Link
               to="/admin-setting"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800 admin-nav-link"
+              className="flex items-center space-x-2 text-gray-600 hover:text-purple-600 transition-colors duration-200"
               data-name="SettingPanel"
             >
               <AdminPanelSettingsIcon/>
+              <span className="hidden md:inline">Settings</span>
             </Link>
           </div>
         )}

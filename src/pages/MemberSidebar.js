@@ -17,7 +17,7 @@ const MemberSidebar = () => {
   const [isSidebarOpen ] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); 
   const [isProjectSettingsVisible, setIsProjectSettingsVisible] = useState(false);
-  const [isTestCasesVisible, setIsTestCasesVisible] = useState(false);
+  const [isMTestCasesVisible, setIsMTestCasesVisible] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
 
   const sidebarRef = useRef(null);
@@ -41,7 +41,7 @@ const MemberSidebar = () => {
         setIsSettingsVisible(false);
         
         if (window.innerWidth < 640) {
-          setIsTestCasesVisible(false);
+          setIsMTestCasesVisible(false);
         }
       }
     };
@@ -55,7 +55,7 @@ const MemberSidebar = () => {
 
   useEffect(() => {
     const handleShowProjectSidebar = (event) => {
-      setIsTestCasesVisible(true);
+      setIsMTestCasesVisible(true);
     };
   
     window.addEventListener("showProjectSidebar", handleShowProjectSidebar);
@@ -68,20 +68,20 @@ const MemberSidebar = () => {
     setIsSettingsVisible((prevState) => !prevState);
 
     setIsProjectSettingsVisible(false);
-    setIsTestCasesVisible(false);
+    setIsMTestCasesVisible(false);
   };
 
 
   const handleNavigateToProfile = () => {
     navigate("/member-profile")
-    setIsTestCasesVisible(false);
+    setIsMTestCasesVisible(false);
     setIsProjectSettingsVisible(false);
     setIsSettingsVisible(false);
   };
 
   const handleNavigateToDashboard = () => {
     navigate("/member-dashboard");
-    setIsTestCasesVisible(false);
+    setIsMTestCasesVisible(false);
     setIsProjectSettingsVisible(false);
     setIsSettingsVisible(false);
   };
@@ -89,25 +89,25 @@ const MemberSidebar = () => {
   const handleNavigateToUserRoles = () => {
 
     setIsSettingsVisible(false);
-    setIsTestCasesVisible(false);
+    setIsMTestCasesVisible(false);
     setIsProjectSettingsVisible(false);
   };
 
   const handleNavigateToUsers = () => {
     setIsSettingsVisible(false);
-    setIsTestCasesVisible(false);
+    setIsMTestCasesVisible(false);
     setIsProjectSettingsVisible(false);
   };
 
-  const toggleTestCasesSidebar = () => {
-    setIsTestCasesVisible((prevState) => !prevState);
+  const toggleMTestCasesSidebar = () => {
+    setIsMTestCasesVisible((prevState) => !prevState);
     setIsProjectSettingsVisible(false);
     setIsSettingsVisible(false);
   };
 
   const handleProjectList = () => {
     navigate("/member-projects")
-    setIsTestCasesVisible(false);
+    setIsMTestCasesVisible(false);
     setIsProjectSettingsVisible(false);
     setIsSettingsVisible(false);
 
@@ -115,7 +115,7 @@ const MemberSidebar = () => {
 
   const currentPath = location.pathname;
 
-  const isAnyOptionActive = currentPath === "/member-project-details" || currentPath === "/test-cases"
+  const isAnyOptionActive = currentPath === "/member-project-details" || currentPath === "/member-test-details"
   || currentPath === "/create-requirement"
   || currentPath === "/project-members" || currentPath === "/project-details" 
   || currentPath === "/requirement-details" || currentPath === "/requirement-type"
@@ -153,7 +153,7 @@ const MemberSidebar = () => {
       {/* Test Development Option */}
     <div
       className={`sidebar-option ${isAnyOptionActive ? "active" : ""}`}
-      onClick={toggleTestCasesSidebar}
+      onClick={toggleMTestCasesSidebar}
     >
       <FaCode className={`icon project-icon ${isAnyOptionActive ? "active-icon" : ""}`} />
       <div className="option-name-container">
@@ -162,13 +162,13 @@ const MemberSidebar = () => {
     </div>
 
     <MemberSubBar 
-      isVisible={isProjectSettingsVisible || isTestCasesVisible} 
+      isVisible={isProjectSettingsVisible || isMTestCasesVisible} 
       isProjectSettings={isProjectSettingsVisible}
       isL1Expanded={isSidebarOpen}
       isMobileView={isMobileView}
       onOptionSelect={() => {
         if (isMobileView) {
-          setIsTestCasesVisible(false);
+          setIsMTestCasesVisible(false);
         }
       }}
     />

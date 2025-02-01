@@ -155,9 +155,10 @@ useEffect(() => {
     setIsDropdownOpen(false);
     setSearchTerm("");
     
-    if (isMobileView) {
+    if (isMobileView && typeof onOptionSelect === "function") {
       onOptionSelect(); 
-    }
+  }
+  
     window.dispatchEvent(new CustomEvent("projectChanged", { detail: project }));
   };
 
@@ -171,7 +172,7 @@ useEffect(() => {
   ];
 
   const menuItems = [
-    { icon: FaFileAlt, label: "Test Cases", },
+    { icon: FaFileAlt, label: "Test Cases", path:'/member-test-details' },
     { icon: FaRegFileAlt, label: "Requirements",  },
     { icon: FaClipboardList, label: "Test Suites", },
     {

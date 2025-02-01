@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Save, X, Edit2, Trash2, Plus } from 'lucide-react';
+import MemberSidebar from "./MemberSidebar";
 
 const MemberTestDetails = () => {
   const navigate = useNavigate();
@@ -288,7 +289,7 @@ const MemberTestDetails = () => {
   };
 
   const handleRowClick = (testCase) => {
-    navigate(`/test-cases/${testCase.id}/steps`, {
+    navigate(`/member-test-cases/${testCase.id}/steps`, {
       state: {
         testCaseName: testCase.name,
         testCaseId: testCase.id,
@@ -333,6 +334,7 @@ const MemberTestDetails = () => {
 
 
   const renderEditModal = () => (
+
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="bg-white shadow-xl rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6">
@@ -512,6 +514,8 @@ const MemberTestDetails = () => {
 
   
   return (
+    <div>
+      <MemberSidebar />
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full">
         <div className="p-6">
@@ -526,7 +530,7 @@ const MemberTestDetails = () => {
                 </button>
               </div>
               <button
-                onClick={() => navigate("/test-cases/create-testcases")}
+                onClick={() => navigate("/member-create-testcase")}
                 className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 lg:mt-0 sm:mt-3"
                 disabled={!selectedProject}
               >
@@ -641,6 +645,7 @@ const MemberTestDetails = () => {
 )}
         </div>
       </div>
+    </div>
     </div>
   );
 };
