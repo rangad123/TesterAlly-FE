@@ -343,6 +343,8 @@ import AdminProjectDetails from "./pages/AdminProjectDetails";
 import AdminLayout from "./pages/AdminLayout";
 import MemberTestData from "./pages/MemberTestData";
 import TestEnvironmentConfig from "./pages/TestEnvironmentConfig";
+import MemberTestSuites from "./pages/MemberTestSuites";
+import MemberRequirement from "./pages/MemberRequirement";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -683,6 +685,24 @@ const App = () => {
                 element={ 
                   <PrivateRoute isLoggedIn={isLoggedIn}>
                     <MemberTestData />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/member-test-suite"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberTestSuites />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/member-test-requirement"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberRequirement />
                   </PrivateRoute>
                 }
               />

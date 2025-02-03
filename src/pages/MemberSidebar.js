@@ -119,12 +119,8 @@ const MemberSidebar = () => {
       "/member-test-details",
       "/member-project-details",
       "/member-test-cases/:testCaseId/steps",
-      "/project-members",
-      "/project-details",
-      "/requirement-details",
-      "/requirement-type",
-      "/testcase-Priorities",
-      "/testcases-type",
+      "/member-test-suite",
+      "/member-test-requirement",
       "/member-test-data",
     ];
   
@@ -140,9 +136,7 @@ const MemberSidebar = () => {
 
   const isAnyOptionActive = currentPath === "/member-project-details" || currentPath === "/member-test-details"
   || currentPath === "/member-test-cases/:testCase.Id/steps"
-  || currentPath === "/project-members" || currentPath === "/project-details" 
-  || currentPath === "/requirement-details" || currentPath === "/requirement-type"
-  || currentPath === "/testcase-Priorities" || currentPath === "/testcases-type" || currentPath === "/member-test-data";
+  || currentPath === "/member-test-suite" || currentPath === "/member-test-requirement" || currentPath === "/member-test-data"  ;
 
 
   return (

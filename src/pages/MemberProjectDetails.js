@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MemberSidebar from "./MemberSidebar";
+import {
+  Calendar,
+  Clock,
+  Tag,
+} from "lucide-react";
 
 const MemberProjectDetails = () => {
   const navigate = useNavigate();
@@ -87,16 +92,54 @@ const MemberProjectDetails = () => {
               <>
                 {/* Projects Tab */}
                 {activeTab === "projects" && (
-                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     {data.projects.map((project) => (
                       <div
                         key={project.id}
                         onClick={() => handleProjectClick(project)}
                         className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer p-6"
                       >
-                        <h3 className="text-lg font-semibold mb-2">{project.name}</h3>
-                        <p className="text-gray-600 mb-4">{project.description || "No description provided"}</p>
-                        <div className="space-y-2">
+                        <h1 className="text-2xl font-bold text-gray-900 mb-4 md:mb-0">
+                          {project.name}
+                        </h1>
+                        <div className="flex items-center text-gray-600 mt-2">
+                          <Tag className="w-5 h-5 mr-2" />
+                          <span className="font-medium mr-2">Type:</span>
+                          <span>{project.project_type || "Not specified"}</span>
+                        </div>
+
+                        <div className="flex items-center text-gray-600 mt-3">
+                          <Calendar className="w-5 h-5 mr-2" />
+                          <span className="font-medium mr-2">Created:</span>
+                          <span>
+                          {project.created_at
+                            ? new Date(project.created_at)
+                              .toISOString()
+                              .replace("T", ", ")
+                              .slice(0, 20)
+                              : "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex items-center text-gray-600 mt-3">
+                          <Clock className="w-5 h-5 mr-2" />
+                          <span className="font-medium mr-2">Last updated:</span>
+                            <span>
+                              {project.updated_at
+                                ? new Date(project.updated_at)
+                                  .toISOString()
+                                  .replace("T", ", ")
+                                  .slice(0, 20)
+                                  : "N/A"}
+                              </span>
+                          </div>
+                        <div className="bg-gray-50 p-4 rounded-lg mt-4">
+                          <h3 className="font-medium text-gray-900 mb-2">Description</h3>
+                          <p className="text-gray-600">
+                            {project.description || "No description provided"}
+                          </p>
+                        </div>
+
+                        <div className="space-y-2 mt-4">
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-500">Test Cases:</span>
                             <span className="font-medium">{data.test_cases.filter(tc => tc.project_id === project.id).length}</span>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaInfoCircle,
   FaList,
@@ -12,15 +12,38 @@ import {
 
 const MemberSubBar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [projects, setProjects] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [activeMenuItem, setActiveMenuItem] = useState("");
-  const [isProjectSettingsExpanded, setIsProjectSettingsExpanded] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(() => {
+    
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      const savedProject = localStorage.getItem(`selectedProject_${userId}`);
+      return savedProject ? JSON.parse(savedProject) : null;
+    }
+    return null;
+  });
+  const [activeMenuItem, setActiveMenuItem] = useState(() => {
+    const pathToMenu = {
+      '/member-test-details': 'Test Cases',
+      '/member-test-requirement': 'Requirements',
+      '/member-test-suite': 'Test Suites',
+      '/member-project-details': 'Project Details',
+      '/member-test-data': 'Test Data'
+    };
+    return pathToMenu[location.pathname] || '';
+  });
+  
+  const [isProjectSettingsExpanded, setIsProjectSettingsExpanded] = useState(() => {
+    
+    return ['/member-project-details', '/member-test-data'].includes(location.pathname);
+  });
 
+  
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     const userId = localStorage.getItem("userId");
     if (!userId) {
       console.warn("No userId found in localStorage");
@@ -39,14 +62,13 @@ const MemberSubBar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect })
   
       if (response.ok) {
         const data = await response.json();
-
         const projectsArray = data.projects || [];
         setProjects(projectsArray);
   
-        const savedProjectKey = `selectedProject_${userId}`;
-        const savedProject = localStorage.getItem(savedProjectKey);
+        if (!selectedProject && projectsArray.length > 0) {
+          const savedProjectKey = `selectedProject_${userId}`;
+          const savedProject = localStorage.getItem(savedProjectKey);
   
-        if (projectsArray.length > 0) {
           if (savedProject) {
             const parsedProject = JSON.parse(savedProject);
             const projectExists = projectsArray.some((p) => p.id === parsedProject.id);
@@ -61,9 +83,6 @@ const MemberSubBar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect })
             setSelectedProject(projectsArray[0]);
             localStorage.setItem(savedProjectKey, JSON.stringify(projectsArray[0]));
           }
-        } else {
-          setSelectedProject(null);
-          localStorage.removeItem(savedProjectKey);
         }
       } else {
         console.error("Failed to fetch projects:", await response.json());
@@ -71,7 +90,7 @@ const MemberSubBar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect })
     } catch (error) {
       console.error("Error fetching projects:", error);
     }
-  };
+  }, [selectedProject]);
   
   const filteredProjects = Array.isArray(projects) 
     ? projects.filter((project) =>
@@ -80,101 +99,71 @@ const MemberSubBar = ({ isL1Expanded, isVisible, isMobileView, onOptionSelect })
     : [];
   
   
-  
-useEffect(() => {
-    fetchProjects();
-  }, []); 
+    useEffect(() => {
+      fetchProjects();
+    }, [fetchProjects]);
 
-/* 
-  
-    const handleProjectCreated = (event) => {
-      const newProject = event.detail;
-      fetchProjects(); 
-      setProjects((prevProjects) => [...prevProjects, newProject]);
-      setSelectedProject(newProject);
-      localStorage.setItem(`selectedProject_${newProject.user_id}`, JSON.stringify(newProject));
-    };
-  
-    const handleProjectDeleted = (event) => {
-      const { projectId } = event.detail;
-      fetchProjects(); 
-      setProjects((prevProjects) => {
-        const updatedProjects = prevProjects.filter((project) => project.id !== projectId);
+    useEffect(() => {
+      const pathToMenu = {
+        '/member-test-details': 'Test Cases',
+        '/member-test-requirement': 'Requirements',
+        '/member-test-suite': 'Test Suites',
+        '/member-project-details': 'Project Details',
+        '/member-test-data': 'Test Data'
+      };
+      setActiveMenuItem(pathToMenu[location.pathname] || '');
+      
+      if (['/member-project-details', '/member-test-data'].includes(location.pathname)) {
+        setIsProjectSettingsExpanded(true);
+      }
+    }, [location.pathname]);
 
-        if (selectedProject && selectedProject.id === projectId) {
-          setSelectedProject(null);
+  
+    useEffect(() => {
+      const handleProjectChanged = (event) => {
+        const changedProject = event.detail;
+        if (changedProject && changedProject.id !== selectedProject?.id) {
+          setSelectedProject(changedProject);
           const userId = localStorage.getItem("userId");
           if (userId) {
-            localStorage.removeItem(`selectedProject_${userId}`);
-          }
-          
-          if (updatedProjects.length > 0) {
-            setSelectedProject(updatedProjects[0]);
-            localStorage.setItem(
-              `selectedProject_${userId}`, 
-              JSON.stringify(updatedProjects[0])
-            );
+            localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(changedProject));
           }
         }
-        
-        return updatedProjects;
-      });
-    };
-*/
-useEffect(() => {
-    const handleProjectChanged = (event) => {
-      const changedProject = event.detail;
-      if (changedProject) {
-        setSelectedProject(changedProject);
-        const userId = localStorage.getItem("userId");
-        if (userId) {
-          localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(changedProject));
-        }
-      }
-    };
-  
-//    window.addEventListener("projectCreated", handleProjectCreated);
-//  window.addEventListener("projectDeleted", handleProjectDeleted);
-    window.addEventListener("projectChanged", handleProjectChanged);
-  
-    return () => {
-//      window.removeEventListener("projectCreated", handleProjectCreated);
-//      window.removeEventListener("projectDeleted", handleProjectDeleted);
-      window.removeEventListener("projectChanged", handleProjectChanged);
-    };
-  }, [selectedProject]); 
-  
-  
-
-  const handleProjectSelect = (project) => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-
-    setSelectedProject(project);
-    localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(project));
-    setIsDropdownOpen(false);
-    setSearchTerm("");
+      };
     
-    if (isMobileView && typeof onOptionSelect === "function") {
-      onOptionSelect(); 
-  }
+      window.addEventListener("projectChanged", handleProjectChanged);
+      return () => window.removeEventListener("projectChanged", handleProjectChanged);
+    }, [selectedProject]);
+
+    const handleProjectSelect = useCallback((project) => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
   
-    window.dispatchEvent(new CustomEvent("projectChanged", { detail: project }));
-  };
+      setSelectedProject(project);
+      localStorage.setItem(`selectedProject_${userId}`, JSON.stringify(project));
+      setIsDropdownOpen(false);
+      setSearchTerm("");
+      
+      if (isMobileView && typeof onOptionSelect === "function") {
+        onOptionSelect(); 
+      }
+    
+      window.dispatchEvent(new CustomEvent("projectChanged", { detail: project }));
+    }, [isMobileView, onOptionSelect]);
 
 
   const projectSettingsItems = [
     { icon: FaInfoCircle, label: "Project Details", path:'/member-project-details' },
     { icon: FaFileAlt, label: "Test Data", path:'/member-test-data' },
-    { icon: FaList, label: "Requirement Types",  },
-    { icon: FaCog, label: "Test Case Types", },
-    { icon: FaFlag, label: "Test Case Priorities", },
+    { icon: FaList, label: "Requirement Types" },
+    { icon: FaCog, label: "Test Case Types" },
+    { icon: FaFlag, label: "Test Case Priorities" },
   ];
 
   const menuItems = [
     { icon: FaFileAlt, label: "Test Cases", path:'/member-test-details' },
-    { icon: FaRegFileAlt, label: "Requirements",  },
-    { icon: FaClipboardList, label: "Test Suites", },
+    { icon: FaRegFileAlt, label: "Requirements", path:'/member-test-requirement' },
+    { icon: FaClipboardList, label: "Test Suites", path:'/member-test-suite' },
     {
       icon: FaCog,
       label: "Project Settings",
@@ -195,7 +184,7 @@ useEffect(() => {
       onOptionSelect(); 
     }
   };
-  
+
 
   if (!isVisible) return null;
 
@@ -269,7 +258,8 @@ useEffect(() => {
               <>
                 <div
                   className={`sub-sidebar-item flex items-center gap-2 p-2 cursor-pointer ${
-                    !selectedProject ? "text-gray-400" : activeMenuItem === item.label ? "bg-[#9ac5e2] text-white" : "text-gray-700"
+                    !selectedProject ? "text-gray-400" : 
+                    activeMenuItem === item.label ? "bg-[#9ac5e2] text-white" : "text-gray-700"
                   } hover:bg-blue-100`}
                   onClick={() => selectedProject && setIsProjectSettingsExpanded(!isProjectSettingsExpanded)}
                 >
@@ -296,16 +286,10 @@ useEffect(() => {
                     <div
                       key={subIndex}
                       className={`flex items-center gap-2 pl-8 pr-2 py-1 cursor-pointer ${
-                        !selectedProject ? "text-gray-400" : activeMenuItem === subItem.label ? "bg-blue-100 text-blue-900" : "text-gray-700"
+                        !selectedProject ? "text-gray-400" : 
+                        activeMenuItem === subItem.label ? "bg-blue-100 text-blue-900" : "text-gray-700"
                       } hover:bg-blue-50`}
-                      onClick={() => {
-                        if (selectedProject) {
-                          setActiveMenuItem(subItem.label);
-                          handleMenuClick(subItem.path);
-                        } else {
-                          handleMenuClick(subItem.path);
-                        }
-                      }}
+                      onClick={() => handleMenuClick(subItem.path, subItem.label)}
                     >
                       <subItem.icon 
                         className="icon" 
