@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -14,55 +13,61 @@ const AdminProjectDetails = () => {
   const [activeTab, setActiveTab] = useState("details");
   const [testCases, setTestCases] = useState([]);
   const [testSuites, setTestSuites] = useState([]);
-//  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-//  const userName = localStorage.getItem("userName") || "User Name";
-//  const userId = localStorage.getItem("userId");
-/*  const projectTypes = [
-    "Web Development",
-    "Mobile Application",
-    "API Development",
-    "Data Analysis",
-  ];
-*/
+  const [members, setMembers] = useState([]);
 
-useEffect(() => {
-  const userId = localStorage.getItem("userId");
-  if (!userId) {
-    return;
-  }
-
-  const savedProjectKey = `selectedProject_${userId}`;
-  const savedProject = localStorage.getItem(savedProjectKey);
-
-  if (savedProject) {
-    try {
-      const project = JSON.parse(savedProject);
-      setSelectedProject(project); 
-      fetchTestCases(project.id); 
-      fetchTestSuites(project.id);
-    } catch (error) {
-      console.error("Error parsing saved project:", error);
-      navigate("/admin-dashboard");
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      return;
     }
-  }
 
-  setLoading(false);
+    const savedProjectKey = `selectedProject_${userId}`;
+    const savedProject = localStorage.getItem(savedProjectKey);
 
-  const handleProjectChange = (event) => {
-    const newProject = event.detail;
-    if (newProject) {
-      setSelectedProject(newProject);
-      localStorage.setItem("selectedProject", JSON.stringify(newProject));
-      fetchTestCases(newProject.id);
-      fetchTestSuites(newProject.id);
+    if (savedProject) {
+      try {
+        const project = JSON.parse(savedProject);
+        setSelectedProject(project);
+        fetchTestCases(project.id);
+        fetchTestSuites(project.id);
+        fetchMembers(project.id);
+      } catch (error) {
+        console.error("Error parsing saved project:", error);
+        navigate("/admin-dashboard");
+      }
+    }
+
+    setLoading(false);
+
+    const handleProjectChange = (event) => {
+      const newProject = event.detail;
+      if (newProject) {
+        setSelectedProject(newProject);
+        localStorage.setItem("selectedProject", JSON.stringify(newProject));
+        fetchTestCases(newProject.id);
+        fetchTestSuites(newProject.id);
+        fetchMembers(newProject.id);
+      }
+    };
+
+    window.addEventListener("projectChanged", handleProjectChange);
+    return () => window.removeEventListener("projectChanged", handleProjectChange);
+  }, [navigate]);
+
+  const fetchMembers = async (projectId) => {
+    try {
+      const response = await fetch(
+        `https://testerally-be-ylpr.onrender.com/api/projects/${projectId}/members/`
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setMembers(data);
+        console.log("Members", data);
+      }
+    } catch (err) {
+      console.error("Error fetching members:", err);
     }
   };
-
-  window.addEventListener("projectChanged", handleProjectChange);
-  return () => window.removeEventListener("projectChanged", handleProjectChange);
-}, [navigate]);
-
-
 
   const fetchTestCases = async (projectId) => {
     try {
@@ -72,7 +77,6 @@ useEffect(() => {
       const data = await response.json();
       if (response.ok) {
         setTestCases(data);
-
         console.log("Test cases", data);
       }
     } catch (err) {
@@ -88,194 +92,12 @@ useEffect(() => {
       const data = await response.json();
       if (response.ok) {
         setTestSuites(data);
-
         console.log("Test suites", data);
       }
     } catch (err) {
       console.error("Error fetching test suites:", err);
     }
   };
-
-/*  const handleDeleteProject = async (projectId) => {
-    if (!window.confirm("Are you sure you want to delete this project?"))
-      return;
-
-    try {
-      if (!projectId || !userId) {
-        alert(!projectId ? "Invalid project ID." : "Invalid user ID.");
-        return;
-      }
-
-      const deleteResponse = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/projects/${projectId}/?user_id=${userId}`,
-        {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (deleteResponse.ok) {
-        const currentUser = localStorage.getItem("userId");
-        localStorage.removeItem(`selectedProject_${currentUser}`);
-        localStorage.removeItem("selectedProject");
-
-        window.dispatchEvent(
-          new CustomEvent("projectDeleted", {
-            detail: { projectId },
-          })
-        );
-
-        alert("Project deleted successfully.");
-        setSelectedProject(null);
-        navigate("/admin-dashboard");
-      } else {
-        const errorData = await deleteResponse.json();
-        console.error("Delete failed:", errorData);
-        alert(errorData.message || "Failed to delete project.");
-      }
-    } catch (error) {
-      console.error("Error during deletion:", error);
-      alert("An error occurred while deleting the project. Please try again.");
-    }
-  };
-
-  const handleEditClick = (project) => {
-    setSelectedProject({ ...project, isEditing: true });
-    setIsEditModalOpen(true);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditModalOpen(false);
-    setSelectedProject((prev) => ({ ...prev, isEditing: false }));
-  };
-
-  const handleChange = (field, value) => {
-    setSelectedProject((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSave = async () => {
-    try {
-      const response = await fetch(
-        `https://testerally-be-ylpr.onrender.com/api/projects/${selectedProject.id}/?user_id=${userId}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: selectedProject.name,
-            description: selectedProject.description,
-            project_type: selectedProject.project_type,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        const updatedProject = await response.json();
-
-        setSelectedProject(updatedProject);
-
-        const savedProjectKey = `selectedProject_${userId}`;
-        localStorage.setItem(savedProjectKey, JSON.stringify(updatedProject));
-        localStorage.setItem("selectedProject", JSON.stringify(updatedProject));
-
-        setIsEditModalOpen(false);
-        alert("Project updated successfully.");
-      }
-    } catch (err) {
-      console.error("Error updating project:", err);
-      alert("An error occurred while updating the project.");
-    }
-  };
-
-
-  const renderEditModal = () => {
-    if (!isEditModalOpen) return null;
-
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-        <div className="bg-white shadow-xl rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
-          <div className="p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Edit Project
-              </h3>
-              <button
-                onClick={handleCancelEdit}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <div className="grid gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Project Name
-                </label>
-                <input
-                  type="text"
-                  value={selectedProject.name}
-                  onChange={(e) => handleChange("name", e.target.value)}
-                  className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <textarea
-                  value={selectedProject.description || ""}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                  className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
-                  rows={3}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Project Type
-                </label>
-                <div className="relative">
-                  <select
-                    value={selectedProject.project_type || ""}
-                    onChange={(e) =>
-                      handleChange("project_type", e.target.value)
-                    }
-                    className="w-full p-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-400 appearance-none transition-all duration-200 pr-8"
-                  >
-                    {projectTypes.map((type) => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                </div>
-              </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={handleSave}
-                  className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors duration-200"
-                >
-                  <Save className="w-4 h-4 mr-1" />
-                  Save
-                </button>
-                <button
-                  onClick={handleCancelEdit}
-                  className="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors duration-200"
-                >
-                  <X className="w-4 h-4 mr-1" />
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-
-*/
-
-
 
   const renderProjectDetails = () => {
     if (!selectedProject) return null;
@@ -287,22 +109,6 @@ useEffect(() => {
             <h1 className="text-2xl font-bold text-gray-900 mb-4 md:mb-0">
               {selectedProject.name}
             </h1>
-{ /*        <div className="flex space-x-2">
-              <button
-                onClick={() => handleEditClick(selectedProject)}
-                className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200"
-              >
-                <Edit2 className="w-4 h-4 mr-2" />
-                Edit Project
-              </button>
-              <button
-                onClick={() => handleDeleteProject(selectedProject.id)}
-                className="inline-flex items-center px-4 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Project
-              </button>
-            </div>  */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -312,20 +118,12 @@ useEffect(() => {
                 <span className="font-medium mr-2">Type:</span>
                 <span>{selectedProject.project_type || "Not specified"}</span>
               </div>
-              {/* <div className="flex items-center text-gray-600">
-                <User className="w-5 h-5 mr-2" />
-                <span className="font-medium mr-2">Created by:</span>
-                <span>{userName}</span>
-              </div> */}
               <div className="flex items-center text-gray-600">
                 <Calendar className="w-5 h-5 mr-2" />
                 <span className="font-medium mr-2">Created:</span>
                 <span>
                   {selectedProject.created_at
-                    ? new Date(selectedProject.created_at)
-                        .toISOString()
-                        .replace("T", ", ")
-                        .slice(0, 20)
+                    ? new Date(selectedProject.created_at).toISOString().replace("T", ", ").slice(0, 20)
                     : "N/A"}
                 </span>
               </div>
@@ -334,10 +132,7 @@ useEffect(() => {
                 <span className="font-medium mr-2">Last updated:</span>
                 <span>
                   {selectedProject.updated_at
-                    ? new Date(selectedProject.updated_at)
-                        .toISOString()
-                        .replace("T", ", ")
-                        .slice(0, 20)
+                    ? new Date(selectedProject.updated_at).toISOString().replace("T", ", ").slice(0, 20)
                     : "N/A"}
                 </span>
               </div>
@@ -353,7 +148,7 @@ useEffect(() => {
 
           <div className="border-t pt-6">
             <div className="flex space-x-4 mb-6 overflow-x-auto">
-              {["test-cases", "test-suites"].map((tab) => (
+              {["test-cases", "test-suites", "members"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -428,11 +223,60 @@ useEffect(() => {
                 )}
               </div>
             )}
+
+            {activeTab === "members" && (
+              <div className="bg-white rounded-lg">
+                {members.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No members available</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {members.map((member) => (
+                      <div
+                        key={member.id}
+                        className="p-4 border rounded-lg hover:bg-gray-50"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="font-medium text-gray-900">
+                              {member.name}
+                            </h4>
+                            <p className="text-gray-600 mt-1">
+                              {member.email}
+                            </p>
+                            <div className="mt-2 space-y-1">
+                              <div className="text-sm text-gray-500">
+                                <span className="font-medium">Phone:</span> {member.phone || "N/A"}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                <span className="font-medium">Country:</span> {member.country || "N/A"}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                <span className="font-medium">Added:</span> {new Date(member.added_at).toLocaleDateString()}
+                              </div>
+                            </div>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            member.invitation_status === "Accepted" 
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}>
+                            {member.invitation_status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
     );
   };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 transition-all duration-300 sm:ml-[60px] sm:max-w-full">
@@ -456,7 +300,6 @@ useEffect(() => {
           )}
         </div>
       </div>
-      {null}
     </div>
   );
 };

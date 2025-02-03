@@ -113,7 +113,7 @@ const MemberTestStep = () => {
 
       if (!response.ok) throw new Error("Failed to delete test case");
       
-      navigate("/test-cases");
+      navigate("/member-test-details");
     } catch (err) {
       console.error("Error deleting test case:", err);
       setError("Failed to delete test case");
@@ -143,7 +143,7 @@ const MemberTestStep = () => {
 
     const handleProjectChange = () => {
       
-      navigate("/test-cases");
+      navigate("/member-test-details");
     };
 
     window.addEventListener("projectChanged", handleProjectChange);
@@ -152,7 +152,7 @@ const MemberTestStep = () => {
 
   useEffect(() => {
     if (!testCaseId) {
-      navigate("/test-cases");
+      navigate("/member-test-details");
     }
   }, [testCaseId, testCaseName, navigate]); 
 
@@ -433,7 +433,7 @@ const MemberTestStep = () => {
     <div className="flex-1 lg:ml-[300px] transition-all duration-300 lg:max-w-[calc(100%-300px)] sm:ml-[60px] sm:max-w-full ">
       <div className="p-6">
         <button
-          onClick={() => navigate("/test-cases")}
+          onClick={() => navigate("/member-test-details")}
           className="mb-6 inline-flex items-center text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

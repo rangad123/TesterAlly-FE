@@ -85,7 +85,7 @@ useEffect(() => {
     fetchProjects();
   }, []); 
 
-  useEffect(() => {
+/* 
   
     const handleProjectCreated = (event) => {
       const newProject = event.detail;
@@ -120,10 +120,10 @@ useEffect(() => {
         return updatedProjects;
       });
     };
-  
+*/
+useEffect(() => {
     const handleProjectChanged = (event) => {
       const changedProject = event.detail;
-      fetchProjects(); 
       if (changedProject) {
         setSelectedProject(changedProject);
         const userId = localStorage.getItem("userId");
@@ -133,13 +133,13 @@ useEffect(() => {
       }
     };
   
-    window.addEventListener("projectCreated", handleProjectCreated);
-    window.addEventListener("projectDeleted", handleProjectDeleted);
+//    window.addEventListener("projectCreated", handleProjectCreated);
+//  window.addEventListener("projectDeleted", handleProjectDeleted);
     window.addEventListener("projectChanged", handleProjectChanged);
   
     return () => {
-      window.removeEventListener("projectCreated", handleProjectCreated);
-      window.removeEventListener("projectDeleted", handleProjectDeleted);
+//      window.removeEventListener("projectCreated", handleProjectCreated);
+//      window.removeEventListener("projectDeleted", handleProjectDeleted);
       window.removeEventListener("projectChanged", handleProjectChanged);
     };
   }, [selectedProject]); 
@@ -165,7 +165,7 @@ useEffect(() => {
 
   const projectSettingsItems = [
     { icon: FaInfoCircle, label: "Project Details", path:'/member-project-details' },
-    { icon: FaFileAlt, label: "Test Data",  },
+    { icon: FaFileAlt, label: "Test Data", path:'/member-test-data' },
     { icon: FaList, label: "Requirement Types",  },
     { icon: FaCog, label: "Test Case Types", },
     { icon: FaFlag, label: "Test Case Priorities", },

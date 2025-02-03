@@ -144,7 +144,7 @@ const AppNavBar = (props) => {
   };
 
   const handleRunClick = () => {
-    navigate("/dashboard-user");
+    navigate("/environment-run");
   };
 
   const isAdminRoute = location.pathname.startsWith("/admin");

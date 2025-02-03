@@ -341,6 +341,8 @@ import MemberWriteTest from "./pages/MemberWriteTest";
 import MemberTestStep from "./pages/MemberTestStep";
 import AdminProjectDetails from "./pages/AdminProjectDetails";
 import AdminLayout from "./pages/AdminLayout";
+import MemberTestData from "./pages/MemberTestData";
+import TestEnvironmentConfig from "./pages/TestEnvironmentConfig";
 
 // import { MdDashboard } from "react-icons/md";
 // import { FaUserCircle } from "react-icons/fa";
@@ -676,6 +678,15 @@ const App = () => {
                 }
               />
               <Route
+                path="/member-test-data"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <MemberTestData />
+                  </PrivateRoute>
+                }
+              />
+              <Route
                 path="create-project"
                 exact
                 element={
@@ -847,6 +858,15 @@ const App = () => {
                   </PrivateRoute>
                 }
                 />
+                <Route
+                path="/environment-run"
+                exact
+                element={ 
+                  <PrivateRoute isLoggedIn={isLoggedIn}>
+                    <TestEnvironmentConfig />
+                  </PrivateRoute>
+                }
+              />
             </Routes>
           </div>
     </div>

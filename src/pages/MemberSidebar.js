@@ -113,13 +113,36 @@ const MemberSidebar = () => {
 
   };
 
+  useEffect(() => {
+
+    const testCasePages = [
+      "/member-test-details",
+      "/member-project-details",
+      "/member-test-cases/:testCaseId/steps",
+      "/project-members",
+      "/project-details",
+      "/requirement-details",
+      "/requirement-type",
+      "/testcase-Priorities",
+      "/testcases-type",
+      "/member-test-data",
+    ];
+  
+    if (testCasePages.includes(location.pathname)) {
+      setIsMTestCasesVisible(true);
+    } else {
+      setIsMTestCasesVisible(false);
+    }
+  }, [location.pathname]);
+  
+
   const currentPath = location.pathname;
 
   const isAnyOptionActive = currentPath === "/member-project-details" || currentPath === "/member-test-details"
-  || currentPath === "/create-requirement"
+  || currentPath === "/member-test-cases/:testCase.Id/steps"
   || currentPath === "/project-members" || currentPath === "/project-details" 
   || currentPath === "/requirement-details" || currentPath === "/requirement-type"
-  || currentPath === "/testcase-Priorities" || currentPath === "/testcases-type" || currentPath === "/test-data";
+  || currentPath === "/testcase-Priorities" || currentPath === "/testcases-type" || currentPath === "/member-test-data";
 
 
   return (
@@ -153,7 +176,9 @@ const MemberSidebar = () => {
       {/* Test Development Option */}
     <div
       className={`sidebar-option ${isAnyOptionActive ? "active" : ""}`}
-      onClick={toggleMTestCasesSidebar}
+      onClick={() => {
+        if (!isAnyOptionActive) toggleMTestCasesSidebar(); // Toggle only if not already active
+      }}
     >
       <FaCode className={`icon project-icon ${isAnyOptionActive ? "active-icon" : ""}`} />
       <div className="option-name-container">
