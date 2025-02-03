@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaFileAlt, FaUsers, FaCog } from 'react-icons/fa';
+import { FaFileAlt, FaCog } from 'react-icons/fa';
 import axios from 'axios';
 
 const AdminLayout = ({ children }) => {
@@ -109,7 +109,6 @@ const AdminLayout = ({ children }) => {
         }
       }
     },
-    { icon: FaUsers, label: "Members", path: "/org-members" },
     { icon: FaCog, label: "Settings", path: "/org-settings" },
   ];
 
